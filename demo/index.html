@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SSCare - Demo App</title>
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --primary-dark: #5A52D5;
+            --accent: #FF6B9D;
+            --accent-light: #FF8FB3;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --danger: #F44336;
+            --bg: #F5F0FF;
+            --card: #FFFFFF;
+            --text: #2D2D3F;
+            --text-light: #6B6B80;
+            --border: #E8E0F0;
+            --shadow: 0 2px 12px rgba(108,99,255,0.08);
+            --radius: 16px;
+            --radius-sm: 10px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #E8E0F0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .phone-frame {
+            width: 390px;
+            height: 844px;
+            background: var(--bg);
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), inset 0 0 0 3px #333;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-bar {
+            height: 54px;
+            background: var(--primary);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 0 30px 8px;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #333;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .header-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .screen {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .screen::-webkit-scrollbar {
+            width: 3px;
+        }
+        .screen::-webkit-scrollbar-thumb {
+            background: var(--primary-light);
+            border-radius: 3px;
+        }
+
+        .bottom-nav {
+            display: none;
+            background: white;
+            padding: 8px 0;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .bottom-nav.active {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 12px;
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item .nav-icon {
+            font-size: 22px;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            transition: border-color 0.2s;
+            outline: none;
+            background: white;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            outline: none;
+            background: white;
+            appearance: none;
+        }
+
+        /* Tags / Chips */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 2px solid var(--border);
+            background: white;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+            margin: 4px;
+        }
+
+        .chip.selected {
+            border-color: var(--primary);
+            background: var(--bg);
+            color: var(--primary);
+        }
+
+        .chip .chip-icon {
+            font-size: 18px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 10px 8px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-light);
+            border: none;
+            background: none;
+        }
+
+        .tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Sub tabs */
+        .sub-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+        }
+
+        .sub-tab {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            border: 2px solid var(--border);
+            background: white;
+            color: var(--text-light);
+            transition: all 0.2s;
+        }
+
+        .sub-tab.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Dashboard items */
+        .dash-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .dash-card {
+            flex: 1;
+            background: white;
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .dash-card .dash-icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+
+        .dash-card .dash-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .dash-card .dash-label {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* Status badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #E8F5E9; color: var(--success); }
+        .badge-warning { background: #FFF3E0; color: var(--warning); }
+        .badge-danger { background: #FFEBEE; color: var(--danger); }
+        .badge-info { background: #E8E0F0; color: var(--primary); }
+
+        /* Table */
+        .cycle-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        .cycle-table th, .cycle-table td {
+            padding: 6px 4px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .cycle-table th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Toggle */
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .toggle {
+            width: 44px;
+            height: 24px;
+            background: #ccc;
+            border-radius: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle.on {
+            background: var(--success);
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s;
+        }
+
+        .toggle.on::after {
+            transform: translateX(20px);
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+
+        /* Pricing */
+        .pricing-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 2px solid var(--border);
+            transition: border-color 0.2s;
+        }
+
+        .pricing-card.popular {
+            border-color: var(--accent);
+            position: relative;
+        }
+
+        .pricing-card.popular::before {
+            content: '⭐ Phổ biến';
+            position: absolute;
+            top: -12px;
+            right: 16px;
+            background: var(--accent);
+            color: white;
+            padding: 2px 12px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .pricing-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .pricing-price {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 8px 0;
+        }
+
+        .pricing-features {
+            list-style: none;
+            font-size: 12px;
+        }
+
+        .pricing-features li {
+            padding: 4px 0;
+        }
+
+        .pricing-features li::before {
+            content: '✅ ';
+        }
+
+        .pricing-features li.disabled::before {
+            content: '❌ ';
+        }
+
+        .pricing-features li.disabled {
+            color: var(--text-light);
+        }
+
+        /* Notification items */
+        .noti-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .noti-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .noti-text {
+            flex: 1;
+        }
+
+        .noti-title {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .noti-desc {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .noti-time {
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Logo */
+        .logo-container {
+            text-align: center;
+            padding: 30px 20px 20px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .logo-text {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-tagline {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* Role selector */
+        .role-cards {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .role-card {
+            flex: 1;
+            padding: 24px 16px;
+            border-radius: var(--radius);
+            border: 3px solid var(--border);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .role-card:hover, .role-card.selected {
+            border-color: var(--primary);
+            background: var(--bg);
+        }
+
+        .role-card .role-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+
+        .role-card .role-name {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        /* List items */
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .list-item:hover {
+            background: var(--bg);
+        }
+
+        .list-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: var(--bg);
+        }
+
+        .list-content {
+            flex: 1;
+        }
+
+        .list-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .list-desc {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .list-arrow {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        /* Article */
+        .article-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .article-img {
+            height: 120px;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .article-body {
+            padding: 14px;
+        }
+
+        .article-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .article-preview {
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* Checklist */
+        .check-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .check-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .check-box.checked {
+            background: var(--success);
+            border-color: var(--success);
+            color: white;
+        }
+
+        .check-text {
+            font-size: 13px;
+        }
+
+        .check-text.done {
+            text-decoration: line-through;
+            color: var(--text-light);
+        }
+
+        /* Calendar mini */
+        .calendar-mini {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            margin-top: 8px;
+        }
+
+        .cal-day {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .cal-day.today {
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+        }
+
+        .cal-day.marked {
+            background: var(--accent-light);
+            color: white;
+        }
+
+        .cal-header {
+            font-weight: 700;
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        /* Pop-up / Modal */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--radius);
+            padding: 24px;
+            width: 100%;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .modal h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .modal p {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal-btns .btn {
+            flex: 1;
+        }
+
+        /* QR Code */
+        .qr-display {
+            width: 150px;
+            height: 150px;
+            margin: 16px auto;
+            background: white;
+            border: 3px solid var(--text);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: var(--text-light);
+            position: relative;
+        }
+
+        .qr-display .qr-pattern {
+            width: 120px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 1px;
+        }
+
+        .qr-cell {
+            background: #333;
+            border-radius: 1px;
+        }
+
+        .qr-cell.white {
+            background: white;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card, .dash-card, .article-card, .pricing-card, .noti-item {
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Responsive for desktop view */
+        @media (max-width: 420px) {
+            .phone-frame {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+                box-shadow: none;
+            }
+            .notch { display: none; }
+            .status-bar { height: 40px; padding-bottom: 4px; }
+        }
+
+        .back-btn {
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        .text-center { text-align: center; }
+        .mt-8 { margin-top: 8px; }
+        .mt-12 { margin-top: 12px; }
+        .mt-16 { margin-top: 16px; }
+        .mb-8 { margin-bottom: 8px; }
+        .mb-12 { margin-bottom: 12px; }
+        .mb-16 { margin-bottom: 16px; }
+        .flex { display: flex; }
+        .gap-8 { gap: 8px; }
+        .flex-1 { flex: 1; }
+    </style>
+</head>
+<body>
+
+<div class="phone-frame" id="app">
+    <div class="notch"></div>
+    <div class="status-bar">
+        <span>9:41</span>
+        <span>📶 🔋</span>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header" id="main-header">
+        <div style="display:flex;align-items:center;gap:10px">
+            <span class="back-btn" id="back-btn" style="display:none" onclick="goBack()">←</span>
+            <h1 id="header-title">SSCare</h1>
+        </div>
+        <div style="display:flex;gap:8px;">
+            <div class="header-icon" onclick="showScreen('notifications')">🔔</div>
+            <div class="header-icon" onclick="showScreen('settings')">⚙️</div>
+        </div>
+    </div>
+
+    <!-- ==================== SCREENS ==================== -->
+
+    <!-- LANDING / LOGIN -->
+    <div class="screen active" id="screen-landing">
+        <div class="logo-container">
+            <div class="logo">🌱</div>
+            <div class="logo-text">SSCare</div>
+            <div class="logo-tagline">Hệ sinh thái đồng hành cùng con</div>
+        </div>
+
+        <div style="padding: 0 10px;">
+            <p class="text-center mb-16" style="font-size:13px;color:var(--text-light)">
+                Chọn vai trò để bắt đầu
+            </p>
+
+            <div class="role-cards">
+                <div class="role-card" onclick="selectRole('parent')" id="role-parent">
+                    <div class="role-icon">👨‍👩‍👧</div>
+                    <div class="role-name">Phụ huynh</div>
+                </div>
+                <div class="role-card" onclick="selectRole('child')" id="role-child">
+                    <div class="role-icon">👧</div>
+                    <div class="role-name">Con</div>
+                </div>
+            </div>
+
+            <div id="login-form" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">Email / SĐT</label>
+                    <input class="form-input" type="text" placeholder="example@email.com" value="huong@email.com">
+                </div>
+                <div class="form-group" id="child-user-field" style="display:none;">
+                    <label class="form-label">Tên user</label>
+                    <input class="form-input" type="text" placeholder="Tên user con" value="bean">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Mật khẩu</label>
+                    <input class="form-input" type="password" placeholder="Tối thiểu 8 ký tự" value="12345678">
+                </div>
+                <button class="btn btn-primary mt-8" onclick="doLogin()">Đăng nhập</button>
+                <button class="btn btn-outline mt-8" id="register-btn" onclick="showScreen('register')">Đăng ký tài khoản mới</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="screen" id="screen-register">
+        <div class="text-center mb-16">
+            <div style="font-size:40px">📝</div>
+            <h2 style="font-size:20px;">Đăng ký phụ huynh</h2>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email / SĐT</label>
+            <input class="form-input" type="text" placeholder="example@email.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Tên user (tối đa 25 ký tự)</label>
+            <input class="form-input" type="text" placeholder="Tên hiển thị" maxlength="25">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Mật khẩu (tối thiểu 8 ký tự)</label>
+            <input class="form-input" type="password" placeholder="••••••••">
+        </div>
+        <button class="btn btn-accent mt-8" onclick="showModal('otp')">Nhận mật khẩu lần đầu</button>
+        <button class="btn btn-outline mt-8" onclick="showScreen('landing')">Quay lại</button>
+    </div>
+
+    <!-- CHILD FIRST LOGIN - CONSENT -->
+    <div class="screen" id="screen-consent">
+        <div class="card">
+            <div class="text-center">
+                <div style="font-size:48px">🤝</div>
+                <h2 style="font-size:18px;margin:12px 0">Quyền chia sẻ cơ bản</h2>
+            </div>
+            <p style="font-size:13px;color:var(--text-light);line-height:1.6">
+                Ba/mẹ có thể xem một số thông tin tổng quan.<br><br>
+                Con có thể kiểm soát chia sẻ chi tiết.<br><br>
+                <strong>Thông tin được chia sẻ:</strong><br>
+                ✅ Trạng thái chung (đang dùng app hay không)<br>
+                ✅ Nội dung đã học<br>
+                ✅ Giai đoạn phát triển (có/không)<br><br>
+                <strong>Thông tin KHÔNG chia sẻ:</strong><br>
+                ❌ Ngày hành kinh cụ thể<br>
+                ❌ Nhật ký cảm xúc<br>
+                ❌ Ghi chú cá nhân
+            </p>
+        </div>
+        <button class="btn btn-sm btn-outline mb-8" onclick="showModal('share-detail')">Xem chi tiết</button>
+        <div class="flex gap-8">
+            <button class="btn btn-primary flex-1" onclick="acceptConsent()">Đồng ý</button>
+            <button class="btn btn-outline flex-1" onclick="showModal('reject-consent')">Không đồng ý</button>
+        </div>
+    </div>
+
+    <!-- ==================== PARENT SCREENS ==================== -->
+
+    <!-- PARENT - Tab 1: Hiểu con -->
+    <div class="screen" id="screen-parent-tab1">
+        <div class="tabs">
+            <button class="tab active" onclick="switchParentTab(1)">Hiểu con</button>
+            <button class="tab" onclick="switchParentTab(2)">Thực hành</button>
+            <button class="tab" onclick="switchParentTab(3)">Thư viện</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">👨‍👩‍👧 Gia đình của bạn</div>
+            <div class="sub-tabs" id="child-selector">
+                <button class="sub-tab active" onclick="selectChild(0)">Bé An</button>
+                <button class="sub-tab" onclick="selectChild(1)">Bé Mai</button>
+            </div>
+        </div>
+
+        <!-- Child Dashboard: Bé An -->
+        <div id="child-dash-0">
+            <div class="dash-row">
+                <div class="dash-card">
+                    <div class="dash-icon">👧</div>
+                    <div class="dash-value">Bé An</div>
+                    <div class="dash-label">11 tuổi</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-icon">💚</div>
+                    <div class="dash-value">Ổn định</div>
+                    <div class="dash-label">Trạng thái</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📊 Tình trạng chung</div>
+                <div class="check-item">
+                    <span>🔸</span>
+                    <span class="check-text">Đang trong giai đoạn dậy thì sớm</span>
+                </div>
+                <div class="check-item">
+                    <span>📚</span>
+                    <span class="check-text">Đã hoàn thành 3 bài học tuần này</span>
+                </div>
+                <div class="check-item">
+                    <span>😊</span>
+                    <span class="check-text">Check-in cảm xúc: Vui, Tự hào</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💬 Gợi ý cho phụ huynh</div>
+                <div class="list-item" style="background:var(--bg)">
+                    <div class="list-icon" style="background:var(--primary);color:white">💡</div>
+                    <div class="list-content">
+                        <div class="list-title">Trò chuyện nhẹ nhàng về cơ thể</div>
+                        <div class="list-desc">Giai đoạn này con dễ nhạy cảm hơn bình thường</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔒 Thông tin riêng tư</div>
+                <p style="font-size:12px;color:var(--text-light)">
+                    Một số thông tin chỉ hiển thị khi con cho phép chia sẻ
+                </p>
+                <button class="btn btn-sm btn-outline mt-8" style="width:auto">Yêu cầu con chia sẻ thêm</button>
+            </div>
+        </div>
+
+        <!-- Child Dashboard: Bé Mai -->
+        <div id="child-dash-1" style="display:none;">
+            <div class="dash-row">
+                <div class="dash-card">
+                    <div class="dash-icon">👧</div>
+                    <div class="dash-value">Bé Mai</div>
+                    <div class="dash-label">14 tuổi</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-icon">⚠️</div>
+                    <div class="dash-value">Cần chú ý</div>
+                    <div class="dash-label">Trạng thái</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📅 Chu kỳ</div>
+                <div class="check-item">
+                    <span>🩸</span>
+                    <span class="check-text">Lần gần nhất: 12 ngày trước</span>
+                </div>
+                <div class="check-item">
+                    <span>📊</span>
+                    <span class="check-text">Chu kỳ: chưa ổn định (bình thường ở độ tuổi này)</span>
+                </div>
+                <div class="check-item">
+                    <span>📍</span>
+                    <span class="check-text">Giai đoạn: giữa chu kỳ</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🩸 Dự đoán</div>
+                <p style="font-size:13px;margin-bottom:8px">
+                    <span class="badge badge-warning">Có thể sắp đến trong 5–7 ngày</span>
+                </p>
+                <div class="card-title mt-8">💬 Gợi ý cho phụ huynh</div>
+                <div style="font-size:12px;color:var(--text-light)">
+                    • Chuẩn bị băng vệ sinh phù hợp<br>
+                    • Trò chuyện nhẹ nhàng về cơ thể
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🔒 Thông tin riêng tư</div>
+                <p style="font-size:12px;color:var(--text-light)">
+                    ❌ Không có biểu đồ kỳ kinh<br>
+                    ❌ Không có lịch chi tiết
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PARENT - Tab 2: Thực hành cùng con -->
+    <div class="screen" id="screen-parent-tab2">
+        <div class="tabs">
+            <button class="tab" onclick="switchParentTab(1)">Hiểu con</button>
+            <button class="tab active" onclick="switchParentTab(2)">Thực hành</button>
+            <button class="tab" onclick="switchParentTab(3)">Thư viện</button>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active">Bé An</button>
+            <button class="sub-tab">Bé Mai</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📋 Thực hành tháng 2/2026</div>
+            <div class="card-subtitle">"Hiểu con để đồng hành, không kiểm soát"</div>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchPracticeTab(0)">Quan sát</button>
+            <button class="sub-tab" onclick="switchPracticeTab(1)">Giao tiếp</button>
+            <button class="sub-tab" onclick="switchPracticeTab(2)">Hỗ trợ</button>
+            <button class="sub-tab" onclick="switchPracticeTab(3)">Ghi chú</button>
+        </div>
+
+        <div id="practice-content">
+            <div class="card">
+                <div class="card-title">Hành động 1</div>
+                <p style="font-size:13px;margin-bottom:8px">Quan sát biểu hiện cảm xúc của con trong tuần – ghi nhận nhưng chưa hỏi</p>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="badge badge-success" onclick="this.classList.toggle('badge-success');this.classList.toggle('badge-warning');this.textContent=this.textContent==='Đã thực hiện'?'Chưa thực hiện':'Đã thực hiện'" style="cursor:pointer">Chưa thực hiện</span>
+                </div>
+                <div class="form-group mt-12">
+                    <label class="form-label">Chi tiết (tuỳ chọn)</label>
+                    <input class="form-input" placeholder="Tối đa 100 ký tự..." maxlength="100">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Hành động 2</div>
+                <p style="font-size:13px;margin-bottom:8px">Chú ý con có thay đổi thói quen ăn uống hoặc ngủ nghỉ không</p>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="badge badge-warning" style="cursor:pointer">Chưa thực hiện</span>
+                </div>
+                <div class="form-group mt-12">
+                    <label class="form-label">Chi tiết (tuỳ chọn)</label>
+                    <input class="form-input" placeholder="Tối đa 100 ký tự..." maxlength="100">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Hành động 3</div>
+                <p style="font-size:13px;margin-bottom:8px">Dành ít nhất 10 phút/ngày nói chuyện với con về ngày hôm nay</p>
+                <div style="display:flex;align-items:center;gap:8px;">
+                    <span class="badge badge-warning" style="cursor:pointer">Chưa thực hiện</span>
+                </div>
+                <div class="form-group mt-12">
+                    <label class="form-label">Chi tiết (tuỳ chọn)</label>
+                    <input class="form-input" placeholder="Tối đa 100 ký tự..." maxlength="100">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PARENT - Tab 3: Thư viện kiến thức -->
+    <div class="screen" id="screen-parent-tab3">
+        <div class="tabs">
+            <button class="tab" onclick="switchParentTab(1)">Hiểu con</button>
+            <button class="tab" onclick="switchParentTab(2)">Thực hành</button>
+            <button class="tab active" onclick="switchParentTab(3)">Thư viện</button>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchLibTab(0,'parent')">An toàn & Ranh giới</button>
+            <button class="sub-tab" onclick="switchLibTab(1,'parent')">Chăm sóc bản thân</button>
+            <button class="sub-tab" onclick="switchLibTab(2,'parent')">PH học hỏi</button>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img">📖</div>
+            <div class="article-body">
+                <div class="article-title">Khi con bắt đầu có kinh nguyệt: Cha mẹ nên làm gì?</div>
+                <div class="article-preview">Kinh nguyệt là một phần tự nhiên trong quá trình phát triển. Đây là cách bạn có thể hỗ trợ con...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">5 phút đọc</span>
+                    <div class="flex gap-8">
+                        <button class="btn btn-sm btn-accent" onclick="showModal('share-article')">📤 Chia sẻ cho con</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img" style="background:linear-gradient(135deg,#4CAF50,#81C784)">🛡️</div>
+            <div class="article-body">
+                <div class="article-title">Cách nói chuyện không làm con xấu hổ</div>
+                <div class="article-preview">Giai đoạn dậy thì, con rất nhạy cảm với lời nói. Hãy tránh những câu có thể khiến con tự ti...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">3 phút đọc</span>
+                    <div class="flex gap-8">
+                        <button class="btn btn-sm btn-accent">📤 Chia sẻ cho con</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img" style="background:linear-gradient(135deg,#FF9800,#FFB74D)">👨‍👩‍👧</div>
+            <div class="article-body">
+                <div class="article-title">Bạn không phải là phụ huynh cô đơn</div>
+                <div class="article-preview">Nuôi con trong giai đoạn dậy thì là thử thách. Đây là những kinh nghiệm từ các phụ huynh khác...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">4 phút đọc</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHILD SCREENS ==================== -->
+
+    <!-- CHILD - Tab 1: Mình mỗi ngày -->
+    <div class="screen" id="screen-child-tab1">
+        <div class="tabs">
+            <button class="tab active" onclick="switchChildTab(1)">Mình mỗi ngày</button>
+            <button class="tab" onclick="switchChildTab(2)">Hiểu mình</button>
+            <button class="tab" onclick="switchChildTab(3)">Thư viện</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">📅 Chọn ngày</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <button class="btn btn-sm btn-outline" style="width:auto" onclick="changeDay(-1)">◀</button>
+                <span style="font-weight:700;font-size:15px" id="selected-date">23/02/2026</span>
+                <button class="btn btn-sm btn-outline" style="width:auto" onclick="changeDay(1)">▶</button>
+            </div>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchDailyTab(0)">Cảm xúc</button>
+            <button class="sub-tab" onclick="switchDailyTab(1)">Cơ thể</button>
+        </div>
+
+        <!-- Sub-tab: Cảm xúc -->
+        <div id="daily-tab-0">
+            <div class="card">
+                <div class="card-title">😊 Cảm xúc của mình</div>
+                <div class="card-subtitle">"Vui hay buồn thì cũng bình thường thôi"</div>
+                <p style="font-size:12px;color:var(--text-light);margin-bottom:8px">Chọn tối đa 3 cảm xúc</p>
+                <div id="emotion-grid">
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😊</span> Vui</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😢</span> Buồn</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😞</span> Thất vọng</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😫</span> Mệt mỏi</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">🥰</span> Hạnh phúc</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">🦁</span> Tự hào</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😣</span> Đau</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">😒</span> Chán nản</span>
+                    <span class="chip" onclick="toggleEmotion(this)"><span class="chip-icon">✨</span> Khác</span>
+                </div>
+                <div id="custom-emotion" style="display:none;margin-top:8px;">
+                    <input class="form-input" placeholder="Nhập cảm xúc (tối đa 20 ký tự)" maxlength="20">
+                </div>
+                <button class="btn btn-primary mt-12" onclick="showModal('saved')">💾 Lưu</button>
+            </div>
+        </div>
+
+        <!-- Sub-tab: Cơ thể (Nữ) -->
+        <div id="daily-tab-1" style="display:none;">
+            <div class="card">
+                <div class="card-title">🌸 Cơ thể mình</div>
+                <div class="card-subtitle">"Cơ thể mình đang thay đổi mỗi ngày"</div>
+
+                <!-- Kinh nguyệt -->
+                <div style="margin-bottom:12px;">
+                    <div class="form-label">🩸 Trạng thái kinh nguyệt</div>
+                    <select class="form-select">
+                        <option>Chọn...</option>
+                        <option>Đang trong kỳ kinh</option>
+                        <option>Không trong kỳ kinh</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <div class="form-label">💧 Khí hư</div>
+                    <select class="form-select">
+                        <option>Chọn...</option>
+                        <option>Có</option>
+                        <option>Không</option>
+                    </select>
+                    <input class="form-input mt-8" placeholder="nhiều/ít/bình thường..." maxlength="100">
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <div class="form-label">😣 Đau mỏi</div>
+                    <select class="form-select">
+                        <option>Chọn...</option>
+                        <option>Có</option>
+                        <option>Không</option>
+                    </select>
+                    <input class="form-input mt-8" placeholder="lưng, đầu, bụng,..." maxlength="100">
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <div class="form-label">🩸 Lượng máu</div>
+                    <select class="form-select">
+                        <option>Chọn...</option>
+                        <option>Có</option>
+                        <option>Không</option>
+                    </select>
+                    <input class="form-input mt-8" placeholder="nhiều/ít/bình thường..." maxlength="100">
+                </div>
+
+                <button class="btn btn-primary" onclick="showModal('need-help')">💾 Lưu</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📝 Ghi chú khác</div>
+                <textarea class="form-input" style="height:80px;resize:none" placeholder="Bạn có thấy bộ phận nào trên cơ thể mình đang thay đổi không? Hãy ghi chú để theo dõi nhé! Ví dụ: Mụn nhiều trên mặt" maxlength="500"></textarea>
+                <button class="btn btn-sm btn-outline mt-8" style="width:auto" onclick="addBodyNote()">+ Thêm dòng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHILD - Tab 2: Hiểu mình -->
+    <div class="screen" id="screen-child-tab2">
+        <div class="tabs">
+            <button class="tab" onclick="switchChildTab(1)">Mình mỗi ngày</button>
+            <button class="tab active" onclick="switchChildTab(2)">Hiểu mình</button>
+            <button class="tab" onclick="switchChildTab(3)">Thư viện</button>
+        </div>
+
+        <div class="card">
+            <div class="card-title">👧 Bé Mai – 14 tuổi</div>
+            <div class="card-subtitle">"Hiểu cơ thể đang lớn lên – không lo lắng, không sợ hãi"</div>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active" onclick="switchUnderstandTab(0)">Dashboard</button>
+            <button class="sub-tab" onclick="switchUnderstandTab(1)">Ghi chú</button>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="understand-tab-0">
+            <div class="card">
+                <div class="card-title">📅 Chu kỳ</div>
+                <div class="check-item">
+                    <span>🩸</span>
+                    <span class="check-text">Lần gần nhất: 12 ngày trước</span>
+                </div>
+                
+                <div class="card-title mt-12">📊 Chu kỳ 12 tháng gần nhất</div>
+                <table class="cycle-table">
+                    <tr>
+                        <th>T2</th><th>T1</th><th>T12</th><th>T11</th><th>T10</th><th>T9</th>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-danger">Không</span></td>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-info">N/A</span></td>
+                    </tr>
+                    <tr>
+                        <th>T8</th><th>T7</th><th>T6</th><th>T5</th><th>T4</th><th>T3</th>
+                    </tr>
+                    <tr>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-info">N/A</span></td>
+                        <td><span class="badge badge-success">Có</span></td>
+                        <td><span class="badge badge-info">N/A</span></td>
+                        <td><span class="badge badge-info">N/A</span></td>
+                        <td><span class="badge badge-info">N/A</span></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-title">📝 Đánh giá chu kỳ</div>
+                <div class="badge badge-warning mb-8">Chưa ổn định (bình thường ở độ tuổi này)</div>
+                <p style="font-size:12px;color:var(--text-light);">
+                    Chu kỳ kinh nguyệt ở độ tuổi này thường chưa đều. Đừng lo lắng nhé!
+                </p>
+            </div>
+
+            <div class="dash-row">
+                <div class="dash-card">
+                    <div class="dash-icon">🔮</div>
+                    <div class="dash-value" style="font-size:13px">5–7 ngày nữa</div>
+                    <div class="dash-label">Dự đoán</div>
+                </div>
+                <div class="dash-card">
+                    <div class="dash-icon">🎒</div>
+                    <div class="dash-value" style="font-size:13px">Chuẩn bị</div>
+                    <div class="dash-label">Băng vệ sinh</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ghi chú / Nhắc nhở -->
+        <div id="understand-tab-1" style="display:none;">
+            <div class="card">
+                <div class="card-title">📆 Nhắc nhở của tôi</div>
+                <p style="font-size:12px;color:var(--text-light);margin-bottom:12px">Tối đa 5 nhắc nhở</p>
+
+                <div class="noti-item">
+                    <div class="noti-icon" style="background:#FFF3E0">📅</div>
+                    <div class="noti-text">
+                        <div class="noti-title">Khám sức khỏe định kỳ</div>
+                        <div class="noti-desc">Nhớ mang theo sổ khám</div>
+                        <div class="noti-time">15/03/2026</div>
+                    </div>
+                </div>
+
+                <div class="noti-item">
+                    <div class="noti-icon" style="background:#E8F5E9">🎒</div>
+                    <div class="noti-text">
+                        <div class="noti-title">Chuẩn bị băng vệ sinh</div>
+                        <div class="noti-desc">Mua thêm loại ban đêm</div>
+                        <div class="noti-time">01/03/2026</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline mt-8" onclick="showModal('add-reminder')">+ Thêm nhắc nhở</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHILD - Tab 3: Thư viện kiến thức -->
+    <div class="screen" id="screen-child-tab3">
+        <div class="tabs">
+            <button class="tab" onclick="switchChildTab(1)">Mình mỗi ngày</button>
+            <button class="tab" onclick="switchChildTab(2)">Hiểu mình</button>
+            <button class="tab active" onclick="switchChildTab(3)">Thư viện</button>
+        </div>
+
+        <div class="sub-tabs">
+            <button class="sub-tab active">An toàn & Ranh giới</button>
+            <button class="sub-tab">Chăm sóc bản thân</button>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img" style="background:linear-gradient(135deg,#E91E63,#FF5252)">🛡️</div>
+            <div class="article-body">
+                <div class="article-title">Bạn có quyền bảo vệ cơ thể và cảm xúc của mình</div>
+                <div class="article-preview">Cơ thể bạn là của bạn. Không ai được chạm vào nếu bạn không muốn...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">3 phút đọc</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto">Xem chi tiết</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img" style="background:linear-gradient(135deg,#9C27B0,#BA68C8)">💜</div>
+            <div class="article-body">
+                <div class="article-title">Chăm sóc bản thân là cách tôn trọng chính mình</div>
+                <div class="article-preview">Mỗi ngày, hãy dành cho mình một chút thời gian. Đó không phải là ích kỷ...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">4 phút đọc</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto">Xem chi tiết</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="article-card">
+            <div class="article-img" style="background:linear-gradient(135deg,#00BCD4,#4DD0E1)">🌟</div>
+            <div class="article-body">
+                <div class="article-title">Cơ thể thay đổi là điều rất bình thường</div>
+                <div class="article-preview">Trong giai đoạn dậy thì, cơ thể bạn sẽ trải qua nhiều thay đổi. Hãy tìm hiểu...</div>
+                <div class="article-footer">
+                    <span class="badge badge-info">5 phút đọc</span>
+                    <button class="btn btn-sm btn-primary" style="width:auto">Xem chi tiết</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="background:var(--bg);border:2px dashed var(--primary)">
+            <div class="text-center">
+                <div style="font-size:24px">📨</div>
+                <div class="card-title">Ba/mẹ đã chia sẻ 1 bài viết</div>
+                <p style="font-size:12px;color:var(--text-light)">Khi con bắt đầu có kinh nguyệt</p>
+                <button class="btn btn-sm btn-primary mt-8" style="width:auto">Đọc ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATIONS -->
+    <div class="screen" id="screen-notifications">
+        <div class="card">
+            <div class="card-title">🔔 Thông báo</div>
+        </div>
+
+        <div class="noti-item">
+            <div class="noti-icon" style="background:#E8F5E9">💛</div>
+            <div class="noti-text">
+                <div class="noti-title">Check-in cảm xúc</div>
+                <div class="noti-desc">Hôm nay bạn thấy thế nào? Chỉ cần 10 giây để ghi lại cảm xúc 💛</div>
+                <div class="noti-time">Hôm nay, 8:00</div>
+            </div>
+        </div>
+
+        <div class="noti-item">
+            <div class="noti-icon" style="background:#FFF3E0">📚</div>
+            <div class="noti-text">
+                <div class="noti-title">Học điều nhỏ hôm nay</div>
+                <div class="noti-desc">Mỗi ngày một điều nhỏ: cơ thể thay đổi là điều rất bình thường.</div>
+                <div class="noti-time">Hôm nay, 12:00</div>
+            </div>
+        </div>
+
+        <div class="noti-item">
+            <div class="noti-icon" style="background:#E8E0F0">💧</div>
+            <div class="noti-text">
+                <div class="noti-title">Chăm sóc bản thân</div>
+                <div class="noti-desc">Uống thêm chút nước nhé. Cơ thể bạn sẽ cảm ơn đó 😊</div>
+                <div class="noti-time">Hôm qua, 15:00</div>
+            </div>
+        </div>
+
+        <div class="noti-item">
+            <div class="noti-icon" style="background:#FFEBEE">🩸</div>
+            <div class="noti-text">
+                <div class="noti-title">Dự đoán chu kỳ</div>
+                <div class="noti-desc">Có thể sắp đến trong 5-7 ngày. Chuẩn bị nhé!</div>
+                <div class="noti-time">Hôm qua, 9:00</div>
+            </div>
+        </div>
+
+        <div class="noti-item">
+            <div class="noti-icon" style="background:#E8F5E9">🎉</div>
+            <div class="noti-text">
+                <div class="noti-title">Ghi nhận</div>
+                <div class="noti-desc">Con vừa hoàn thành một nội dung nhỏ hôm nay. Một lời khen sẽ rất ý nghĩa.</div>
+                <div class="noti-time">22/02, 18:00</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="screen" id="screen-settings">
+        <div class="card">
+            <div class="card-title">⚙️ Cài đặt</div>
+        </div>
+
+        <div class="list-item" onclick="showScreen('settings-account')">
+            <div class="list-icon" style="background:#E8E0F0">👤</div>
+            <div class="list-content">
+                <div class="list-title">Thông tin tài khoản</div>
+                <div class="list-desc">Email, tên user, mật khẩu</div>
+            </div>
+            <div class="list-arrow">›</div>
+        </div>
+
+        <div class="list-item" onclick="showScreen('settings-children')">
+            <div class="list-icon" style="background:#E8F5E9">👧</div>
+            <div class="list-content">
+                <div class="list-title">Quản lý hồ sơ con</div>
+                <div class="list-desc">Tạo, chỉnh sửa, xoá liên kết</div>
+            </div>
+            <div class="list-arrow">›</div>
+        </div>
+
+        <div class="list-item" onclick="showScreen('settings-sharing')">
+            <div class="list-icon" style="background:#FFF3E0">🔐</div>
+            <div class="list-content">
+                <div class="list-title">Quyền chia sẻ</div>
+                <div class="list-desc">Quản lý quyền theo gói</div>
+            </div>
+            <div class="list-arrow">›</div>
+        </div>
+
+        <div class="list-item" onclick="showScreen('packages')">
+            <div class="list-icon" style="background:#FFEBEE">💎</div>
+            <div class="list-content">
+                <div class="list-title">Gói dịch vụ</div>
+                <div class="list-desc">Nâng cấp tài khoản</div>
+            </div>
+            <div class="list-arrow">›</div>
+        </div>
+
+        <div class="list-item" onclick="showScreen('settings-noti')">
+            <div class="list-icon" style="background:#E0F7FA">🔔</div>
+            <div class="list-content">
+                <div class="list-title">Cấu hình thông báo</div>
+                <div class="list-desc">Bật/tắt, chọn giờ</div>
+            </div>
+            <div class="list-arrow">›</div>
+        </div>
+
+        <button class="btn btn-outline mt-16" onclick="logout()" style="color:var(--danger);border-color:var(--danger)">🚪 Đăng xuất</button>
+    </div>
+
+    <!-- SETTINGS - Account -->
+    <div class="screen" id="screen-settings-account">
+        <div class="card">
+            <div class="card-title">👤 Thông tin tài khoản</div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="form-input" value="huong@email.com" disabled>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên user</label>
+                <input class="form-input" value="MẹHương" maxlength="25">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Gói hiện tại</label>
+                <div class="badge badge-info">Gói 2 Cao cấp</div>
+            </div>
+            <button class="btn btn-primary mt-8">Cập nhật</button>
+        </div>
+    </div>
+
+    <!-- SETTINGS - Children profiles -->
+    <div class="screen" id="screen-settings-children">
+        <div class="card">
+            <div class="card-title">👧 Quản lý hồ sơ con</div>
+        </div>
+
+        <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div class="card-title" style="margin:0">Bé An</div>
+                <span class="badge badge-success">Đã liên kết</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-light)">
+                Tháng sinh: 03/2015 • Nữ • ID: <strong>AB3K7M</strong>
+            </div>
+            <div class="qr-display">
+                <div class="qr-pattern" id="qr1"></div>
+            </div>
+            <p class="text-center" style="font-size:11px;color:var(--text-light)">Mã QR cho con đăng nhập</p>
+        </div>
+
+        <div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <div class="card-title" style="margin:0">Bé Mai</div>
+                <span class="badge badge-success">Đã liên kết</span>
+            </div>
+            <div style="font-size:12px;color:var(--text-light)">
+                Tháng sinh: 07/2012 • Nữ • ID: <strong>XY9P2Q</strong>
+            </div>
+        </div>
+
+        <button class="btn btn-accent mt-8" onclick="showModal('add-child')">+ Tạo mới hồ sơ con</button>
+        <p class="text-center mt-8" style="font-size:11px;color:var(--text-light)">Gói của bạn cho phép tối đa 2 hồ sơ con</p>
+    </div>
+
+    <!-- SETTINGS - Sharing -->
+    <div class="screen" id="screen-settings-sharing">
+        <div class="card">
+            <div class="card-title">🔐 Quyền chia sẻ</div>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:12px">Con có thể thay đổi bất kỳ lúc nào</p>
+
+            <div class="toggle-row">
+                <span class="toggle-label">☑️ Chia sẻ cảnh báo sức khỏe</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">📅 Chia sẻ lịch chu kỳ</span>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">😊 Chia sẻ cảm xúc</span>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">✅ Phụ huynh có thể xem</div>
+            <div style="font-size:12px;line-height:1.8">
+                ✅ App đang dùng hay không<br>
+                ✅ Nội dung đã học<br>
+                ✅ Đang trong giai đoạn dậy thì (Yes/No)<br>
+                ✅ Cảnh báo y tế (nếu bật)<br>
+                ✅ Gợi ý trò chuyện
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">❌ Phụ huynh KHÔNG được xem</div>
+            <div style="font-size:12px;line-height:1.8;color:var(--text-light)">
+                ❌ Ngày hành kinh cụ thể<br>
+                ❌ Nhật ký cảm xúc<br>
+                ❌ Ghi chú cá nhân<br>
+                ❌ Câu hỏi riêng gửi hệ thống<br>
+                ❌ Dữ liệu sinh học chi tiết
+            </div>
+        </div>
+    </div>
+
+    <!-- SETTINGS - Notifications config -->
+    <div class="screen" id="screen-settings-noti">
+        <div class="card">
+            <div class="card-title">🔔 Cấu hình thông báo</div>
+            
+            <div class="toggle-row">
+                <span class="toggle-label">💛 Nhắc check-in cảm xúc</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">🧴 Nhắc vệ sinh cá nhân</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">💧 Nhắc uống nước</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">😴 Nhắc ngủ đủ</span>
+                <div class="toggle" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">🩸 Dự đoán chu kỳ</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+            <div class="toggle-row">
+                <span class="toggle-label">📚 Micro-learning 3 phút</span>
+                <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+            </div>
+
+            <div class="form-group mt-12">
+                <label class="form-label">⏰ Giờ nhận thông báo</label>
+                <select class="form-select">
+                    <option>7:00 sáng</option>
+                    <option selected>8:00 sáng</option>
+                    <option>9:00 sáng</option>
+                    <option>12:00 trưa</option>
+                    <option>18:00 tối</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- PACKAGES -->
+    <div class="screen" id="screen-packages">
+        <div class="card">
+            <div class="card-title">💎 Gói dịch vụ</div>
+            <div class="card-subtitle">Chọn gói phù hợp với gia đình bạn</div>
+        </div>
+
+        <div class="pricing-card">
+            <div class="pricing-name">Gói 1 – Cơ bản</div>
+            <div class="pricing-price">Miễn phí</div>
+            <ul class="pricing-features">
+                <li>1 tài khoản con</li>
+                <li>Dashboard thông tin cơ bản</li>
+                <li>Thư viện kiến thức</li>
+                <li>Chia sẻ nội dung cho con</li>
+                <li class="disabled">Thực hành cùng con</li>
+                <li class="disabled">Dashboard nâng cao</li>
+            </ul>
+            <button class="btn btn-outline mt-8">Đang sử dụng</button>
+        </div>
+
+        <div class="pricing-card popular">
+            <div class="pricing-name">Gói 2 – Cao cấp</div>
+            <div class="pricing-price">129,000đ/tháng</div>
+            <ul class="pricing-features">
+                <li>2 tài khoản con</li>
+                <li>Dashboard nâng cao + Gợi ý</li>
+                <li>Thực hành cùng con (đầy đủ)</li>
+                <li>Thư viện kiến thức không giới hạn</li>
+                <li>PH học hỏi</li>
+                <li>Chia sẻ nội dung cho con</li>
+            </ul>
+            <button class="btn btn-accent mt-8">Nâng cấp ngay</button>
+        </div>
+
+        <div class="pricing-card">
+            <div class="pricing-name">Gói 3 – Cao cấp</div>
+            <div class="pricing-price">199,000đ/tháng</div>
+            <ul class="pricing-features">
+                <li>3-4 tài khoản con</li>
+                <li>Tất cả tính năng Gói 2</li>
+                <li>Ưu tiên hỗ trợ</li>
+            </ul>
+            <button class="btn btn-primary mt-8">Nâng cấp ngay</button>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS ==================== -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+        <div class="modal" id="modal-content" onclick="event.stopPropagation()">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <!-- ==================== BOTTOM NAV ==================== -->
+    <div class="bottom-nav" id="bottom-nav">
+        <!-- Filled by JS -->
+    </div>
+</div>
+
+<script>
+    // State
+    let currentRole = null;
+    let currentScreen = 'landing';
+    let screenHistory = [];
+    let selectedEmotions = 0;
+
+    // Generate QR patterns
+    function generateQR(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const cells = 64;
+        let html = '';
+        for (let i = 0; i < cells; i++) {
+            const isWhite = Math.random() > 0.55;
+            html += `<div class="qr-cell ${isWhite ? 'white' : ''}"></div>`;
+        }
+        el.innerHTML = html;
+    }
+
+    function selectRole(role) {
+        currentRole = role;
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('role-' + role).classList.add('selected');
+        
+        const loginForm = document.getElementById('login-form');
+        loginForm.style.display = 'block';
+        
+        const childField = document.getElementById('child-user-field');
+        const registerBtn = document.getElementById('register-btn');
+        
+        if (role === 'child') {
+            childField.style.display = 'block';
+            registerBtn.style.display = 'none';
+        } else {
+            childField.style.display = 'none';
+            registerBtn.style.display = 'block';
+        }
+    }
+
+    function doLogin() {
+        if (currentRole === 'parent') {
+            showScreen('parent-tab1');
+            showBottomNav('parent');
+        } else {
+            showScreen('consent');
+        }
+    }
+
+    function acceptConsent() {
+        showScreen('child-tab1');
+        showBottomNav('child');
+    }
+
+    function showScreen(name) {
+        if (currentScreen && currentScreen !== name) {
+            screenHistory.push(currentScreen);
+        }
+        
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        const screen = document.getElementById('screen-' + name);
+        if (screen) {
+            screen.classList.add('active');
+            currentScreen = name;
+        }
+
+        // Update header
+        const titles = {
+            'landing': 'SSCare',
+            'register': 'Đăng ký',
+            'consent': 'Quyền chia sẻ',
+            'parent-tab1': '👨‍👩‍👧 Hiểu con',
+            'parent-tab2': '📋 Thực hành',
+            'parent-tab3': '📚 Thư viện',
+            'child-tab1': '🌸 Mình mỗi ngày',
+            'child-tab2': '🔍 Hiểu mình',
+            'child-tab3': '📚 Thư viện',
+            'notifications': '🔔 Thông báo',
+            'settings': '⚙️ Cài đặt',
+            'settings-account': '👤 Tài khoản',
+            'settings-children': '👧 Hồ sơ con',
+            'settings-sharing': '🔐 Quyền chia sẻ',
+            'settings-noti': '🔔 Cấu hình',
+            'packages': '💎 Gói dịch vụ'
+        };
+        
+        document.getElementById('header-title').textContent = titles[name] || 'SSCare';
+        
+        const backBtn = document.getElementById('back-btn');
+        backBtn.style.display = (name === 'landing') ? 'none' : 'block';
+
+        // Show/hide navbar
+        if (['parent-tab1','parent-tab2','parent-tab3'].includes(name)) {
+            showBottomNav('parent');
+        } else if (['child-tab1','child-tab2','child-tab3'].includes(name)) {
+            showBottomNav('child');
+        } else if (['notifications','settings','settings-account','settings-children','settings-sharing','settings-noti','packages'].includes(name)) {
+            // keep current nav
+        } else {
+            document.getElementById('bottom-nav').classList.remove('active');
+        }
+
+        // Generate QRs if on children screen
+        if (name === 'settings-children') {
+            setTimeout(() => generateQR('qr1'), 100);
+        }
+    }
+
+    function goBack() {
+        if (screenHistory.length > 0) {
+            const prev = screenHistory.pop();
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            const screen = document.getElementById('screen-' + prev);
+            if (screen) {
+                screen.classList.add('active');
+                currentScreen = prev;
+            }
+            
+            const backBtn = document.getElementById('back-btn');
+            backBtn.style.display = (prev === 'landing') ? 'none' : 'block';
+            
+            // Update header
+            const titles = {
+                'landing': 'SSCare',
+                'register': 'Đăng ký',
+                'consent': 'Quyền chia sẻ',
+                'parent-tab1': '👨‍👩‍👧 Hiểu con',
+                'parent-tab2': '📋 Thực hành',
+                'parent-tab3': '📚 Thư viện',
+                'child-tab1': '🌸 Mình mỗi ngày',
+                'child-tab2': '🔍 Hiểu mình',
+                'child-tab3': '📚 Thư viện',
+                'notifications': '🔔 Thông báo',
+                'settings': '⚙️ Cài đặt',
+                'settings-account': '👤 Tài khoản',
+                'settings-children': '👧 Hồ sơ con',
+                'settings-sharing': '🔐 Quyền chia sẻ',
+                'settings-noti': '🔔 Cấu hình',
+                'packages': '💎 Gói dịch vụ'
+            };
+            document.getElementById('header-title').textContent = titles[prev] || 'SSCare';
+        }
+    }
+
+    function showBottomNav(role) {
+        const nav = document.getElementById('bottom-nav');
+        nav.classList.add('active');
+        
+        if (role === 'parent') {
+            nav.innerHTML = `
+                <button class="nav-item ${currentScreen==='parent-tab1'?'active':''}" onclick="switchParentTab(1)">
+                    <span class="nav-icon">👁️</span>
+                    <span>Hiểu con</span>
+                </button>
+                <button class="nav-item ${currentScreen==='parent-tab2'?'active':''}" onclick="switchParentTab(2)">
+                    <span class="nav-icon">📋</span>
+                    <span>Thực hành</span>
+                </button>
+                <button class="nav-item ${currentScreen==='parent-tab3'?'active':''}" onclick="switchParentTab(3)">
+                    <span class="nav-icon">📚</span>
+                    <span>Thư viện</span>
+                </button>
+                <button class="nav-item" onclick="showScreen('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Cài đặt</span>
+                </button>
+            `;
+        } else {
+            nav.innerHTML = `
+                <button class="nav-item ${currentScreen==='child-tab1'?'active':''}" onclick="switchChildTab(1)">
+                    <span class="nav-icon">🌸</span>
+                    <span>Mỗi ngày</span>
+                </button>
+                <button class="nav-item ${currentScreen==='child-tab2'?'active':''}" onclick="switchChildTab(2)">
+                    <span class="nav-icon">🔍</span>
+                    <span>Hiểu mình</span>
+                </button>
+                <button class="nav-item ${currentScreen==='child-tab3'?'active':''}" onclick="switchChildTab(3)">
+                    <span class="nav-icon">📚</span>
+                    <span>Thư viện</span>
+                </button>
+                <button class="nav-item" onclick="showScreen('settings')">
+                    <span class="nav-icon">⚙️</span>
+                    <span>Cài đặt</span>
+                </button>
+            `;
+        }
+    }
+
+    function switchParentTab(n) {
+        screenHistory = screenHistory.filter(s => !s.startsWith('parent-tab'));
+        showScreen('parent-tab' + n);
+        showBottomNav('parent');
+    }
+
+    function switchChildTab(n) {
+        screenHistory = screenHistory.filter(s => !s.startsWith('child-tab'));
+        showScreen('child-tab' + n);
+        showBottomNav('child');
+    }
+
+    function selectChild(index) {
+        document.querySelectorAll('#child-selector .sub-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+        document.getElementById('child-dash-0').style.display = index === 0 ? 'block' : 'none';
+        document.getElementById('child-dash-1').style.display = index === 1 ? 'block' : 'none';
+    }
+
+    function switchDailyTab(index) {
+        document.querySelectorAll('#screen-child-tab1 .sub-tabs .sub-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+        document.getElementById('daily-tab-0').style.display = index === 0 ? 'block' : 'none';
+        document.getElementById('daily-tab-1').style.display = index === 1 ? 'block' : 'none';
+    }
+
+    function switchUnderstandTab(index) {
+        document.querySelectorAll('#screen-child-tab2 .sub-tabs .sub-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+        document.getElementById('understand-tab-0').style.display = index === 0 ? 'block' : 'none';
+        document.getElementById('understand-tab-1').style.display = index === 1 ? 'block' : 'none';
+    }
+
+    function toggleEmotion(el) {
+        if (el.classList.contains('selected')) {
+            el.classList.remove('selected');
+            selectedEmotions--;
+        } else if (selectedEmotions < 3) {
+            el.classList.add('selected');
+            selectedEmotions++;
+        }
+        
+        // Show custom input if "Khác" is selected
+        const isCustom = el.textContent.includes('Khác');
+        if (isCustom) {
+            document.getElementById('custom-emotion').style.display = 
+                el.classList.contains('selected') ? 'block' : 'none';
+        }
+    }
+
+    function changeDay(delta) {
+        const dateEl = document.getElementById('selected-date');
+        const parts = dateEl.textContent.split('/');
+        const d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]) + delta);
+        dateEl.textContent = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
+    }
+
+    function addBodyNote() {
+        const card = event.target.closest('.card');
+        const existing = card.querySelectorAll('textarea').length;
+        if (existing < 4) {
+            const ta = document.createElement('textarea');
+            ta.className = 'form-input';
+            ta.style.cssText = 'height:80px;resize:none;margin-top:8px';
+            ta.placeholder = 'Ghi chú thêm...';
+            ta.maxLength = 500;
+            card.insertBefore(ta, event.target);
+        }
+    }
+
+    // Modals
+    function showModal(type) {
+        const overlay = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        overlay.classList.add('active');
+
+        const modals = {
+            'otp': `
+                <h3>📧 Xác thực</h3>
+                <p>Mã xác thực đã được gửi đến email/SĐT của bạn. Vui lòng nhập mã để hoàn tất đăng ký.</p>
+                <input class="form-input mb-12" placeholder="Nhập mã 6 số" maxlength="6" style="text-align:center;font-size:24px;letter-spacing:8px">
+                <button class="btn btn-primary" onclick="closeModal();showScreen('landing')">Xác nhận</button>
+            `,
+            'saved': `
+                <h3>✅ Đã lưu!</h3>
+                <p>Cảm xúc hôm nay đã được ghi nhận. Cảm ơn bạn đã chia sẻ! 💛</p>
+                <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+            `,
+            'need-help': `
+                <h3>🤗 Bạn có cần người lớn giúp đỡ không?</h3>
+                <p>Thông tin đã được lưu. Nếu cần, mình sẽ gửi thông báo cho phụ huynh.</p>
+                <div class="modal-btns">
+                    <button class="btn btn-primary" onclick="showModal('help-sent')">Có</button>
+                    <button class="btn btn-outline" onclick="showModal('help-no')">Không</button>
+                </div>
+            `,
+            'help-sent': `
+                <h3>📨</h3>
+                <p>Bạn yên tâm, mình đã truyền tin cho phụ huynh, bạn chờ chút nhé!</p>
+                <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+            `,
+            'help-no': `
+                <h3>💛</h3>
+                <p>Nếu cần giúp đỡ nhớ báo mình nha!</p>
+                <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+            `,
+            'reject-consent': `
+                <h3>⚠️ Lưu ý</h3>
+                <p>Bạn cần đồng ý quyền chia sẻ cơ bản để sử dụng app. Bạn có thể thay đổi chi tiết chia sẻ sau.</p>
+                <button class="btn btn-primary" onclick="closeModal()">Quay lại</button>
+            `,
+            'share-article': `
+                <h3>📤 Chia sẻ cho con</h3>
+                <p>Bài viết sẽ được gửi thông báo và hiển thị trên tab Thư viện kiến thức của con.</p>
+                <div class="form-group">
+                    <label class="form-label">Chọn con</label>
+                    <select class="form-select">
+                        <option>Bé An</option>
+                        <option>Bé Mai</option>
+                    </select>
+                </div>
+                <div class="modal-btns">
+                    <button class="btn btn-accent" onclick="showModal('shared-ok')">Chia sẻ</button>
+                    <button class="btn btn-outline" onclick="closeModal()">Huỷ</button>
+                </div>
+            `,
+            'shared-ok': `
+                <h3>✅ Đã chia sẻ!</h3>
+                <p>Bài viết đã được gửi cho con. Con sẽ nhận thông báo.</p>
+                <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+            `,
+            'add-child': `
+                <h3>👧 Tạo hồ sơ con</h3>
+                <div class="form-group">
+                    <label class="form-label">Tên gọi (nickname)</label>
+                    <input class="form-input" placeholder="Tối đa 25 ký tự" maxlength="25">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Tháng/Năm sinh</label>
+                    <input class="form-input" placeholder="MM/YYYY">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giới tính sinh học</label>
+                    <select class="form-select">
+                        <option>Nam</option>
+                        <option>Nữ</option>
+                    </select>
+                </div>
+                <button class="btn btn-accent" onclick="showModal('qr-created')">Tạo mã QR cho con</button>
+            `,
+            'qr-created': `
+                <h3>🎉 Đã tạo!</h3>
+                <p>Mã ID: <strong>NK5R8T</strong></p>
+                <div class="qr-display"><div class="qr-pattern" id="qr-modal"></div></div>
+                <p style="font-size:11px">Cho con quét mã QR hoặc nhập mã ID để đăng nhập lần đầu</p>
+                <button class="btn btn-primary mt-8" onclick="closeModal()">Đóng</button>
+            `,
+            'add-reminder': `
+                <h3>📆 Thêm nhắc nhở</h3>
+                <div class="form-group">
+                    <label class="form-label">Ngày</label>
+                    <input class="form-input" type="date">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nội dung ghi chú</label>
+                    <input class="form-input" placeholder="Nhập nội dung...">
+                </div>
+                <div class="modal-btns">
+                    <button class="btn btn-primary" onclick="showModal('saved')">Lưu</button>
+                    <button class="btn btn-outline" onclick="closeModal()">Huỷ</button>
+                </div>
+            `,
+            'share-detail': `
+                <h3>🔐 Chi tiết quyền chia sẻ</h3>
+                <div style="text-align:left;font-size:12px;line-height:2">
+                    <strong>Phụ huynh CÓ THỂ xem:</strong><br>
+                    ✅ App đang dùng hay không<br>
+                    ✅ Nội dung đã học<br>
+                    ✅ Giai đoạn phát triển<br>
+                    ✅ Cảnh báo y tế (nếu bật)<br><br>
+                    <strong>Phụ huynh KHÔNG được xem:</strong><br>
+                    ❌ Ngày hành kinh cụ thể<br>
+                    ❌ Nhật ký cảm xúc<br>
+                    ❌ Ghi chú cá nhân<br>
+                    ❌ Câu hỏi riêng<br>
+                    ❌ Dữ liệu sinh học
+                </div>
+                <button class="btn btn-primary mt-12" onclick="closeModal()">Đã hiểu</button>
+            `
+        };
+
+        content.innerHTML = modals[type] || '<h3>...</h3>';
+
+        // Generate QR in modal
+        if (type === 'qr-created') {
+            setTimeout(() => generateQR('qr-modal'), 100);
+        }
+    }
+
+    function closeModal(e) {
+        if (e && e.target !== document.getElementById('modal-overlay')) return;
+        document.getElementById('modal-overlay').classList.remove('active');
+    }
+
+    function logout() {
+        currentRole = null;
+        screenHistory = [];
+        document.getElementById('bottom-nav').classList.remove('active');
+        showScreen('landing');
+        document.getElementById('login-form').style.display = 'none';
+        document.querySelectorAll('.role-card').forEach(c => c.classList.remove('selected'));
+    }
+
+    function switchPracticeTab(index) {
+        document.querySelectorAll('#screen-parent-tab2 .sub-tabs:nth-of-type(2) .sub-tab').forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+    }
+
+    function switchLibTab(index, role) {
+        const screenId = role === 'parent' ? 'screen-parent-tab3' : 'screen-child-tab3';
+        document.querySelectorAll(`#${screenId} .sub-tabs .sub-tab`).forEach((t, i) => {
+            t.classList.toggle('active', i === index);
+        });
+    }
+</script>
+
+</body>
+</html>

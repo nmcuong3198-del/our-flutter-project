@@ -1,0 +1,69 @@
+# Flutter
+**/android/**/gradle-wrapper.jar
+**/android/.gradle
+**/android/captures/
+**/android/gradlew
+**/android/gradlew.bat
+**/android/local.properties
+**/android/**/GeneratedPluginRegistrant.java
+**/ios/Flutter/App.framework
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/ServiceDefinitions.json
+**/ios/Runner/GeneratedPluginRegistrant.*
+
+# Dart
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.pub/
+pubspec.lock
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.settings/
+.classpath
+
+# macOS
+.DS_Store
+*.swp
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Python venv
+.venv/
+__pycache__/
+*.pyc
+
+# Azure
+.azure/
+local.settings.json
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Word/Excel temp files
+~$*.docx
+~$*.xlsx
+
+# Build outputs
+*.apk
+*.aab
+*.ipa
+*.app
