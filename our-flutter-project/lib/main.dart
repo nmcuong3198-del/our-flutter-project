@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'core/theme.dart';
 import 'core/strings.dart';
 import 'models/models.dart';
+import 'screens/landing_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/child_detail_screen.dart';
 import 'screens/library_screen.dart';
@@ -11,8 +12,18 @@ void main() {
   runApp(const SSCareApp());
 }
 
-class SSCareApp extends StatelessWidget {
+class SSCareApp extends StatefulWidget {
   const SSCareApp({super.key});
+
+  @override
+  State<SSCareApp> createState() => _SSCareAppState();
+}
+
+class _SSCareAppState extends State<SSCareApp> {
+  bool _isLoggedIn = false;
+
+  void _login() => setState(() => _isLoggedIn = true);
+  void _logout() => setState(() => _isLoggedIn = false);
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +31,16 @@ class SSCareApp extends StatelessWidget {
       title: S.appName,
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
-      home: const MainShell(),
+      home: _isLoggedIn
+          ? MainShell(onLogout: _logout)
+          : LandingScreen(onLogin: _login, onRegister: _login),
     );
   }
 }
 
 class MainShell extends StatefulWidget {
-  const MainShell({super.key});
+  final VoidCallback onLogout;
+  const MainShell({super.key, required this.onLogout});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -47,7 +61,7 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final screens = [
       DashboardScreen(onChildTap: _onChildTap),
-      DashboardScreen(onChildTap: _onChildTap), // Qu???n l?? con reuses dashboard for now
+      DashboardScreen(onChildTap: _onChildTap),
       const LibraryScreen(),
       const NotificationsScreen(),
     ];
