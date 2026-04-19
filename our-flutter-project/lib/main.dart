@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'core/theme.dart';
 import 'core/strings.dart';
-import 'models/models.dart';
 import 'screens/landing_screen.dart';
 import 'screens/dashboard_screen.dart';
-import 'screens/child_detail_screen.dart';
+import 'screens/children_screen.dart';
 import 'screens/library_screen.dart';
 import 'screens/notifications_screen.dart';
 
@@ -23,7 +22,6 @@ class _SSCareAppState extends State<SSCareApp> {
   bool _isLoggedIn = false;
 
   void _login() => setState(() => _isLoggedIn = true);
-  void _logout() => setState(() => _isLoggedIn = false);
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +30,14 @@ class _SSCareAppState extends State<SSCareApp> {
       theme: AppTheme.light,
       debugShowCheckedModeBanner: false,
       home: _isLoggedIn
-          ? MainShell(onLogout: _logout)
+          ? const MainShell()
           : LandingScreen(onLogin: _login, onRegister: _login),
     );
   }
 }
 
 class MainShell extends StatefulWidget {
-  final VoidCallback onLogout;
-  const MainShell({super.key, required this.onLogout});
+  const MainShell({super.key});
 
   @override
   State<MainShell> createState() => _MainShellState();
@@ -49,21 +46,13 @@ class MainShell extends StatefulWidget {
 class _MainShellState extends State<MainShell> {
   int _currentIndex = 0;
 
-  void _onChildTap(ChildProfile child) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ChildDetailScreen(child: child),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final screens = [
-      DashboardScreen(onChildTap: _onChildTap),
-      DashboardScreen(onChildTap: _onChildTap),
-      const LibraryScreen(),
-      const NotificationsScreen(),
+    const screens = [
+      DashboardScreen(),
+      ChildrenScreen(),
+      LibraryScreen(),
+      NotificationsScreen(),
     ];
 
     return Scaffold(
