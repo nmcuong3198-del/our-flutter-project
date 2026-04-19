@@ -25,14 +25,23 @@ class MockData {
 
   static List<DailyCheckin> checkinsFor(String childId) {
     final now = DateTime.now();
-    return List.generate(7, (i) {
+    final emotionPool = ['Vui', 'Bình thường', 'Chán, mệt', 'Buồn', 'Cáu', 'Lo lắng', 'Uể oải'];
+    return List.generate(30, (i) {
       final date = now.subtract(Duration(days: i));
+      // Skip some days to simulate missing check-ins
+      if (i == 0 || i == 5 || i == 12 || i == 20 || i == 25) {
+        return DailyCheckin(childId: childId, date: date);
+      }
+      final emoIndex = (date.day + (childId == '1' ? 0 : 3)) % emotionPool.length;
+      final emo2Index = (date.day * 2 + 1) % emotionPool.length;
       return DailyCheckin(
         childId: childId,
         date: date,
-        emotions: i == 0 ? [] : ['Vui', 'Bình thường'].take(i % 3 + 1).toList(),
+        emotions: emo2Index != emoIndex
+            ? [emotionPool[emoIndex], emotionPool[emo2Index]]
+            : [emotionPool[emoIndex]],
         bodyStatus: childId == '1' ? 'Không trong kỳ' : 'Không có gì',
-        symptoms: i % 2 == 0 ? ['Khỏe'] : ['Mệt', 'Đau đầu'],
+        symptoms: i % 3 == 0 ? ['Mệt', 'Đau đầu'] : ['Khỏe'],
         notes: i == 1 ? 'Hôm nay con vui vẻ, đi học về kể nhiều chuyện.' : null,
       );
     });
