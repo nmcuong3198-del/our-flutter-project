@@ -105,4 +105,30 @@ class S {
   static const tabMeasure = 'Số đo';
   static const tabCycle = 'Chu kỳ';
   static const tabReport = 'Báo cáo';
+
+  // Bottom nav (4 tabs per flow)
+  static const navHome = 'Trang chủ';
+  static const navChildren = 'Quản lý con';
+  static const navLibrary = 'Thư viện';
+  static const navNotifications = 'Thông báo';
+
+  // Library
+  static const library = 'Thư viện kiến thức';
+  static const catMental = 'Nuôi dưỡng tinh thần';
+  static const catPhysical = 'Phát triển thể chất';
+  static const catSkills = 'Bồi đắp kỹ năng';
+  static const catAlerts = 'Sự kiện cảnh báo';
+  static const readMore = 'Xem chi tiết';
+  static const featuredArticles = 'Bài viết nổi bật';
+  static const rateArticle = 'Đánh giá bài viết';
+  static const rateThank = 'Cảm ơn bạn đã đánh giá!';
+  static const shareArticle = 'Chia sẻ bài viết';
+  static const shareSuccess = 'Đã chia sẻ bài viết thành công!';
+  static const readMin = 'phút đọc';
+  static const articlesRead = 'bài đã đọc';
+
+  // Notifications
+  static const notifTitle = 'Thông báo';
+  static const notifEmpty = 'Chưa có thông báo nào';
+  static const notifNew = 'Mới';
 }

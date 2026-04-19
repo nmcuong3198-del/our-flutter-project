@@ -4,7 +4,8 @@ import 'core/strings.dart';
 import 'models/models.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/child_detail_screen.dart';
-import 'screens/profile_screen.dart';
+import 'screens/library_screen.dart';
+import 'screens/notifications_screen.dart';
 
 void main() {
   runApp(const SSCareApp());
@@ -46,22 +47,39 @@ class _MainShellState extends State<MainShell> {
   Widget build(BuildContext context) {
     final screens = [
       DashboardScreen(onChildTap: _onChildTap),
-      const ProfileScreen(),
+      DashboardScreen(onChildTap: _onChildTap), // Qu???n l?? con reuses dashboard for now
+      const LibraryScreen(),
+      const NotificationsScreen(),
     ];
 
     return Scaffold(
-      body: screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_rounded),
-            label: S.dashboard,
+      body: IndexedStack(
+        index: _currentIndex,
+        children: screens,
+      ),
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (i) => setState(() => _currentIndex = i),
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded),
+            label: S.navHome,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_rounded),
-            label: S.profile,
+          NavigationDestination(
+            icon: Icon(Icons.people_outline),
+            selectedIcon: Icon(Icons.people_rounded),
+            label: S.navChildren,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.menu_book_outlined),
+            selectedIcon: Icon(Icons.menu_book_rounded),
+            label: S.navLibrary,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.notifications_outlined),
+            selectedIcon: Icon(Icons.notifications_rounded),
+            label: S.navNotifications,
           ),
         ],
       ),

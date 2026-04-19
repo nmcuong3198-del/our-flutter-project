@@ -90,3 +90,45 @@ class CycleMonth {
 
   const CycleMonth({required this.month, required this.status});
 }
+
+class Article {
+  final String id;
+  final String title;
+  final String excerpt;
+  final String body;
+  final String category; // mental | physical | skills | alerts
+  final int readMinutes;
+  final bool isFeatured;
+  int rating; // 0 = unrated, 1-5
+  bool isRead;
+
+  Article({
+    required this.id,
+    required this.title,
+    required this.excerpt,
+    required this.body,
+    required this.category,
+    required this.readMinutes,
+    this.isFeatured = false,
+    this.rating = 0,
+    this.isRead = false,
+  });
+}
+
+class AppNotification {
+  final String id;
+  final String title;
+  final String body;
+  final DateTime date;
+  final String type; // article | checkin | system
+  bool isRead;
+
+  AppNotification({
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.date,
+    required this.type,
+    this.isRead = false,
+  });
+}

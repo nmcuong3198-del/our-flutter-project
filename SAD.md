@@ -211,194 +211,39 @@ Sync queue: FIFO, max 5 retries, 409 → fetch server version.
 
 ---
 
-## 8. Admin CMS & Content Pipeline
+## 8. Admin Portal (Blazor Server)
 
-### 8.1 End-to-End Content Flow
-
+### Structure
 ```
-Admin (Web Browser)              API Server                  Database              Flutter App
-───────────────────              ──────────                  ────────              ───────────
-│                                     │                          │                      │
-│  Open article editor                │                          │                      │
-│  ─────────────────►                 │                          │                      │
-│                                     │                          │                      │
-│  Write title, body, upload images   │                          │                      │
-│  ─── POST /admin/articles ────────► │                          │                      │
-│                                     │  INSERT status=DRAFT ──► │                      │
-│  ◄── 201 { id, status: draft } ─── │                          │                      │
-│                                     │                          │                      │
-│  Click "Preview"                    │                          │                      │
-│  ─── GET /admin/articles/{id} ───►  │                          │                      │
-│  ◄── article with rendered body ─── │                          │                      │
-│  Show in mobile-width iframe        │                          │                      │
-│                                     │                          │                      │
-│  Click "Publish"                    │                          │                      │
-│  ─── PUT /admin/articles/{id}/publish ►                        │                      │
-│                                     │  UPDATE status=PUBLISHED │                      │
-│                                     │  ──── Queue: notify ───► │                      │
-│                                     │                          │                      │
-│                                     │  ─── FCM push ──────────────────────────────► │
-│                                     │                          │    "Bài viết mới!"   │
-│                                     │                          │                      │
-│                                     │               GET /articles ◄────────────────── │
-│                                     │  ◄── SELECT WHERE status=published             │
-│                                     │  ─── article list ─────────────────────────► │
-│                                     │                          │    Shows in Library   │
+AdminPortal/
+├── Pages/
+│   ├── Articles/ (List, Editor, Preview)
+│   ├── Practice/ (TemplateList, TemplateEditor)
+│   ├── Notifications/ (Broadcaster, History)
+│   ├── Dashboard.razor
+│   └── Users.razor
+├── Components/
+│   ├── MarkdownEditor.razor
+│   ├── ImageUploader.razor
+│   └── StatsCard.razor
+└── Services/
+    ├── AdminArticleService.cs
+    ├── BlobStorageService.cs
+    └── NotificationBroadcastService.cs
 ```
 
-### 8.2 Database Schema (Articles)
+### Article Editor
+- Left panel: Markdown/WYSIWYG input + toolbar
+- Right panel: mobile-style live preview
+- Image: drag-drop → Blob Storage → URL in body
+- Metadata: Category, Tags, Age Group, Read Time
+- Save as Draft → Publish (triggers notification) → Archive
 
-```
-Articles
-├── Id (PK, UUID)
-├── Title (nvarchar 200)
-├── Slug (nvarchar 200, unique, auto-generated)
-├── Body (nvarchar max, Markdown/HTML)
-├── Excerpt (nvarchar 500, auto or manual)
-├── Category (nvarchar 50)
-├── Tags (JSON array)
-├── AgeGroup (nvarchar 20, nullable)
-├── ImageUrl (nvarchar 500, nullable)
-├── ReadMinutes (int)
-├── Status (Draft | Published | Archived)
-├── PublishedAt (datetime, nullable — supports scheduled publish)
-├── AuthorAdminId (FK → Users)
-├── CreatedAt (datetime)
-└── UpdatedAt (datetime)
-
-ArticleReadProgress
-├── Id (PK)
-├── UserId (FK → Users)
-├── ArticleId (FK → Articles)
-├── IsRead (bool)
-├── TimeSpentSeconds (int)
-└── ReadAt (datetime)
-```
-
-### 8.3 Admin Web Portal
-
-```
-Admin Portal (Web)
-├── Article List        — Table: title, status, date, category. Filter by status
-├── Article Editor      — Split view: editor (left) + mobile preview (right)
-│   ├── Toolbar         — Bold, italic, heading, image, link, quote, list
-│   ├── Image Upload    — Drag-drop → Azure Blob → URL inserted in body
-│   ├── Metadata Panel  — Category, tags, age group, read time
-│   └── Actions         — Save Draft | Preview | Publish | Schedule | Archive
-├── Practice Templates  — CRUD by category × age × gender × month
-├── Notification Push   — Compose, segment, schedule
-└── Dashboard           — DAU, check-in rate, article reads, tier distribution
-```
-
-### 8.4 Preview Mode
-
-Admin sees exactly what parents see before publishing:
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│  Article Editor                                     [Publish]│
-├────────────────────────┬─────────────────────────────────────┤
-│                        │  ┌─────────────┐                    │
-│  # Title here          │  │  📱 375px   │  ← Mobile preview │
-│                        │  │             │    (real render)   │
-│  Body in Markdown...   │  │  Title      │                    │
-│                        │  │  Tag  3min  │                    │
-│  **Bold section**      │  │             │                    │
-│  • Bullet point        │  │  Body text  │                    │
-│  • Another point       │  │  rendered   │                    │
-│                        │  │             │                    │
-│  [Upload Image]        │  │  [Image]    │                    │
-│                        │  │             │                    │
-│  Category: [Dropdown]  │  │  ⭐⭐⭐⭐☆  │                    │
-│  Tags: [Multi-select]  │  └─────────────┘                    │
-│  Read time: [3] min    │                                     │
-└────────────────────────┴─────────────────────────────────────┘
-```
-
-Preview renders the same Markdown → HTML transformation that `flutter_markdown` uses,
-displayed in a 375px-wide iframe. What admin sees = what parent sees.
-
-### 8.5 Blazor Server — Scalability Analysis
-
-Blazor Server uses **SignalR websockets** to maintain a persistent circuit per admin tab.
-
-**How it scales:**
-
-| Metric | Blazor Server | Impact |
-|--------|--------------|--------|
-| RAM per circuit | ~250KB baseline, up to 1-2MB with editor state | 100 concurrent admins ≈ 200MB RAM |
-| Connection limit | B1 App Service ≈ 300-500 concurrent websockets | Fine for < 100 admins |
-| Latency | Every keystroke round-trips to server | Noticeable on slow networks (> 200ms RTT) |
-| Offline | No — requires constant connection | Admin editing on train/plane = bad UX |
-| Deploy complexity | Zero — same App Service as API | Simplest option |
-| CPU per circuit | Minimal for CRUD, spikes during Markdown render | Not a concern |
-
-**Scaling limits:**
-
-| Admin Count | Blazor Server | Status |
-|-------------|--------------|--------|
-| 1-10 | Perfect | ✅ MVP |
-| 10-50 | Fine on B1 | ✅ Growth |
-| 50-200 | Need S1/P1 App Service | ⚠️ Consider upgrade |
-| 200+ | Hitting websocket limits | ❌ Switch to SPA |
-
-**Verdict for SSCare:**
-- MVP: 1-5 admins → Blazor Server is ideal (zero extra infra, same C# backend)
-- If admin team grows past ~50 → migrate to SPA
-
-### 8.6 Alternative: SPA Admin (If/When Blazor Doesn't Scale)
-
-If we outgrow Blazor Server, swap to a **client-side SPA** calling the same REST API:
-
-| Option | Pros | Cons |
-|--------|------|------|
-| **Blazor WASM** | Same C# code, just recompile | 5MB+ initial download, slower startup |
-| **React SPA** | Fast, huge ecosystem, rich text editors (TipTap, Lexical) | Different language (JS/TS), separate build |
-| **Next.js** | SSR + SPA hybrid, great DX | JS/TS, more complex deploy |
-
-**Migration cost:** Low — the `/admin/*` REST API endpoints don't change. Only the frontend rendering moves from server to client. All business logic stays in the API.
-
-**Recommended path:**
-```
-MVP (now)           → Blazor Server (zero infra cost)
-Growth (50+ admins) → Blazor WASM (same code, just recompile)
-Scale (200+ admins) → React SPA (best editor experience)
-```
-
-### 8.7 Content Delivery to Flutter App
-
-```
-Flutter App
-    │
-    │  GET /articles?category=X&status=published
-    │  Authorization: Bearer {jwt}
-    │  ──────────────────────────────►
-    │                                   API validates JWT (role=parent)
-    │                                   SELECT FROM Articles
-    │                                     WHERE Status='Published'
-    │                                     AND (Category=X OR X is null)
-    │                                     ORDER BY PublishedAt DESC
-    │  ◄──────────────────────────────
-    │  [{id, title, excerpt, imageUrl, category, tags, readMinutes}]
-    │
-    │  Cache article list in Hive (offline access)
-    │
-    │  User taps article
-    │  GET /articles/{id}
-    │  ──────────────────────────────►
-    │  ◄──────────────────────────────
-    │  {title, body (markdown), ...}
-    │
-    │  Render body via flutter_markdown
-    │  Images loaded via Image.network() + cached_network_image
-    │  Cache full article in Hive after first read
-    │
-    │  User finishes reading
-    │  PUT /articles/{id}/read
-    │  { timeSpentSeconds: 45 }
-    │  ──────────────────────────────►
-    │                                   INSERT ArticleReadProgress
-```
+### Session Model
+- Blazor Server = SignalR circuit (server-side state)
+- ~250KB RAM/circuit, fine for < 50 concurrent admins
+- Auto-reconnect on blip, 3min timeout
+- Same Entra ID auth, admin role claim required
 
 ---
 
@@ -454,11 +299,9 @@ Admin publishes → notification → parent reads → rating/bookmark
 |----------|--------|-----------|
 | Scope | Parent-only | MVP simplicity |
 | Architecture | MVVM + Repository + Riverpod | Testable, reactive |
-| Admin CMS (MVP) | Blazor Server, same App Service | Zero extra infra, 1-5 admins |
-| Admin CMS (Scale) | Blazor WASM → React SPA | Same API, swap frontend only |
-| Content format | Markdown stored, flutter_markdown rendered | Easy write, clean render |
-| Content pipeline | Admin web → API → DB → Flutter app | Standard CMS pattern, preview before publish |
-| Session | Stateless JWT (mobile), SignalR circuit (admin) | Appropriate per client type |
+| Admin CMS | Blazor Server, same App Service | Zero extra infra |
+| Content | Markdown + flutter_markdown | Easy write, clean render |
+| Session | Stateless JWT (mobile), SignalR circuit (admin) | Appropriate per client |
 | No child auth | Child = profile | Simpler, no consent |
 | Notifications | Server-side orchestration | Caps, A/B, analytics |
 | UX | Duolingo streaks + TikTok cards + Instagram stories + Banking trust | Best-of-breed for parent engagement |

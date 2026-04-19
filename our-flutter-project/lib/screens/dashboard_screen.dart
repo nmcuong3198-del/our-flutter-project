@@ -3,6 +3,7 @@ import '../core/strings.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
+import 'article_detail_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final void Function(ChildProfile child) onChildTap;
@@ -127,9 +128,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          // Recent checkins
+          // Featured articles
           Expanded(
-            child: _RecentCheckins(childId: children[_currentPage].id),
+            child: _FeaturedArticles(),
           ),
         ],
       ),
@@ -348,21 +349,17 @@ class _QuickAction extends StatelessWidget {
   }
 }
 
-class _RecentCheckins extends StatelessWidget {
-  final String childId;
-
-  const _RecentCheckins({required this.childId});
-
+class _FeaturedArticles extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final checkins = MockData.checkinsFor(childId).take(3).toList();
+    final featured = MockData.featuredArticles;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Lịch sử gần đây',
+            S.featuredArticles,
             style: TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.w700,
@@ -373,40 +370,65 @@ class _RecentCheckins extends StatelessWidget {
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.zero,
-              itemCount: checkins.length,
+              itemCount: featured.length,
               itemBuilder: (context, index) {
-                final c = checkins[index];
-                final dateStr =
-                    '${c.date.day}/${c.date.month}/${c.date.year}';
+                final a = featured[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 8),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: c.emotions.isEmpty
-                          ? AppColors.pending
-                          : AppColors.primary.withValues(alpha: 0.1),
-                      child: Text(
-                        c.emotions.isNotEmpty ? '😊' : '—',
-                        style: const TextStyle(fontSize: 20),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(16),
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => ArticleDetailScreen(article: a),
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: AppColors.secondary.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(Icons.article,
+                                color: AppColors.secondary, size: 24),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  a.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${a.readMinutes} ${S.readMin}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const Icon(Icons.chevron_right,
+                              color: AppColors.textSecondary),
+                        ],
                       ),
                     ),
-                    title: Text(
-                      c.emotions.isNotEmpty
-                          ? c.emotions.join(', ')
-                          : S.noCheckinYet,
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                    subtitle: Text(dateStr,
-                        style: const TextStyle(fontSize: 12)),
-                    trailing: c.symptoms.isNotEmpty
-                        ? Text(
-                            c.symptoms.first,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                            ),
-                          )
-                        : null,
                   ),
                 );
               },
