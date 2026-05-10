@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
+import '../mock/mock_data.dart';
 import '../models/models.dart';
 
 class CheckinTab extends StatefulWidget {
@@ -18,6 +19,86 @@ class _CheckinTabState extends State<CheckinTab> {
   final Set<String> _selectedSymptoms = {};
   final _notesController = TextEditingController();
   bool _saved = false;
+  late DateTime _selectedDate;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+    _checkExistingData();
+  }
+
+  void _checkExistingData() {
+    final checkins = MockData.checkinsFor(widget.child.id);
+    final existing = checkins.where((c) =>
+        c.date.year == _selectedDate.year &&
+        c.date.month == _selectedDate.month &&
+        c.date.day == _selectedDate.day &&
+        c.emotions.isNotEmpty).toList();
+    if (existing.isNotEmpty) {
+      _isEditing = true;
+      final c = existing.first;
+      _selectedEmotions.addAll(c.emotions);
+      _selectedBodyStatus = c.bodyStatus;
+      _selectedSymptoms.addAll(c.symptoms);
+      if (c.notes != null) _notesController.text = c.notes!;
+    } else {
+      _isEditing = false;
+    }
+  }
+
+  Future<void> _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _selectedEmotions.clear();
+        _selectedBodyStatus = null;
+        _selectedSymptoms.clear();
+        _notesController.clear();
+        _saved = false;
+        _checkExistingData();
+      });
+      if (_isEditing) {
+        _showDateValidationPopup(isExisting: true);
+      }
+    }
+  }
+
+  void _showDateValidationPopup({required bool isExisting}) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          isExisting ? 'Ngày đã có thông tin' : 'Ngày chưa có thông tin',
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          isExisting
+              ? 'Ngày này đã có thông tin lưu trước đó. Bạn có muốn thay đổi không?'
+              : 'Ngày này chưa có thông tin. Vui lòng chọn Thêm mới.',
+          style: const TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Huỷ'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(isExisting ? 'Sửa' : 'Thêm mới'),
+          ),
+        ],
+      ),
+    );
+  }
 
   List<_EmoItem> get _emotions => [
         _EmoItem('😄', S.emotionHappy),
@@ -82,6 +163,60 @@ class _CheckinTabState extends State<CheckinTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Date picker
+          GestureDetector(
+            onTap: _pickDate,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today, size: 18, color: AppColors.primary),
+                  const SizedBox(width: 10),
+                  Text(
+                    '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (_isEditing)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.warning.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Đang sửa',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.warning),
+                      ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.success.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Thêm mới',
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.success),
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_drop_down, color: AppColors.onSurfaceVariant),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
           // Emotions
           _SectionTitle(S.emotionTitle),
           const SizedBox(height: 12),

@@ -12,13 +12,15 @@ import 'reminders_tab.dart';
 
 class ChildDetailScreen extends StatelessWidget {
   final ChildProfile child;
+  final int initialTab;
 
-  const ChildDetailScreen({super.key, required this.child});
+  const ChildDetailScreen({super.key, required this.child, this.initialTab = 0});
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 7,
+      initialIndex: initialTab,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(

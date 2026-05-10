@@ -3,6 +3,7 @@ import '../core/strings.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
+import '../shared/child_picker.dart';
 import 'article_detail_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -119,26 +120,29 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const Row(
+                  Row(
                     children: [
                       Expanded(
                         child: _QuickActionCircle(
                           icon: Icons.psychology,
                           label: 'Hiểu con',
+                          onTap: () => showChildPickerThenNavigate(context, initialTab: 0),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: _QuickActionCircle(
                           icon: Icons.family_restroom,
                           label: 'Cùng con',
+                          onTap: () => showChildPickerThenNavigate(context, initialTab: 5),
                         ),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: _QuickActionCircle(
                           icon: Icons.bar_chart,
                           label: 'Báo cáo\ntổng hợp',
+                          onTap: () => showChildPickerThenNavigate(context, initialTab: 4),
                         ),
                       ),
                     ],
@@ -565,17 +569,20 @@ class DashboardScreen extends StatelessWidget {
 class _QuickActionCircle extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap;
 
-  const _QuickActionCircle({required this.icon, required this.label});
+  const _QuickActionCircle({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 18),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(24),
-      ),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(24),
+        ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -601,6 +608,7 @@ class _QuickActionCircle extends StatelessWidget {
             ),
           ),
         ],
+      ),
       ),
     );
   }

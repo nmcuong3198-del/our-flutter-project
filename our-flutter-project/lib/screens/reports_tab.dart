@@ -5,29 +5,73 @@ import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 
-class ReportsTab extends StatelessWidget {
+class ReportsTab extends StatefulWidget {
   final ChildProfile child;
 
   const ReportsTab({super.key, required this.child});
 
   @override
+  State<ReportsTab> createState() => _ReportsTabState();
+}
+
+class _ReportsTabState extends State<ReportsTab> {
+  String _filter = '6 tháng';
+  static const _filters = ['6 tháng', '12 tháng', '24 tháng', '5 năm'];
+
+  int get _monthCount {
+    switch (_filter) {
+      case '12 tháng': return 12;
+      case '24 tháng': return 24;
+      case '5 năm': return 60;
+      default: return 6;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final measurements = MockData.measurementsFor(child.id);
-    final checkins = MockData.checkinsFor(child.id);
+    final allMeasurements = MockData.measurementsFor(widget.child.id);
+    final measurements = allMeasurements.take(_monthCount).toList();
+    final checkins = MockData.checkinsFor(widget.child.id);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Growth chart
-          const Text(
-            S.growthReport,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
+          // Growth chart header + filter
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  S.growthReport,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    value: _filter,
+                    items: _filters.map((f) => DropdownMenuItem(
+                      value: f,
+                      child: Text(f, style: const TextStyle(fontSize: 13)),
+                    )).toList(),
+                    onChanged: (v) => setState(() => _filter = v!),
+                    style: const TextStyle(fontSize: 13, color: AppColors.primary),
+                    icon: const Icon(Icons.arrow_drop_down, size: 20),
+                    isDense: true,
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           Card(
