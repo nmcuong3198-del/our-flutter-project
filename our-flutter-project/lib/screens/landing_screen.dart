@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
@@ -17,335 +18,741 @@ class LandingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final featured = MockData.featuredArticles;
-    final categories = [
-      _CatItem(S.catMental, Icons.favorite, AppColors.secondary),
-      _CatItem(S.catPhysical, Icons.fitness_center, AppColors.accent),
-      _CatItem(S.catSkills, Icons.psychology, AppColors.primary),
-      _CatItem(S.catAlerts, Icons.warning_amber, AppColors.overdue),
-    ];
+    final heroArticle = MockData.featuredArticles.isNotEmpty
+        ? MockData.featuredArticles.first
+        : null;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: AppColors.surface,
+      extendBody: true,
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Header
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+        bottom: false,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.only(bottom: 120),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ── Greeting ──
+              const Padding(
+                padding: EdgeInsets.fromLTRB(24, 32, 24, 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: 44,
-                          height: 44,
-                          decoration: BoxDecoration(
-                            color: AppColors.primary,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Center(
-                            child: Text(
-                              'SS',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.w800,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              S.appName,
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w800,
-                                color: AppColors.textPrimary,
-                              ),
-                            ),
-                            Text(
-                              S.appTagline,
-                              style: TextStyle(
-                                fontSize: 13,
-                                color: AppColors.textSecondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        OutlinedButton(
-                          onPressed: onLogin,
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: AppColors.primary,
-                            side: const BorderSide(color: AppColors.primary),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                          ),
-                          child: const Text('Đăng nhập',
-                              style: TextStyle(fontSize: 13)),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Hero banner
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [AppColors.primary, Color(0xFF8B83FF)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Đồng hành cùng con\ntrong giai đoạn dậy thì',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w800,
-                              color: Colors.white,
-                              height: 1.3,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Theo dõi sức khỏe, cảm xúc và sự phát triển\ncủa con mỗi ngày.',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.white70,
-                              height: 1.4,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: onRegister,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 10),
-                            ),
-                            child: const Text('Đăng ký miễn phí',
-                                style: TextStyle(fontWeight: FontWeight.w700)),
-                          ),
-                        ],
+                    Text(
+                      'Xin chào 👋',
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 8),
+                    Text(
+                      'Đồng hành và cùng con toả sáng mỗi ngày cùng SSCare',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: AppColors.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 40),
 
-            // Library categories
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+              // ── Auth Buttons ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    Expanded(child: _buildLoginButton()),
+                    const SizedBox(width: 12),
+                    Expanded(child: _buildRegisterButton()),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 48),
+
+              // ── Featured Hero Card ──
+              if (heroArticle != null)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: _buildHeroCard(context, heroArticle),
+                ),
+              if (heroArticle != null) const SizedBox(height: 48),
+
+              // ── Library Section ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      S.library,
+                      'Thư viện',
                       style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.textPrimary,
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 22,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.primary,
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: categories.map((c) {
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: () => _showLoginPrompt(context),
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              decoration: BoxDecoration(
-                                color: c.color.withValues(alpha: 0.1),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Column(
-                                children: [
-                                  Icon(c.icon, color: c.color, size: 24),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    c.label,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: c.color,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Kiến thức chuyên gia được tuyển chọn',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.onSurfaceVariant,
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    _buildLibraryGrid(context),
                   ],
                 ),
               ),
-            ),
+              const SizedBox(height: 48),
 
-            // Featured articles
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: const Text(
-                  S.featuredArticles,
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
+              // ── Quote / Social Proof ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: _buildQuoteSection(),
+              ),
+              const SizedBox(height: 48),
+
+              // ── Community CTA ──
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: _buildCommunityBanner(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNav(context),
+    );
+  }
+
+  // ── Login Button (Gradient Navy) ──────────────────────────────────────────
+  Widget _buildLoginButton() {
+    return GestureDetector(
+      onTap: onLogin,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [AppColors.primary, AppColors.primaryContainer],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(9999),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.2),
+              blurRadius: 16,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Đăng nhập',
+              style: TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: AppColors.onPrimary,
               ),
             ),
-            const SliverToBoxAdapter(child: SizedBox(height: 12)),
-
-            // Article cards
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final article = featured[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Card(
-                      margin: const EdgeInsets.only(bottom: 12),
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  ArticleDetailScreen(article: article),
-                            ),
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.secondary
-                                          .withValues(alpha: 0.15),
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: const Text(
-                                      'Nổi bật',
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: AppColors.secondary,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    '${article.readMinutes} ${S.readMin}',
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                article.title,
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColors.textPrimary,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                article.excerpt,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSecondary,
-                                  height: 1.4,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              const Row(
-                                children: [
-                                  Text(
-                                    S.readMore,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColors.primary,
-                                    ),
-                                  ),
-                                  SizedBox(width: 4),
-                                  Icon(Icons.arrow_forward,
-                                      size: 14, color: AppColors.primary),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-                childCount: featured.length,
-              ),
-            ),
-
-            // Bottom padding
-            const SliverToBoxAdapter(child: SizedBox(height: 40)),
+            SizedBox(width: 8),
+            Icon(Icons.arrow_forward, color: AppColors.onPrimary, size: 18),
           ],
         ),
       ),
     );
   }
 
+  // ── Register Button (Outlined) ────────────────────────────────────────────
+  Widget _buildRegisterButton() {
+    return GestureDetector(
+      onTap: onRegister,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLow,
+          borderRadius: BorderRadius.circular(9999),
+          border: Border.all(
+            color: AppColors.outlineVariant.withValues(alpha: 0.3),
+            width: 2,
+          ),
+        ),
+        child: const Center(
+          child: Text(
+            'Đăng ký tài khoản',
+            style: TextStyle(
+              fontFamily: 'PlusJakartaSans',
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Featured Hero Card ────────────────────────────────────────────────────
+  Widget _buildHeroCard(BuildContext context, Article article) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ArticleDetailScreen(article: article),
+        ),
+      ),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: AppColors.primaryContainer,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withValues(alpha: 0.15),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 32, 28, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.tertiaryFixed,
+                      borderRadius: BorderRadius.circular(9999),
+                    ),
+                    child: const Text(
+                      'NỔI BẬT',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.tertiary,
+                        letterSpacing: 1.2,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Title
+                  Text(
+                    article.title,
+                    style: const TextStyle(
+                      fontFamily: 'PlusJakartaSans',
+                      fontSize: 28,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  // Excerpt
+                  Text(
+                    article.excerpt,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.primaryFixedDim,
+                      height: 1.4,
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+                  // CTA
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 28,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.tertiaryFixedDim,
+                      borderRadius: BorderRadius.circular(9999),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.tertiary.withValues(alpha: 0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      S.readMore,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.tertiary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Illustration placeholder (no network images)
+            Container(
+              height: 200,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppColors.primaryContainer,
+                    AppColors.primary.withValues(alpha: 0.85),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Icon(
+                    Icons.family_restroom,
+                    size: 100,
+                    color: Colors.white.withValues(alpha: 0.12),
+                  ),
+                  Positioned(
+                    right: 32,
+                    bottom: 28,
+                    child: Icon(
+                      Icons.restaurant,
+                      size: 48,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                  Positioned(
+                    left: 32,
+                    top: 20,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 36,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Library 2×2 Grid ──────────────────────────────────────────────────────
+  Widget _buildLibraryGrid(BuildContext context) {
+    final categories = [
+      (S.catMental, Icons.face, false),
+      (S.catPhysical, Icons.fitness_center, false),
+      (S.catSkills, Icons.menu_book, false),
+      (S.catAlerts, Icons.notifications_active, true),
+    ];
+
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      childAspectRatio: 1.0,
+      children: categories.map((cat) {
+        final (label, icon, isAlert) = cat;
+        return GestureDetector(
+          onTap: () => _showLoginPrompt(context),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: isAlert
+                  ? AppColors.tertiaryFixed.withValues(alpha: 0.2)
+                  : AppColors.surfaceContainerLow,
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 56,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: isAlert
+                        ? AppColors.tertiaryFixed
+                        : AppColors.secondaryFixed,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(
+                    icon,
+                    size: 28,
+                    color: isAlert ? AppColors.tertiary : AppColors.primary,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'PlusJakartaSans',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: isAlert ? AppColors.tertiary : AppColors.primary,
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }).toList(),
+    );
+  }
+
+  // ── Quote / Social Proof ──────────────────────────────────────────────────
+  Widget _buildQuoteSection() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(32),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        children: [
+          // Overlapping avatars
+          SizedBox(
+            width: 136,
+            height: 40,
+            child: Stack(
+              children: [
+                _buildAvatar(0, 'M', AppColors.primaryFixedDim),
+                _buildAvatar(32, 'T', AppColors.secondaryFixed),
+                _buildAvatar(64, 'H', AppColors.tertiaryFixed),
+                Positioned(
+                  left: 96,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: AppColors.secondaryFixed,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 2),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        '+10k',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            '\u201CCông cụ đồng hành không thể thiếu cho các bậc phụ huynh hiện đại. Giúp tôi bớt lo lắng về chế độ dinh dưỡng của bé mỗi ngày.\u201D',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontStyle: FontStyle.italic,
+              color: AppColors.onSecondaryContainer,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            '— Chị Mai Anh, Hà Nội',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAvatar(double left, String initial, Color bgColor) {
+    return Positioned(
+      left: left,
+      child: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: bgColor,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+        ),
+        child: Center(
+          child: Text(
+            initial,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: AppColors.primary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Community CTA Banner ──────────────────────────────────────────────────
+  Widget _buildCommunityBanner(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: AppColors.primaryContainer,
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.2),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned(
+            right: -40,
+            top: -40,
+            child: Icon(
+              Icons.groups,
+              size: 160,
+              color: Colors.white.withValues(alpha: 0.1),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.people,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        'Tham gia cùng 50.000+ cha mẹ',
+                        style: TextStyle(
+                          fontFamily: 'PlusJakartaSans',
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  'Nơi chia sẻ kinh nghiệm, nhận lời khuyên từ chuyên gia và cùng nhau nuôi dạy con tốt hơn mỗi ngày.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppColors.primaryFixedDim,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () => _showLoginPrompt(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 28,
+                      vertical: 16,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(9999),
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.primary.withValues(alpha: 0.15),
+                          blurRadius: 16,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: const Text(
+                      'Tham gia ngay',
+                      style: TextStyle(
+                        fontFamily: 'PlusJakartaSans',
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Bottom Navigation Bar ─────────────────────────────────────────────────
+  Widget _buildBottomNav(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.85),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primary.withValues(alpha: 0.06),
+            blurRadius: 40,
+            offset: const Offset(0, -8),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavItem(
+                    Icons.home,
+                    S.navHome,
+                    true,
+                    () {},
+                  ),
+                  _buildNavItem(
+                    Icons.child_care_outlined,
+                    S.navChildren,
+                    false,
+                    () => _showLoginPrompt(context),
+                  ),
+                  _buildNavItem(
+                    Icons.local_library_outlined,
+                    S.navLibrary,
+                    false,
+                    () => _showLoginPrompt(context),
+                  ),
+                  _buildNavItem(
+                    Icons.notifications_outlined,
+                    S.navNotifications,
+                    false,
+                    () => _showLoginPrompt(context),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNavItem(
+    IconData icon,
+    String label,
+    bool isActive,
+    VoidCallback onTap,
+  ) {
+    final color = isActive
+        ? Colors.white
+        : AppColors.primaryContainer.withValues(alpha: 0.6);
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: isActive ? 16 : 12,
+          vertical: 8,
+        ),
+        decoration: isActive
+            ? BoxDecoration(
+                color: AppColors.primaryContainer,
+                borderRadius: BorderRadius.circular(9999),
+              )
+            : null,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 24, color: color),
+            const SizedBox(height: 4),
+            Text(
+              label.toUpperCase(),
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.8,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Login Prompt Dialog ───────────────────────────────────────────────────
   void _showLoginPrompt(BuildContext context) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Đăng nhập cần thiết',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        title: const Text(
+          'Đăng nhập cần thiết',
+          style: TextStyle(
+            fontFamily: 'PlusJakartaSans',
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.onSurface,
+          ),
+        ),
         content: const Text(
-          'Bạn cần đăng nhập hoặc đăng ký để thực hiện tính năng này.',
-          style: TextStyle(fontSize: 14),
+          'Bạn cần đăng nhập hoặc đăng ký để sử dụng tính năng này.',
+          style: TextStyle(
+            fontSize: 14,
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: const Text('Huỷ'),
+            child: const Text(
+              'Huỷ',
+              style: TextStyle(color: AppColors.onSurfaceVariant),
+            ),
           ),
           OutlinedButton(
             onPressed: () {
@@ -365,11 +772,4 @@ class LandingScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-class _CatItem {
-  final String label;
-  final IconData icon;
-  final Color color;
-  _CatItem(this.label, this.icon, this.color);
 }
