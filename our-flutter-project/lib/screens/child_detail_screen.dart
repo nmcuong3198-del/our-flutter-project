@@ -7,6 +7,8 @@ import 'mood_calendar_tab.dart';
 import 'measurements_tab.dart';
 import 'cycle_tab.dart';
 import 'reports_tab.dart';
+import 'practice_tab.dart';
+import 'reminders_tab.dart';
 
 class ChildDetailScreen extends StatelessWidget {
   final ChildProfile child;
@@ -16,7 +18,7 @@ class ChildDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5,
+      length: 7,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -33,6 +35,8 @@ class ChildDetailScreen extends StatelessWidget {
               Tab(icon: Icon(Icons.straighten), text: S.tabMeasure),
               Tab(icon: Icon(Icons.calendar_month), text: S.tabCycle),
               Tab(icon: Icon(Icons.bar_chart), text: S.tabReport),
+              Tab(icon: Icon(Icons.task_alt), text: 'Hành động'),
+              Tab(icon: Icon(Icons.event_note), text: 'Ghi chú'),
             ],
           ),
         ),
@@ -43,6 +47,8 @@ class ChildDetailScreen extends StatelessWidget {
             MeasurementsTab(child: child),
             CycleTab(child: child),
             ReportsTab(child: child),
+            PracticeTab(child: child),
+            RemindersTab(child: child),
           ],
         ),
       ),
