@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Báo cáo chu kỳ - Minh Huy</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdcbe",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "on-background": "#191c20",
+                        "secondary-fixed": "#d6e5ef",
+                        "secondary-container": "#d3e2ed",
+                        "on-primary-fixed-variant": "#004884",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#7d4800",
+                        "outline": "#727781",
+                        "on-secondary-container": "#56656e",
+                        "surface-container-highest": "#e1e2e8",
+                        "primary": "#003e74",
+                        "on-primary-fixed": "#001c39",
+                        "background": "#f9f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container": "#ededf3",
+                        "primary-container": "#1a5694",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#a4c9ff",
+                        "tertiary": "#5c3400",
+                        "surface-dim": "#d9dadf",
+                        "primary-fixed": "#d4e3ff",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "on-surface-variant": "#424750",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#191c20",
+                        "inverse-on-surface": "#f0f0f6",
+                        "surface-variant": "#e1e2e8",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "surface-container-low": "#f3f3f9",
+                        "on-secondary-fixed": "#0f1d25",
+                        "inverse-surface": "#2e3035",
+                        "outline-variant": "#c2c6d2",
+                        "on-primary-container": "#aaccff",
+                        "surface-tint": "#28609e",
+                        "secondary": "#526069",
+                        "surface": "#f9f9ff",
+                        "surface-container-high": "#e7e8ee",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-container": "#ffbc7a",
+                        "primary-fixed-dim": "#a4c9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="bg-[#f9f9ff] shadow-[0_24px_40px_rgba(0,62,116,0.04)] fixed top-0 w-full z-50 flex items-center px-6 py-4">
+<button class="mr-4 w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#d3e2ed] transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#003e74]">arrow_back</span>
+</button>
+<div class="flex flex-col">
+<h1 class="text-[#003e74] font-['Plus_Jakarta_Sans'] font-bold text-2xl tracking-tight">Báo cáo</h1>
+<span class="text-on-surface-variant text-sm font-medium">Minh Huy</span>
+</div>
+</header>
+<main class="pt-24 px-6 space-y-8 max-w-2xl mx-auto">
+<!-- Tab Bar (Pill Style) -->
+<div class="flex bg-surface-container-low p-1.5 rounded-full shadow-sm overflow-x-auto no-scrollbar">
+<button class="flex-1 whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-semibold transition-all text-on-surface-variant hover:text-primary">Tăng trưởng</button>
+<button class="flex-1 whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-bold transition-all bg-primary text-white shadow-md">Chu kỳ</button>
+<button class="flex-1 whitespace-nowrap px-4 py-2.5 rounded-full text-sm font-semibold transition-all text-on-surface-variant hover:text-primary">Tình trạng</button>
+</div>
+<!-- Filter Section (Updated as per request) -->
+<section class="space-y-4">
+<div class="flex items-center gap-3">
+<div class="flex-1 relative">
+<p class="text-[10px] text-on-surface-variant font-bold absolute -top-2 left-3 bg-surface px-1 z-10 uppercase tracking-wider">Từ ngày</p>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 rounded-xl px-4 py-3.5 text-sm font-semibold focus:ring-primary-container pl-11" type="text" value="01/11/2023"/>
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-primary text-xl">calendar_today</span>
+</div>
+</div>
+<span class="text-on-surface-variant font-bold">→</span>
+<div class="flex-1 relative">
+<p class="text-[10px] text-on-surface-variant font-bold absolute -top-2 left-3 bg-surface px-1 z-10 uppercase tracking-wider">Đến ngày</p>
+<div class="relative">
+<input class="w-full bg-surface-container-lowest border-none ring-1 ring-outline-variant/30 rounded-xl px-4 py-3.5 text-sm font-semibold focus:ring-primary-container pl-11" type="text" value="31/01/2024"/>
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-primary text-xl">calendar_today</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Table -->
+<section class="bg-surface-container-low rounded-xl overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
+<div class="p-6 bg-primary-container/5 border-b border-outline-variant/10">
+<h3 class="text-primary font-bold text-lg">Bảng dữ liệu chu kỳ</h3>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50">
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant">Tháng</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant text-center">Tần suất</th>
+<th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-on-surface-variant text-right">Trạng thái</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="bg-surface-container-lowest transition-colors hover:bg-secondary-container/10">
+<td class="px-6 py-5">
+<span class="font-bold text-on-surface">1/2024</span>
+<p class="text-[10px] text-on-surface-variant">Hiện tại</p>
+</td>
+<td class="px-6 py-5 text-center">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e8f5e9] text-[#2e7d32]">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-xs text-primary">Đều đặn</td>
+</tr>
+<tr class="bg-surface-container-low/30 transition-colors hover:bg-secondary-container/10">
+<td class="px-6 py-5 font-bold text-on-surface">12/2023</td>
+<td class="px-6 py-5 text-center">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#f5f5f5] text-[#9e9e9e]">
+<span class="material-symbols-outlined text-xl">cancel</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-xs text-on-surface-variant">Không ghi nhận</td>
+</tr>
+<tr class="bg-surface-container-lowest transition-colors hover:bg-secondary-container/10">
+<td class="px-6 py-5 font-bold text-on-surface">11/2023</td>
+<td class="px-6 py-5 text-center">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-[#e8f5e9] text-[#2e7d32]">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-xs text-primary">Đều đặn</td>
+</tr>
+<tr class="bg-surface-container-low/30 transition-colors hover:bg-secondary-container/10">
+<td class="px-6 py-5 font-bold text-on-surface">10/2023</td>
+<td class="px-6 py-5 text-center">
+<div class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-secondary-container/50 text-primary">
+<span class="material-symbols-outlined text-xl">help</span>
+</div>
+</td>
+<td class="px-6 py-5 text-right font-medium text-xs text-on-secondary-container">Thiếu dữ liệu</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Expert Commentary (Updated as per request) -->
+<section class="relative p-6 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 overflow-hidden group">
+<div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-110 transition-transform duration-500">
+<span class="material-symbols-outlined text-8xl">clinical_notes</span>
+</div>
+<div class="relative z-10 flex gap-4">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary">medical_services</span>
+</div>
+<div class="space-y-1">
+<h4 class="text-primary font-bold text-sm uppercase tracking-wider">NHẬN XÉT</h4>
+<p class="text-on-surface leading-relaxed font-medium italic">
+                    "Chưa ổn định (bình thường ở độ tuổi này)"
+                </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-white/70 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,0,0,0.04)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-[#44474e] p-2 hover:text-[#1A5694] transition-all" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#1A5694] text-white rounded-full p-3 scale-110 -translate-y-2 transition-all shadow-lg" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">child_care</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold mt-0.5">Quản lý con</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#44474e] p-2 hover:text-[#1A5694] transition-all" href="#">
+<span class="material-symbols-outlined">local_library</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#44474e] p-2 hover:text-[#1A5694] transition-all" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] text-[11px] font-semibold mt-1">Thông báo</span>
+</a>
+</nav>
+</body></html>

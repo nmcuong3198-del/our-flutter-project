@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SSCare - Yêu cầu đăng nhập</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#3b4951",
+                    "on-error": "#ffffff",
+                    "surface-dim": "#d9dadf",
+                    "on-secondary": "#ffffff",
+                    "outline": "#727781",
+                    "on-primary": "#ffffff",
+                    "secondary-container": "#d3e2ed",
+                    "tertiary": "#5c3400",
+                    "on-secondary-fixed": "#0f1d25",
+                    "surface-container-high": "#e7e8ee",
+                    "on-primary-fixed": "#001c39",
+                    "background": "#f9f9ff",
+                    "on-surface-variant": "#424750",
+                    "on-tertiary-container": "#ffbc7a",
+                    "surface-tint": "#28609e",
+                    "secondary-fixed": "#d6e5ef",
+                    "surface-container": "#ededf3",
+                    "on-primary-fixed-variant": "#004884",
+                    "inverse-primary": "#a4c9ff",
+                    "outline-variant": "#c2c6d2",
+                    "on-surface": "#191c20",
+                    "tertiary-fixed": "#ffdcbe",
+                    "primary-fixed-dim": "#a4c9ff",
+                    "surface-bright": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "secondary-fixed-dim": "#bac9d3",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "on-primary-container": "#aaccff",
+                    "tertiary-container": "#7d4800",
+                    "surface-container-highest": "#e1e2e8",
+                    "on-background": "#191c20",
+                    "surface-variant": "#e1e2e8",
+                    "surface-container-low": "#f3f3f9",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#2e3035",
+                    "primary": "#003e74",
+                    "surface-container-lowest": "#ffffff",
+                    "error": "#ba1a1a",
+                    "error-container": "#ffdad6",
+                    "on-tertiary-fixed": "#2c1600",
+                    "secondary": "#526069",
+                    "primary-container": "#1a5694",
+                    "inverse-on-surface": "#f0f0f6",
+                    "surface": "#f9f9ff",
+                    "on-secondary-container": "#56656e",
+                    "primary-fixed": "#d4e3ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-headline { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden">
+<!-- Background Content Layer (Simulating Home Screen) -->
+<div class="fixed inset-0 z-0 overflow-y-auto filter blur-sm grayscale-[20%]">
+<!-- TopAppBar Placeholder -->
+<header class="bg-[#f9f9ff] shadow-[0_24px_40px_rgba(26,86,148,0.04)] rounded-b-[2rem] px-6 py-4 flex justify-between items-center max-w-7xl mx-auto sticky top-0 z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[#1A5694] text-2xl">spa</span>
+<span class="text-2xl font-extrabold text-[#1A5694] tracking-tight">SSCare</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-6 pt-8 pb-32">
+<!-- Hero Bento -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="md:col-span-2 bg-primary-container rounded-xl p-8 text-white relative overflow-hidden h-64">
+<div class="relative z-10">
+<h1 class="text-4xl font-bold font-headline mb-4">Chào buổi sáng,<br/>Mẹ Linh!</h1>
+<p class="opacity-90 max-w-md">Hôm nay bé Bi cần bổ sung thêm vitamin D và tập vận động thô nhé.</p>
+</div>
+<div class="absolute right-0 bottom-0 w-1/2 h-full opacity-20">
+<img class="w-full h-full object-cover" data-alt="Soft artistic illustration of a mother hugging her child with warm pastel tones and organic shapes" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBeasVWIvEu6wX-iV874J9wZHKD-RqXbZzAEMrQtoBgiFpx7NpI3suGi1zDnpZhxI5IATahT6mmqYdo7NqoUU80KijvgM_OfK5LgpSZcIq0fb4M3ReY-76GTbmxj_5prbL7EL8VDH8eujSkjEquesAdJ5W7rxHrZb-9lIXMIbZxddtdVpnmnZr3pHZjIKU0fRMnv3HUxTCTBAQe_IZmmP1jwBT4pBkA_tMOUs9IEFRih-U0AJDQCS08_zSMTvC-BeYQ0mfaz5uSY0vK"/>
+</div>
+</div>
+<div class="bg-tertiary-fixed rounded-xl p-8 flex flex-col justify-between">
+<div>
+<h3 class="font-headline font-bold text-tertiary text-xl mb-2">Chỉ số phát triển</h3>
+<p class="text-tertiary-container text-sm">Bé Bi đang ở bách phân vị thứ 85.</p>
+</div>
+<div class="flex items-end justify-between">
+<span class="text-3xl font-bold text-tertiary">12.5 kg</span>
+<span class="material-symbols-outlined text-4xl text-tertiary">trending_up</span>
+</div>
+</div>
+</div>
+<!-- Dashboard Sections -->
+<div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="bg-surface-container-low p-6 rounded-lg text-center">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+<span class="material-symbols-outlined text-primary">restaurant</span>
+</div>
+<span class="font-semibold text-primary">Dinh dưỡng</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg text-center">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+<span class="material-symbols-outlined text-primary">psychology</span>
+</div>
+<span class="font-semibold text-primary">Hiểu con</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg text-center">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+<span class="material-symbols-outlined text-primary">history_edu</span>
+</div>
+<span class="font-semibold text-primary">Nhật ký</span>
+</div>
+<div class="bg-surface-container-low p-6 rounded-lg text-center">
+<div class="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm">
+<span class="material-symbols-outlined text-primary">vaccines</span>
+</div>
+<span class="font-semibold text-primary">Tiêm chủng</span>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar Placeholder -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center bg-[#f9f9ff] py-4 shadow-[0_-12px_40px_rgba(0,0,0,0.03)] rounded-t-[3rem] px-4 pb-6 pt-3">
+<div class="flex flex-col items-center justify-center bg-[#1A5694] text-white rounded-full px-5 py-2">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-semibold">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined">child_care</span>
+<span class="text-[10px] font-semibold">Children</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined">library_books</span>
+<span class="text-[10px] font-semibold">Library</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 px-5 py-2">
+<span class="material-symbols-outlined">notifications</span>
+<span class="text-[10px] font-semibold">Alerts</span>
+</div>
+</nav>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-50 flex items-center justify-center p-6 bg-primary/30 backdrop-blur-md">
+<!-- Modal Container -->
+<div class="relative w-full max-w-sm bg-surface-container-lowest rounded-xl shadow-2xl overflow-hidden border border-white/20">
+<!-- Close Button -->
+<button class="absolute top-4 right-4 p-2 rounded-full hover:bg-surface-container transition-colors text-outline">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+<div class="px-8 pt-10 pb-8 flex flex-col items-center text-center">
+<!-- Icon/Illustration -->
+<div class="mb-6 w-20 h-20 bg-secondary-container rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<!-- Heading -->
+<h2 class="text-2xl font-extrabold font-headline text-primary mb-3 leading-tight">Yêu cầu đăng nhập</h2>
+<!-- Supporting Text -->
+<p class="text-on-surface-variant font-body leading-relaxed mb-10">Bạn cần đăng nhập hoặc đăng ký để thực hiện tính năng 'Quản lý con'.</p>
+<!-- Action Buttons -->
+<div class="w-full flex flex-col gap-4">
+<!-- Login Button -->
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-4 px-6 rounded-full font-headline font-bold text-lg shadow-lg hover:shadow-primary/20 active:scale-95 transition-all">
+                        Đăng nhập
+                    </button>
+<!-- Register Button -->
+<button class="w-full bg-secondary-container text-primary py-4 px-6 rounded-full font-headline font-bold text-lg hover:bg-secondary-fixed transition-all active:scale-95">
+                        Đăng ký
+                    </button>
+</div>
+<!-- Subtle Decorative Element -->
+<div class="mt-8">
+<div class="w-12 h-1 bg-outline-variant/30 rounded-full mx-auto"></div>
+</div>
+</div>
+<!-- Glassy Footer/Bottom Accent -->
+<div class="h-2 bg-gradient-to-r from-primary via-tertiary-fixed-dim to-primary-container opacity-50"></div>
+</div>
+</div>
+</body></html>

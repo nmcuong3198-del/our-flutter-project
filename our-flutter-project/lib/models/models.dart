@@ -91,6 +91,46 @@ class CycleMonth {
   const CycleMonth({required this.month, required this.status});
 }
 
+class PracticeItem {
+  final String id;
+  final String childId;
+  final String category; // quan_sat | giao_tiep | ho_tro
+  final String title;
+  final String monthYear; // YYYY-MM
+  String executor; // Ông|Bà|Bố|Mẹ
+  int plannedWeek; // 1-4
+  bool isCompleted;
+  String? notes;
+
+  PracticeItem({
+    required this.id,
+    required this.childId,
+    required this.category,
+    required this.title,
+    required this.monthYear,
+    this.executor = 'Mẹ',
+    this.plannedWeek = 1,
+    this.isCompleted = false,
+    this.notes,
+  });
+}
+
+class Reminder {
+  final String id;
+  final String childId;
+  final DateTime date;
+  final String label;
+  bool isActive;
+
+  Reminder({
+    required this.id,
+    required this.childId,
+    required this.date,
+    required this.label,
+    this.isActive = true,
+  });
+}
+
 class Article {
   final String id;
   final String title;

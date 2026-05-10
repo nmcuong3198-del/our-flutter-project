@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quản lý hồ sơ con - SSCare</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdcbe",
+                        "surface-container-high": "#e7e8ee",
+                        "secondary-fixed": "#d6e5ef",
+                        "on-surface": "#191c20",
+                        "tertiary": "#5c3400",
+                        "surface-dim": "#d9dadf",
+                        "on-primary-fixed-variant": "#004884",
+                        "outline": "#727781",
+                        "on-secondary-container": "#56656e",
+                        "inverse-on-surface": "#f0f0f6",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "on-tertiary-fixed": "#2c1600",
+                        "primary-fixed": "#d4e3ff",
+                        "on-surface-variant": "#424750",
+                        "surface-tint": "#28609e",
+                        "surface-container-highest": "#e1e2e8",
+                        "outline-variant": "#c2c6d2",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary": "#ffffff",
+                        "background": "#f9f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-low": "#f3f3f9",
+                        "inverse-primary": "#a4c9ff",
+                        "on-primary-container": "#aaccff",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#e1e2e8",
+                        "tertiary-container": "#7d4800",
+                        "on-tertiary-container": "#ffbc7a",
+                        "on-background": "#191c20",
+                        "inverse-surface": "#2e3035",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "secondary": "#526069",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed": "#0f1d25",
+                        "on-error": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "secondary-container": "#d3e2ed",
+                        "error-container": "#ffdad6",
+                        "primary-container": "#1a5694",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "surface-container": "#ededf3",
+                        "primary": "#003e74",
+                        "on-primary-fixed": "#001c39",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+            min-height: 100dvh;
+        }
+        h1, h2, h3, .font-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-surface top-0 sticky z-50">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg text-primary">Thông tin tài khoản</h1>
+</div>
+<div class="flex items-center">
+<button class="transition-transform active:scale-95 hover:bg-slate-100 p-2 rounded-full">
+<span class="material-symbols-outlined text-primary">help</span>
+</button>
+</div>
+</div>
+</header>
+<main class="max-w-xl mx-auto px-6 pt-4 pb-32">
+<!-- Profile Header Section (Aligned with SCREEN_10) -->
+<section class="flex flex-col items-center mb-8">
+<div class="relative mb-4 group">
+<div class="w-24 h-24 rounded-full overflow-hidden ring-4 ring-white shadow-lg">
+<img alt="Profile picture" class="w-full h-full object-cover" data-alt="Close up portrait of a young man with a warm smile, neutral background, high resolution photography" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnFdeTaLtheo8WmEELSh7yTtcYs2di0_KnHpPxRVms5oz6lCvdBCf0XJ8vSUjnmYOiNA0_terg3Zaa2cS-lXcM-9mkYjqzSZO1f_u98yLUy_qbZ0yULoN8Z5NU313VQD07bqSV3tgj1-0Pt2VweDm-FHH_RuZIGJgUrpWd9gWDxEQsUAmY-g70AZ9wYcJcQHusgy9JnMXJKR0ZoLYFIaN03VTv1WUsmNOkME-AcyexFK8z9ADOvU18BXxWIBBK2kCWYX3PqmwuzuTm"/>
+</div>
+<button class="absolute bottom-0 right-0 bg-primary-container text-white p-2 rounded-full shadow-lg transition-transform active:scale-90 border-2 border-white">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">edit</span>
+</button>
+</div>
+<h2 class="text-2xl font-bold text-primary mb-1">Nguyễn Văn Nam</h2>
+<p class="text-on-surface-variant text-sm font-medium">namnv_sscare@gmail.com</p>
+</section>
+<!-- Tab Navigation - Pill Style (Active: Quản lý hồ sơ con) -->
+<nav class="flex gap-2 p-1.5 bg-surface-container-low rounded-full mb-8 overflow-x-auto no-scrollbar">
+<button class="flex-1 whitespace-nowrap py-2.5 px-6 rounded-full text-sm font-bold transition-all bg-white text-primary hover:bg-white/50">
+                Thông tin tài khoản
+            </button>
+<button class="flex-1 whitespace-nowrap py-2.5 px-6 rounded-full text-sm font-bold transition-all bg-primary text-white shadow-lg shadow-primary/20">
+                Quản lý hồ sơ con
+            </button>
+</nav>
+<!-- Child Profiles List -->
+<div class="space-y-6 mb-8">
+<!-- Child Card 1: Tuấn -->
+<div class="bg-surface-container-lowest rounded-[2.5rem] p-6 shadow-sm flex flex-col gap-6">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Child profile" class="w-20 h-20 rounded-full object-cover border-4 border-secondary-container" data-alt="portrait of a smiling young boy with curly hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAlOTc69feh5nzjKCfvP7468HHzjOVE24c5AFffOyLHUQpkePD7Wh6h7DzZcOPZCCboxnSSYyOPtyWido8_sfxRSgZ5p-zQ5_7vdwnbmKMNeJW6LhuEl_29tphxCf9y3EZ1_7vhgDbid1rTTSBP3bfeeX64U40_Hnzw9DoEgAyI_Id2thB-8EZArtWD3Et4y9Ot7tDm4aCmQqSAk4qf19Up7ADI2sEe1AjQfrZ5z9XjKlZjmI73AVui7Fu4rJbxa9UtHabdIQ3MV0k"/>
+<div class="absolute -bottom-1 -right-1 bg-primary p-1.5 rounded-full border-2 border-white shadow-sm">
+<span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'FILL' 1;">edit</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary tracking-tight">Tuấn</h3>
+<p class="text-on-surface-variant font-medium text-sm">10 tuổi</p>
+<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-primary text-[10px] font-bold uppercase tracking-wider">
+                                Mã hồ sơ #U1234
+                            </div>
+</div>
+</div>
+<div class="p-2 bg-surface-container-high rounded-2xl">
+<img alt="QR Access" class="w-12 h-12 mix-blend-multiply opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC_Xn2_8hS39ZQLM5E7WjqaC_YrzKzznPyVReN73ri_aQgD2kPSxPNpTn3Mevt0EWGAvD8_zCihOn_Ybnf-F5l2Lasy5CBt837RsZ53CRcRHsop2HpEwy7pNOzUDbAIIp0jQCWM_lxOKKSezkiWSr0BYbGRG9nKLlj2WQ5B1UlWuZYbwz1cfT7Rjr_YePChJvY6hykuHUDKVr4W-wt0Vqnsy7ht9Y7R2uXK0E1sJqdxX5cxFf0nVk7eoqqVC2UYvtU_HEgcF-KCakz5"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1 ml-1">Ngày sinh</span>
+<span class="font-bold text-primary ml-1">15/05/2014</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1 ml-1">Giới tính</span>
+<span class="font-bold text-primary ml-1">Nam</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-secondary-container hover:bg-secondary-fixed text-primary font-bold py-3 px-6 rounded-full transition-all active:scale-95 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">edit</span> Sửa</button>
+<button class="flex-1 border-2 border-error text-error font-bold py-3 px-6 rounded-full transition-all active:scale-95 flex items-center justify-center gap-2 hover:bg-error/5">
+<span class="material-symbols-outlined text-[18px]">delete</span> Xoá
+</button>
+</div>
+</div>
+<!-- Child Card 2: Linh -->
+<div class="bg-surface-container-lowest rounded-[2.5rem] p-6 shadow-sm flex flex-col gap-6">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-4">
+<div class="relative">
+<img alt="Child profile" class="w-20 h-20 rounded-full object-cover border-4 border-secondary-container" data-alt="adorable young girl with braids" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqywOnyIOYOdkwQ12anxzTbMqatPNMQZnViOirKO3sAQ2ar9d_-5_Zf9nm1UCBqC3e7Vtln3Ld7xM_ABn84pRRi7HrkF6vhoLipLi5Knk6VCq86AceMsGpc4UKX-hTvRk-NIY9T985tEiG4MpEqs2X2YaJ-PDNuEF3O2YL4uSuTpm8SS8h6ppoE5ocruFHXlPgfaltlvWL7FBVKNrPSHZYg6ae2dNxsHFjamkjJun1tEY0oM4JNxnz2KWGbmfg9v56LQNO64P4x5wy"/>
+<div class="absolute -bottom-1 -right-1 bg-primary p-1.5 rounded-full border-2 border-white shadow-sm">
+<span class="material-symbols-outlined text-white text-[14px]" style="font-variation-settings: 'FILL' 1;">edit</span>
+</div>
+</div>
+<div>
+<h3 class="text-xl font-headline font-bold text-primary tracking-tight">Linh</h3>
+<p class="text-on-surface-variant font-medium text-sm">12 tuổi</p>
+<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-secondary-container text-primary text-[10px] font-bold uppercase tracking-wider">
+                                Mã hồ sơ #U5678
+                            </div>
+</div>
+</div>
+<div class="p-2 bg-surface-container-high rounded-2xl">
+<img alt="QR Access" class="w-12 h-12 mix-blend-multiply opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDW4mpRr7BM-QSwzJMwQ3frj6Z85uPkl_WWHKggKuuCsRTI3-1tsQ5b1mnYagsnBPpA3h0GYtiJrEWEUFj7jEGPKjFdPjiD5Y726Hmppe7PTD0xgH1_qpb72GMGH_EZGDn_RHx6YVun6UZJNiAhYsMpIMae-x7zcg60XIulCBSisC6Ol6XCNTxrlhmYFkVLUnKi9hoJjtbwloTzBn2LPBxACbtr2McfizeaM2JZbqS3iN2agFKfsHm__2Vad0RDHDh9ULu7oVN5F0QZ"/>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1 ml-1">Ngày sinh</span>
+<span class="font-bold text-primary ml-1">22/10/2012</span>
+</div>
+<div class="bg-surface-container-low p-4 rounded-2xl">
+<span class="block text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1 ml-1">Giới tính</span>
+<span class="font-bold text-primary ml-1">Nữ</span>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 bg-secondary-container hover:bg-secondary-fixed text-primary font-bold py-3 px-6 rounded-full transition-all active:scale-95 flex items-center justify-center gap-2"><span class="material-symbols-outlined text-[18px]">edit</span> Sửa</button>
+<button class="flex-1 border-2 border-error text-error font-bold py-3 px-6 rounded-full transition-all active:scale-95 flex items-center justify-center gap-2 hover:bg-error/5">
+<span class="material-symbols-outlined text-[18px]">delete</span> Xoá
+</button>
+</div>
+</div>
+</div>
+<!-- Add Profile Button -->
+<div class="pt-4">
+<button class="w-full bg-primary-container text-white font-bold py-4 rounded-full shadow-xl shadow-primary-container/20 flex items-center justify-center gap-2 transition-all active:scale-[0.98] hover:brightness-110">
+<span class="material-symbols-outlined">add</span>
+                Thêm hồ sơ con
+            </button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 pt-4 bg-white/70 backdrop-blur-xl shadow-[0_-24px_40px_rgba(0,62,116,0.05)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:opacity-80 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold tracking-wide uppercase mt-1">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-blue-100 text-blue-900 rounded-full px-5 py-2 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">child_care</span>
+<span class="font-['Inter'] text-[10px] font-semibold tracking-wide uppercase mt-1">Quản lý con</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:opacity-80 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-['Inter'] text-[10px] font-semibold tracking-wide uppercase mt-1">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2 hover:opacity-80 transition-all duration-300 ease-out" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-['Inter'] text-[10px] font-semibold tracking-wide uppercase mt-1">Thông báo</span>
+</a>
+</nav>
+</body></html>

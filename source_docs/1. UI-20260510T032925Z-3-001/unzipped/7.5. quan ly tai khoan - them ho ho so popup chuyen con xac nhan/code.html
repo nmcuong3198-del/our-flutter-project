@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+
+<html lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#1a5694",
+                    "on-surface": "#191c20",
+                    "surface-dim": "#d9dadf",
+                    "primary": "#003e74",
+                    "on-secondary-fixed": "#0f1d25",
+                    "inverse-surface": "#2e3035",
+                    "outline": "#727781",
+                    "on-surface-variant": "#424750",
+                    "inverse-on-surface": "#f0f0f6",
+                    "background": "#f9f9ff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "tertiary": "#5c3400",
+                    "surface-container-highest": "#e1e2e8",
+                    "primary-fixed-dim": "#a4c9ff",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f3f3f9",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed": "#ffdcbe",
+                    "inverse-primary": "#a4c9ff",
+                    "surface-tint": "#28609e",
+                    "surface-container-high": "#e7e8ee",
+                    "surface-container": "#ededf3",
+                    "secondary-container": "#d3e2ed",
+                    "on-primary-fixed": "#001c39",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "surface-variant": "#e1e2e8",
+                    "on-tertiary-container": "#ffbc7a",
+                    "surface": "#f9f9ff",
+                    "on-primary-fixed-variant": "#004884",
+                    "on-tertiary-fixed": "#2c1600",
+                    "secondary": "#526069",
+                    "outline-variant": "#c2c6d2",
+                    "secondary-fixed": "#d6e5ef",
+                    "on-secondary-container": "#56656e",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#aaccff",
+                    "surface-bright": "#f9f9ff",
+                    "primary-fixed": "#d4e3ff",
+                    "tertiary-container": "#7d4800",
+                    "on-background": "#191c20",
+                    "secondary-fixed-dim": "#bac9d3",
+                    "on-secondary-fixed-variant": "#3b4951"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- Background Screen: Thêm hồ sơ con -->
+<div class="fixed inset-0 flex flex-col pointer-events-none opacity-40">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-slate-950 flex justify-between items-center px-6 py-4 w-full max-w-full mx-auto font-plus-jakarta-sans font-bold text-lg">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Portrait of a smiling parent in soft natural light, warm and professional aesthetic" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCaRApjKB2r7J0RGV-C223lG6UXaFHJfSasmNFpachX4F8q-uPbp0pQfGqcqyw9sAMBsMmWqQo7lAtW3_jYwkLgWMwA-YOi4DRyrgAHPI380WBu_fUNKt2ZZM-bQl63wssKf2XuccgkcPmZaKdZipmSu2BgxxTSuoRNXNXPjH_4o-LXe1DmQf4yEyA6mfT2HeTzlLAQzGMrFxwRE8xUBOcJiM9fu8sRQzmfqvdw_Y5Om-36cm2wqNC_FGgK27xHqr0BAcZVxQuXGdCk"/>
+</div>
+<h1 class="font-plus-jakarta-sans font-black text-blue-900 dark:text-blue-100">Serene Nurture</h1>
+</div>
+<span class="material-symbols-outlined text-primary">notifications</span>
+</header>
+<!-- Main Content (Simplified for Background) -->
+<main class="flex-1 px-6 pt-4">
+<h2 class="font-display font-bold text-2xl text-primary mb-6">Thêm hồ sơ con</h2>
+<div class="space-y-6">
+<div class="bg-surface-container-low p-6 rounded-lg">
+<div class="w-24 h-24 bg-surface-container-highest rounded-full mx-auto flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-4xl text-outline">add_a_photo</span>
+</div>
+<div class="space-y-4">
+<div class="h-12 bg-surface-container-highest rounded-md w-full"></div>
+<div class="h-12 bg-surface-container-highest rounded-md w-full"></div>
+<div class="h-12 bg-surface-container-highest rounded-md w-full"></div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[60] flex items-center justify-center p-6 bg-on-surface/20 backdrop-blur-sm">
+<!-- Modal Card -->
+<div class="bg-surface-container-lowest w-full max-w-sm rounded-xl overflow-hidden shadow-2xl ring-1 ring-outline-variant/15 flex flex-col">
+<!-- Decorative Header Gradient -->
+<div class="h-2 bg-gradient-to-r from-primary via-primary-container to-secondary-container"></div>
+<div class="p-8 flex flex-col items-center text-center">
+<!-- Icon Highlight -->
+<div class="w-16 h-16 bg-secondary-container rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-primary text-3xl" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<h3 class="font-display font-bold text-2xl text-primary tracking-tight mb-4">
+                    Xác nhận từ con
+                </h3>
+<p class="text-on-surface-variant leading-relaxed text-sm font-medium mb-8">
+                    Bước cuối cùng: Để đảm bảo quyền riêng tư của trẻ theo pháp luật, con cần trực tiếp xác nhận các thông tin trên. Phụ huynh vui lòng chuyển điện thoại cho con thực hiện bước này.
+                </p>
+<!-- Action Button -->
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-on-primary py-4 px-8 rounded-full font-headline font-bold text-base shadow-lg shadow-primary/20 active:scale-95 transition-all duration-200">Chuyển cho con</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar (Shared Component) - Rendered over background but below modal if z-index allowed, but user asked for it visible but dimmed -->
+<!-- Applying style_shell_layout, style_bg_color, style_shadows_and_elevation -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface-container-low/90 backdrop-blur-xl dark:bg-slate-900/90 shadow-[0_-8px_30px_rgb(0,0,0,0.04)] rounded-t-[3rem] opacity-60">
+<!-- Trang chủ -->
+<div class="flex flex-col items-center justify-center text-blue-900/60 dark:text-blue-200/50 p-2 hover:opacity-80 transition-opacity tap-highlight-none active:scale-90 duration-300">
+<span class="material-symbols-outlined">home</span>
+<span class="font-plus-jakarta-sans text-[10px] font-semibold">Trang chủ</span>
+</div>
+<!-- Dinh dưỡng -->
+<div class="flex flex-col items-center justify-center text-blue-900/60 dark:text-blue-200/50 p-2 hover:opacity-80 transition-opacity tap-highlight-none active:scale-90 duration-300">
+<span class="material-symbols-outlined">restaurant</span>
+<span class="font-plus-jakarta-sans text-[10px] font-semibold">Dinh dưỡng</span>
+</div>
+<!-- Nhật ký -->
+<div class="flex flex-col items-center justify-center text-blue-900/60 dark:text-blue-200/50 p-2 hover:opacity-80 transition-opacity tap-highlight-none active:scale-90 duration-300">
+<span class="material-symbols-outlined">auto_stories</span>
+<span class="font-plus-jakarta-sans text-[10px] font-semibold">Nhật ký</span>
+</div>
+<!-- Hồ sơ (ACTIVE) -->
+<!-- Applying style_active_navigation -->
+<div class="flex flex-col items-center justify-center bg-primary text-white rounded-full p-3 mb-2 shadow-lg hover:opacity-80 transition-opacity tap-highlight-none active:scale-90 duration-300">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-plus-jakarta-sans text-[10px] font-semibold">Hồ sơ</span>
+</div>
+</nav>
+</body></html>

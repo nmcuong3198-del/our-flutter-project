@@ -108,6 +108,124 @@ class MockData {
     return table[child.age];
   }
 
+  // Practice items per child
+  static List<PracticeItem> practiceFor(String childId) {
+    final now = DateTime.now();
+    final monthYear = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+    return [
+      // Quan sát
+      PracticeItem(
+        id: 'p1', childId: childId, category: 'quan_sat',
+        title: 'Quan sát biểu hiện cảm xúc của con khi tan học',
+        monthYear: monthYear, executor: 'Mẹ', plannedWeek: 1,
+      ),
+      PracticeItem(
+        id: 'p2', childId: childId, category: 'quan_sat',
+        title: 'Ghi nhận thời gian con ngủ và thức dậy trong 1 tuần',
+        monthYear: monthYear, executor: 'Bố', plannedWeek: 2,
+      ),
+      PracticeItem(
+        id: 'p3', childId: childId, category: 'quan_sat',
+        title: 'Quan sát con tương tác với bạn bè',
+        monthYear: monthYear, executor: 'Mẹ', plannedWeek: 3, isCompleted: true,
+        notes: 'Con chơi vui vẻ với bạn Linh, có vẻ tự tin hơn.',
+      ),
+      // Giao tiếp
+      PracticeItem(
+        id: 'p4', childId: childId, category: 'giao_tiep',
+        title: 'Hỏi con về 1 điều thú vị nhất trong ngày',
+        monthYear: monthYear, executor: 'Mẹ', plannedWeek: 1, isCompleted: true,
+        notes: 'Con kể về tiết thí nghiệm khoa học.',
+      ),
+      PracticeItem(
+        id: 'p5', childId: childId, category: 'giao_tiep',
+        title: 'Nói chuyện về sự thay đổi cơ thể một cách tự nhiên',
+        monthYear: monthYear, executor: 'Mẹ', plannedWeek: 2,
+      ),
+      PracticeItem(
+        id: 'p6', childId: childId, category: 'giao_tiep',
+        title: 'Khen ngợi con về 1 nỗ lực cụ thể (không chỉ kết quả)',
+        monthYear: monthYear, executor: 'Bố', plannedWeek: 3,
+      ),
+      // Hỗ trợ
+      PracticeItem(
+        id: 'p7', childId: childId, category: 'ho_tro',
+        title: 'Chuẩn bị sẵn băng vệ sinh trong cặp sách của con',
+        monthYear: monthYear, executor: 'Mẹ', plannedWeek: 1, isCompleted: true,
+      ),
+      PracticeItem(
+        id: 'p8', childId: childId, category: 'ho_tro',
+        title: 'Đưa con đi khám sức khỏe định kỳ',
+        monthYear: monthYear, executor: 'Bố', plannedWeek: 4,
+      ),
+      PracticeItem(
+        id: 'p9', childId: childId, category: 'ho_tro',
+        title: 'Tạo góc riêng tư cho con trong nhà',
+        monthYear: monthYear, executor: 'Bố', plannedWeek: 2,
+      ),
+    ];
+  }
+
+  // Reminders per child
+  static List<Reminder> remindersFor(String childId) {
+    final now = DateTime.now();
+    return [
+      Reminder(
+        id: 'r1', childId: childId,
+        date: now.add(const Duration(days: 2)),
+        label: 'Đưa con đi khám răng',
+      ),
+      Reminder(
+        id: 'r2', childId: childId,
+        date: now.add(const Duration(days: 5)),
+        label: 'Họp phụ huynh trường',
+      ),
+      Reminder(
+        id: 'r3', childId: childId,
+        date: now.add(const Duration(days: 10)),
+        label: 'Mua vitamin cho con',
+      ),
+      Reminder(
+        id: 'r4', childId: childId,
+        date: now.subtract(const Duration(days: 1)),
+        label: 'Nhắc con uống thuốc sắt',
+        isActive: false,
+      ),
+      Reminder(
+        id: 'r5', childId: childId,
+        date: now.add(const Duration(days: 14)),
+        label: 'Sinh nhật bạn Linh — mua quà',
+      ),
+    ];
+  }
+
+  // Symptom summary for last 30 days (precomputed from check-ins)
+  static Map<String, int> symptomSummaryFor(String childId) {
+    final checkins = checkinsFor(childId);
+    final counts = <String, int>{};
+    for (final c in checkins) {
+      for (final s in c.symptoms) {
+        counts[s] = (counts[s] ?? 0) + 1;
+      }
+      if (c.bodyStatus != null && c.bodyStatus!.isNotEmpty) {
+        counts[c.bodyStatus!] = (counts[c.bodyStatus!] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }
+
+  // Emotion summary for last 30 days
+  static Map<String, int> emotionSummaryFor(String childId) {
+    final checkins = checkinsFor(childId);
+    final counts = <String, int>{};
+    for (final c in checkins) {
+      for (final e in c.emotions) {
+        counts[e] = (counts[e] ?? 0) + 1;
+      }
+    }
+    return counts;
+  }
+
   // Mock user profile
   static const userName = 'Nguyễn Thị Hương';
   static const userRole = 'Mẹ';

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#1A5694",
+                    "on-primary": "#ffffff",
+                    "primary-container": "#d4e3ff",
+                    "on-primary-container": "#001c39",
+                    "secondary": "#526069",
+                    "on-secondary": "#ffffff",
+                    "secondary-container": "#d3e2ed",
+                    "on-secondary-container": "#0f1d25",
+                    "tertiary": "#5c3400",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-container": "#ffdcbe",
+                    "on-tertiary-container": "#2c1600",
+                    "background": "#f9f9ff",
+                    "on-background": "#191c20",
+                    "surface": "#f9f9ff",
+                    "on-surface": "#191c20",
+                    "surface-variant": "#e1e2e8",
+                    "on-surface-variant": "#424750",
+                    "outline": "#727781",
+                    "error": "#ba1a1a",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-error-container": "#93000a",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-low": "#f3f3f9",
+                    "surface-container": "#ededf3",
+                    "surface-container-high": "#e7e8ee",
+                    "surface-container-highest": "#e1e2e8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .brand-logo { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+        .active-icon {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32">
+<!-- Header -->
+<header class="bg-background/80 backdrop-blur-md flex justify-between items-center w-full px-6 py-4 fixed top-0 z-50">
+<div class="flex items-center gap-3">
+<img alt="SSCare Logo" class="h-10 w-auto" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlGWLnwRHSMbjhWlHLYN3EFq3xy86isuwXF34vw0RTV8xNOK3caNz38dzbiqUt8M7fhW3mAlpD7nHr4gm2jO8fS9L6Wg35xK4CRcqfNlwY66ueWO8uPxl-_h0teQqBHMXZWMrTlevlP2pt2bfUPWA2VEqNbLVjzftZstVD2JTGU3CydKNbUaWhPcgvokFZfVgLlH7RLSaHSjcjmWA13imFlm2KIuekQHpOXFE8rt9NsJ2dYwC9WR8dhlcrZWq8IEF3FKyGxxPOu5-P"/>
+<span class="font-headline font-black text-primary text-xl tracking-tight">SSCare</span>
+</div>
+<button class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center hover:bg-opacity-80 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</button>
+</header>
+<main class="pt-24 px-6 max-w-5xl mx-auto space-y-10">
+<!-- Greeting -->
+<section class="space-y-1">
+<p class="text-secondary font-medium text-lg">Xin chào,</p>
+<h1 class="text-4xl font-extrabold text-primary tracking-tight">Mẹ Mai Anh</h1>
+</section>
+<!-- Quick Actions (Hành động nhanh) -->
+<section class="space-y-4">
+<h2 class="text-xs font-black tracking-[0.15em] text-primary/60 uppercase">HÀNH ĐỘNG NHANH</h2>
+<div class="grid grid-cols-3 gap-3">
+<!-- Hiểu con -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex flex-col items-center justify-center gap-3 group hover:bg-primary transition-all duration-300 border border-outline/10 shadow-sm text-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="psychology">psychology</span>
+</div>
+<span class="font-headline font-bold text-sm text-primary group-hover:text-white">Hiểu con</span>
+</div>
+<!-- Cùng con -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex flex-col items-center justify-center gap-3 group hover:bg-primary transition-all duration-300 border border-outline/10 shadow-sm text-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="family_history">family_history</span>
+</div>
+<span class="font-headline font-bold text-sm text-primary group-hover:text-white">Cùng con</span>
+</div>
+<!-- Báo cáo tổng hợp -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex flex-col items-center justify-center gap-3 group hover:bg-primary transition-all duration-300 border border-outline/10 shadow-sm text-center">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="bar_chart">bar_chart</span>
+</div>
+<span class="font-headline font-bold text-sm text-primary group-hover:text-white leading-tight">Báo cáo tổng hợp</span>
+</div>
+</div>
+</section>
+<!-- Featured Section (Nổi bật) -->
+<section class="space-y-4">
+<h2 class="text-xs font-black tracking-[0.15em] text-primary/60 uppercase">Nổi bật</h2>
+<div class="relative overflow-hidden rounded-xl bg-primary-container aspect-[16/9] md:aspect-[21/7] group shadow-md">
+<img alt="Nutrition for kids" class="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-700" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgIcOP6hAw6V_xWiURTh_uJuIV5hxmHyurdD3aNI1CVuezcqjzi373XqupeaCMBz2KMdKT_YYb9YmfUZhpzI1Tqh3ag-C8mnkHl7ZrERIvTzLj-QRwWVCDlLclyKzgYvnxSYMB5yVjiCNSkuAdAzcnUcT_D10HFdxp-sEPNCqcPDLuVWN4qJ95WgILPH5O1Ki9BD_RkoomZY1iwIoogxiQisjDJUkYapirQQRXKD_3Pu91tIHyC-c_tuX-SwCdsricW1AB3o9F61gg"/>
+<div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-transparent flex flex-col justify-center p-8 md:p-12">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold w-fit mb-4 uppercase tracking-wider">Kiến thức mới</span>
+<h3 class="text-white text-3xl md:text-4xl font-headline font-bold max-w-lg leading-tight mb-6">Hiểu về dinh dưỡng cho bé</h3>
+<button class="bg-surface-container-lowest text-primary font-bold py-3 px-8 rounded-full w-fit hover:bg-secondary-container transition-colors">Xem ngay</button>
+</div>
+</div>
+</section>
+<!-- Knowledge Library (Thư viện kiến thức) -->
+<section class="space-y-4">
+<div class="flex justify-between items-end">
+<h2 class="text-xs font-black tracking-[0.15em] text-primary/60 uppercase">Thư viện kiến thức</h2>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- 2x2 Grid for the first 4 boxes -->
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-44 hover:bg-secondary-container transition-all border border-outline/5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="spa">spa</span>
+<p class="font-headline font-bold text-lg text-primary">Nuôi dưỡng tinh thần</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-44 hover:bg-secondary-container transition-all border border-outline/5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="fitness_center">fitness_center</span>
+<p class="font-headline font-bold text-lg text-primary">Phát triển thể chất</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-44 hover:bg-secondary-container transition-all border border-outline/5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="psychology_alt">psychology_alt</span>
+<p class="font-headline font-bold text-lg text-primary">Bồi đắp kỹ năng</p>
+</div>
+<div class="bg-error-container/40 p-6 rounded-xl flex flex-col justify-between h-44 hover:bg-error-container/60 transition-all border border-error/10 shadow-sm">
+<span class="material-symbols-outlined text-error text-4xl" data-icon="warning">warning</span>
+<p class="font-headline font-bold text-lg text-error">Sự kiện cảnh báo</p>
+</div>
+<!-- Full width 5th box -->
+<div class="col-span-2 bg-secondary-container p-6 rounded-xl flex items-center justify-between hover:bg-opacity-80 transition-all border border-outline/5 shadow-sm">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="bookmark">bookmark</span>
+<p class="font-headline font-bold text-xl text-primary">Bài viết đã lưu</p>
+</div>
+<span class="material-symbols-outlined text-primary" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Testimonial & Community -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
+<!-- Testimonial -->
+<div class="bg-surface-container-lowest p-8 rounded-xl space-y-6 relative overflow-hidden border border-outline/10 shadow-sm">
+<div class="absolute top-0 right-0 p-4 opacity-5">
+<span class="material-symbols-outlined text-8xl" data-icon="format_quote">format_quote</span>
+</div>
+<div class="flex items-center gap-4 relative z-10">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaxen7bE4pez3cDPhfg5P7N7M5zCmOCEGn_bdCCvjVMDvi53a4BZ0W4kJ0eYHp2gRgEscsOYHFUErfuYJE0GnWT7ywQuT398pp8gGPtpwGD33kutHRXWPfmbo9VnsrTHSSkNN24JNKj3pjo3GI2pwujRDrRQGTzTiS14O7S_mzYo6icF8_iOA6g0vO3a0QmSEXk_taWSyBYyaRGpZnr76wN5h7s3ZaHhcdfCvbuTlw8Ksf72Ad4brK4bXIkra80R9cznxvM73ew7sk"/>
+</div>
+<div>
+<p class="font-bold text-primary">Chị Mai Anh</p>
+<p class="text-xs text-secondary">Mẹ bé Bun - 2 tuổi</p>
+</div>
+</div>
+<p class="italic text-on-surface-variant leading-relaxed relative z-10">
+                "Từ khi dùng SSCare, mình không còn lo lắng về thực đơn mỗi ngày cho Bun nữa. App gợi ý rất chi tiết và khoa học!"
+            </p>
+</div>
+<!-- Facebook Community -->
+<div class="bg-primary p-8 rounded-xl text-white flex flex-col justify-center space-y-4 relative overflow-hidden group shadow-md">
+<div class="absolute -bottom-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+<div class="flex items-center gap-3 relative z-10">
+<span class="material-symbols-outlined text-4xl" data-icon="groups">groups</span>
+<h3 class="font-headline font-bold text-xl">Cộng đồng SSCare</h3>
+</div>
+<p class="text-primary-container/80 leading-relaxed relative z-10">
+                Tham gia nhóm Facebook để trao đổi kinh nghiệm nuôi dạy con cùng 10.000+ ba mẹ khác.
+            </p>
+<button class="bg-white text-primary font-bold py-3 px-6 rounded-full w-fit hover:bg-primary-container transition-colors relative z-10">Tham gia ngay</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center px-6 pb-6 pt-2 bg-white/80 backdrop-blur-xl border-t border-outline/10 shadow-[0_-8px_32px_rgba(0,0,0,0.05)] rounded-t-[2.5rem]">
+<!-- Active: Trang chủ -->
+<a class="flex flex-col items-center justify-center bg-primary text-white rounded-full px-4 py-2 space-y-0.5" href="#">
+<span class="material-symbols-outlined active-icon" data-icon="home">home</span>
+<span class="text-[10px] font-bold">Trang chủ</span>
+</a>
+<!-- Inactive: Quản lý con -->
+<a class="flex flex-col items-center justify-center text-primary/60 px-4 py-2 space-y-0.5 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="child_care">child_care</span>
+<span class="text-[10px] font-bold">Quản lý con</span>
+</a>
+<!-- Inactive: Thư viện -->
+<a class="flex flex-col items-center justify-center text-primary/60 px-4 py-2 space-y-0.5 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="menu_book">menu_book</span>
+<span class="text-[10px] font-bold">Thư viện</span>
+</a>
+<!-- Inactive: Thông báo -->
+<a class="flex flex-col items-center justify-center text-primary/60 px-4 py-2 space-y-0.5 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="text-[10px] font-bold">Thông báo</span>
+</a>
+</nav>
+</body></html>

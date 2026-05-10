@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-error": "#ffffff",
+                    "on-secondary-container": "#56656e",
+                    "on-background": "#191c20",
+                    "inverse-on-surface": "#f0f0f6",
+                    "background": "#f9f9ff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "on-surface": "#191c20",
+                    "secondary-container": "#d3e2ed",
+                    "secondary-fixed": "#d6e5ef",
+                    "on-primary-container": "#aaccff",
+                    "on-primary": "#ffffff",
+                    "tertiary": "#5c3400",
+                    "secondary": "#526069",
+                    "inverse-primary": "#a4c9ff",
+                    "surface-container-high": "#e7e8ee",
+                    "on-tertiary": "#ffffff",
+                    "surface-variant": "#e1e2e8",
+                    "surface-dim": "#d9dadf",
+                    "primary-fixed-dim": "#a4c9ff",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#7d4800",
+                    "surface": "#f9f9ff",
+                    "primary-container": "#1a5694",
+                    "outline-variant": "#c2c6d2",
+                    "surface-tint": "#28609e",
+                    "on-surface-variant": "#424750",
+                    "surface-container": "#ededf3",
+                    "error-container": "#ffdad6",
+                    "tertiary-fixed": "#ffdcbe",
+                    "on-tertiary-container": "#ffbc7a",
+                    "surface-bright": "#f9f9ff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed": "#0f1d25",
+                    "on-primary-fixed": "#001c39",
+                    "on-tertiary-fixed": "#2c1600",
+                    "surface-container-highest": "#e1e2e8",
+                    "secondary-fixed-dim": "#bac9d3",
+                    "outline": "#727781",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "on-primary-fixed-variant": "#004884",
+                    "surface-container-low": "#f3f3f9",
+                    "primary": "#003e74",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#2e3035",
+                    "on-secondary-fixed-variant": "#3b4951",
+                    "primary-fixed": "#d4e3ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        }
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-header {
+            background: rgba(249, 249, 255, 0.8);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-surface min-h-screen text-on-surface selection:bg-secondary-container">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-50 glass-header px-6 py-4 flex items-center gap-4">
+<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-secondary-container transition-colors duration-150 active:scale-90">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div class="flex-1 relative">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full bg-surface-container-highest border-none rounded-full py-3.5 pl-12 pr-6 text-on-surface focus:ring-2 focus:ring-surface-tint focus:bg-surface-container-lowest transition-all" placeholder="Tìm kiếm bài viết..." type="text" value="dinh dưỡng"/>
+</div>
+</header>
+<main class="max-w-2xl mx-auto px-6 pt-6 pb-32">
+<!-- Search Info Meta -->
+<div class="mb-8 flex items-baseline justify-between">
+<h1 class="text-display-sm text-2xl font-bold tracking-tight text-primary">Kết quả cho 'dinh dưỡng'</h1>
+<span class="text-sm font-medium text-secondary">24 bài viết</span>
+</div>
+<!-- Article List -->
+<div class="flex flex-col gap-8">
+<!-- Result Card 1 -->
+<article class="group bg-surface-container-low rounded-lg overflow-hidden hover:bg-surface-container-lowest transition-all duration-300">
+<div class="flex flex-col">
+<div class="relative w-full aspect-[16/9] overflow-hidden">
+<img alt="Close-up of a colorful wooden bowl filled with fresh vegetables and grains" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3Iu4a3UiuONperhxToBarnqmISaE0R1vl9fCy8D8sX-AJpk5FLvJvaZKSSodjkM6rJO1RvrWRj51sA6cveJw35JdEVb_3c3CdAfkTIryeYfA_2pNnN73zA29KXck6uN2zIW4dfurn0BmPo6yNwHxyiX1UhBekVMrscBeHqnUPAxJ06zops-EBWEUaiVtWF-2UlcpkxqIIbrqRz1YYygjiHgFIV2si8o2IMVDhwvhmLLakB8NNg2oaGLhilMDt4ys7c-90F-4lQaX8"/>
+</div>
+<div class="p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
+                                Dinh dưỡng
+                            </span>
+<span class="flex items-center gap-1 text-[11px] text-outline font-medium">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 5 phút đọc
+                            </span>
+</div>
+<h2 class="text-xl font-bold text-primary group-hover:text-primary-container transition-colors leading-tight mb-3">
+                            Hiểu về dinh dưỡng cho bé
+                        </h2>
+<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+                            Khám phá các nhóm chất thiết yếu giúp trẻ phát triển trí não và chiều cao trong giai đoạn vàng từ 0 đến 3 tuổi...
+                        </p>
+</div>
+</div>
+</article>
+<!-- Result Card 2 -->
+<article class="group bg-surface-container-low rounded-lg overflow-hidden hover:bg-surface-container-lowest transition-all duration-300">
+<div class="flex flex-col">
+<div class="relative w-full aspect-[16/9] overflow-hidden">
+<img alt="Artisanal meal prep containers with healthy soups and steamed greens" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuArdhnoHDuAPPdUSBXhX_d2Q_jzvlEJK-gl1lJSKNo-5lRz8IOsWGfVesuRFoIoJYgyvLFjdFBsE5G9gmED6q1lcbIerlgjvKDPIFh1vPQC-T98_NbSkWIvpAjNHmUdEw8vr3SVYAwnPdbAQDDuMXkES2qPHj21ZOO0TzPKH4o1gBASx15GhuQYbbmtTh_EGIgzrj2WHi34IjzSsHc2aFtpiaWexsBrx5RCx-cTk8Nazf-VDYsvldSGuuNOBXApkh_xvFOZWrpzN8V9"/>
+</div>
+<div class="p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-secondary-fixed text-on-secondary-fixed text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
+                                Sức khỏe
+                            </span>
+<span class="flex items-center gap-1 text-[11px] text-outline font-medium">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 8 phút đọc
+                            </span>
+</div>
+<h2 class="text-xl font-bold text-primary group-hover:text-primary-container transition-colors leading-tight mb-3">
+                            Thực đơn 7 ngày bồi bổ sức đề kháng
+                        </h2>
+<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+                            Tổng hợp các món ăn giàu Vitamin C và Kẽm giúp gia đình bạn luôn khỏe mạnh trong mùa dịch...
+                        </p>
+</div>
+</div>
+</article>
+<!-- Result Card 3 -->
+<article class="group bg-surface-container-low rounded-lg overflow-hidden hover:bg-surface-container-lowest transition-all duration-300">
+<div class="flex flex-col">
+<div class="relative w-full aspect-[16/9] overflow-hidden">
+<img alt="A small child happily eating fresh fruit slices at a bright kitchen table" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGIcH6vVwHJtpdvjunEzxuSotexrU3Kd91Y4UqM5Dzx-rQTihL7_DSmrKAdjkfebHCxmvbf5FWUn7TDuJn3VgyLFfgvxb5fC_AcMr8jyDGQ_rzKHrzxxpuSwPfD3wEOFLBjOHyw5C78cXVTsI4_u3idFWeLy7XTbMUvybKW77_GHY2u7dBfAhRvuW61TN-OGBPONDI9556LByEZjhBBKW-P0Wm5UXdLawwTpUdF4KUtJYNBs7VduwOEe1rM3ULzDA0KWfEAT0SUVn5"/>
+</div>
+<div class="p-6 flex flex-col">
+<div class="flex items-center gap-3 mb-3">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-3 py-1 rounded-full tracking-wider uppercase">
+                                Dinh dưỡng
+                            </span>
+<span class="flex items-center gap-1 text-[11px] text-outline font-medium">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 4 phút đọc
+                            </span>
+</div>
+<h2 class="text-xl font-bold text-primary group-hover:text-primary-container transition-colors leading-tight mb-3">
+                            Top 10 thực phẩm giàu kẽm cho bé
+                        </h2>
+<p class="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+                            Bổ sung kẽm đúng cách không chỉ giúp trẻ ăn ngon miệng mà còn hỗ trợ phát triển chiều cao tối ưu...
+                        </p>
+</div>
+</div>
+</article>
+</div>
+<!-- Load More Section -->
+<div class="mt-12 flex justify-center">
+<button class="flex items-center gap-2 text-primary font-bold text-sm hover:underline">
+                Xem thêm kết quả
+                <span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-surface/80 backdrop-blur-xl shadow-[0_-8px_40px_-12px_rgba(0,62,116,0.06)] rounded-t-lg">
+<!-- Trang chủ -->
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant px-5 py-2 hover:bg-secondary-container/50 rounded-full transition-transform active:scale-90 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-semibold text-[11px] font-headline">Trang chủ</span>
+</a>
+<!-- Quản lý con -->
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant px-5 py-2 hover:bg-secondary-container/50 rounded-full transition-transform active:scale-90 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">child_care</span>
+<span class="font-semibold text-[11px] font-headline">Quản lý con</span>
+</a>
+<!-- Thư viện (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-primary rounded-full px-5 py-2 transition-transform active:scale-90 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">library_books</span>
+<span class="font-semibold text-[11px] font-headline">Thư viện</span>
+</a>
+<!-- Thông báo -->
+<a class="flex flex-col items-center justify-center text-on-secondary-fixed-variant px-5 py-2 hover:bg-secondary-container/50 rounded-full transition-transform active:scale-90 tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-semibold text-[11px] font-headline">Thông báo</span>
+</a>
+</nav>
+</body></html>

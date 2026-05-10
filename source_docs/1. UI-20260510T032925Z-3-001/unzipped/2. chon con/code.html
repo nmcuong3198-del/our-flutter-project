@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#d3e2ed",
+                    "outline": "#727781",
+                    "on-secondary-fixed": "#0f1d25",
+                    "surface-container-low": "#f3f3f9",
+                    "background": "#f9f9ff",
+                    "surface-tint": "#28609e",
+                    "outline-variant": "#c2c6d2",
+                    "on-error": "#ffffff",
+                    "primary-container": "#1a5694",
+                    "on-tertiary-fixed": "#2c1600",
+                    "inverse-primary": "#a4c9ff",
+                    "surface-container-highest": "#e1e2e8",
+                    "primary-fixed": "#d4e3ff",
+                    "error": "#ba1a1a",
+                    "tertiary-container": "#7d4800",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#a4c9ff",
+                    "on-tertiary-container": "#ffbc7a",
+                    "secondary-fixed-dim": "#bac9d3",
+                    "on-surface-variant": "#424750",
+                    "on-surface": "#191c20",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#d6e5ef",
+                    "on-secondary-container": "#56656e",
+                    "on-primary-container": "#aaccff",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#3b4951",
+                    "on-primary-fixed-variant": "#004884",
+                    "surface-dim": "#d9dadf",
+                    "surface-container-high": "#e7e8ee",
+                    "surface-bright": "#f9f9ff",
+                    "on-background": "#191c20",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "inverse-surface": "#2e3035",
+                    "inverse-on-surface": "#f0f0f6",
+                    "tertiary": "#5c3400",
+                    "secondary": "#526069",
+                    "primary": "#003e74",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "surface-variant": "#e1e2e8",
+                    "on-primary-fixed": "#001c39",
+                    "surface-container": "#ededf3",
+                    "tertiary-fixed": "#ffdcbe",
+                    "surface": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+        }
+        h1, h2, h3, .headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="w-full sticky top-0 z-50 bg-[#f9f9ff] dark:bg-slate-950 bg-[#d3e2ed]/30 dark:bg-slate-900/30 backdrop-blur-md">
+<div class="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="hover:bg-[#d3e2ed] dark:hover:bg-slate-800 transition-colors p-2 rounded-full active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined text-[#003e74] dark:text-blue-400">arrow_back</span>
+</button>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold text-lg text-[#003e74] dark:text-blue-400">Chọn hồ sơ con</h1>
+</div>
+<div class="w-10 h-10"></div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow px-6 pt-8 pb-32 max-w-2xl mx-auto w-full">
+<div class="mb-10 text-center">
+<p class="text-on-surface-variant font-body">Vui lòng chọn hồ sơ của con để tiếp tục hành trình dinh dưỡng.</p>
+</div>
+<!-- Profiles Grid -->
+<div class="grid grid-cols-2 gap-6">
+<!-- Profile Card 1 -->
+<button class="group flex flex-col items-center p-6 bg-surface-container-lowest rounded-xl border border-outline-variant/15 hover:bg-secondary-fixed transition-all duration-300">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-xl overflow-hidden bg-primary-fixed flex items-center justify-center">
+<img alt="Con Bun" class="w-full h-full object-cover" data-alt="Close-up portrait of a happy toddler with soft lighting and a warm, clean home background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnrFfz504eLjF8X4JfVPtIPOCpxwS-poM77cK7iNF_uWh_ub5vBxubrfZdKalSs8U4U7DKB-3YPeYx19UoK0kIdP1xYhlF6PmIcB1fDqjet3RSrrchgpXp36qVRJLBmFm2Mc7QVxz1tMBrffdfIk1DFdeFbfbeF5xNgkosq5MR8fw6doqrqBLCVKeOVsTkyTzyGG1VZk62Tz5zYQe6AJQQn3i68ZTmhEKnfBbJXBnUYlIwS2dYfan8KyQg11IY4QqJhtPXW0vnLuz7"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-primary text-white p-1 rounded-full border-4 border-white">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<span class="font-headline font-bold text-primary group-hover:text-primary-container">Con Bun</span>
+</button>
+<!-- Profile Card 2 -->
+<button class="group flex flex-col items-center p-6 bg-surface-container-lowest rounded-xl border border-outline-variant/15 hover:bg-secondary-fixed transition-all duration-300">
+<div class="relative mb-4">
+<div class="w-24 h-24 rounded-xl overflow-hidden bg-tertiary-fixed flex items-center justify-center">
+<img alt="Con Miu" class="w-full h-full object-cover" data-alt="Beautiful baby girl laughing while sitting on a soft white blanket with natural sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBw0pvMdlUY4DNvRJ4e8js1bwGZD1wG_mSWmPeHQuKYcsKFhc-WkI1VmBBVLPcYJitAO35rt-EAophPhFicovnJteEbeCFsYa2fsn8G-yO6VxECP9rENyvqV6FlD5oN1zwYQ-Z2kp5gbPafn4CYeX3IX9I9gDyTGwkjaBTyfPBwRN7A-nNIlSFQmcWQMmmTQ_L1vCmhKTzbOwMAbbseArNk8YHCPyRy3Y0K_hHfjAYp5RCpa6rtU-WcZGqZ4bZNBFEA4oh2H0tDP5vA"/>
+</div>
+</div>
+<span class="font-headline font-bold text-primary group-hover:text-primary-container">Con Miu</span>
+</button>
+<!-- Add Profile Card -->
+<button class="group flex flex-col items-center p-6 bg-surface-container-low rounded-xl border-2 border-dashed border-outline-variant hover:bg-surface-container-high transition-all duration-300">
+<div class="w-24 h-24 rounded-xl mb-4 bg-secondary-container flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-primary text-4xl">add</span>
+</div>
+<span class="font-headline font-bold text-on-surface-variant group-hover:text-primary">Thêm hồ sơ</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-[0_-8px_30px_rgba(0,62,116,0.05)] rounded-t-[3rem]">
+<!-- Trang chủ -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-2 hover:text-[#1A5694] dark:hover:text-blue-300 active:scale-90 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[11px]">Trang chủ</span>
+</a>
+<!-- Quản lý con (Active context) -->
+<a class="flex flex-col items-center justify-center bg-[#d3e2ed] dark:bg-blue-900/40 text-[#003e74] dark:text-blue-100 rounded-full px-5 py-2 active:scale-90 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">child_care</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[11px]">Quản lý con</span>
+</a>
+<!-- Thư viện -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-2 hover:text-[#1A5694] dark:hover:text-blue-300 active:scale-90 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1">auto_stories</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[11px]">Thư viện</span>
+</a>
+<!-- Thông báo -->
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-4 py-2 hover:text-[#1A5694] dark:hover:text-blue-300 active:scale-90 transition-all tap-highlight-transparent" href="#">
+<span class="material-symbols-outlined mb-1">notifications</span>
+<span class="font-['Plus_Jakarta_Sans'] font-medium text-[11px]">Thông báo</span>
+</a>
+</nav>
+</body></html>

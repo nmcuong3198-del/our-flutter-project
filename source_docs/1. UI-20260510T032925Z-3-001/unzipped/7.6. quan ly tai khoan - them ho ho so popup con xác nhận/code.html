@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-high": "#e7e8ee",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "on-tertiary-container": "#ffbc7a",
+                        "tertiary": "#5c3400",
+                        "on-background": "#191c20",
+                        "tertiary-container": "#7d4800",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "primary-container": "#1a5694",
+                        "surface": "#f9f9ff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#004884",
+                        "inverse-surface": "#2e3035",
+                        "tertiary-fixed": "#ffdcbe",
+                        "on-secondary-container": "#56656e",
+                        "on-primary-container": "#aaccff",
+                        "outline": "#727781",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "surface-variant": "#e1e2e8",
+                        "surface-bright": "#f9f9ff",
+                        "outline-variant": "#c2c6d2",
+                        "secondary": "#526069",
+                        "surface-container": "#ededf3",
+                        "secondary-fixed": "#d6e5ef",
+                        "background": "#f9f9ff",
+                        "inverse-primary": "#a4c9ff",
+                        "on-secondary-fixed": "#0f1d25",
+                        "on-surface": "#191c20",
+                        "on-primary-fixed": "#001c39",
+                        "surface-container-highest": "#e1e2e8",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#424750",
+                        "surface-tint": "#28609e",
+                        "primary-fixed": "#d4e3ff",
+                        "inverse-on-surface": "#f0f0f6",
+                        "surface-container-lowest": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#d3e2ed",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f3f9",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d9dadf",
+                        "primary": "#003e74"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .editorial-shadow {
+            box-shadow: 0 24px 48px -12px rgba(0, 62, 116, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- Top App Bar (Background Content) -->
+<header class="fixed top-0 left-0 w-full z-10 flex items-center px-6 h-16 bg-slate-50 dark:bg-slate-900">
+<span class="material-symbols-outlined text-[#003e74] dark:text-[#d3e2ed]" data-icon="menu">menu</span>
+<div class="flex-1 text-center">
+<span class="font-['Plus_Jakarta_Sans'] font-extrabold text-[#003e74] dark:text-[#d3e2ed] tracking-tight text-lg">SSCare</span>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-secondary-container">
+<img alt="User" data-alt="close-up professional headshot of a friendly female pediatrician smiling in a modern bright clinical setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7Qe2Vz2UYPze87tixmgI1Tyi68Fg_dWaoiQen8brugMDZKlOFhGia31WXueaFV5_eZzuQpdpo6BkfO90xD6Uyk12sfnkAlzpBikLL1i_DqXLrqqxqx6WOYVXDBOtD2SuuPrsKVjtApkjV-69j7NXqdB0AGDr07B-fsSO5JXLAHfJG8T5ah6izrIl30u645WrFI90nHEyexzCLHGlHt9j9jgC_M3Rp6aoelbWYw6-1RqNOvdOlP2HHZUX5_2qPIZm75BNbZqLWefAG"/>
+</div>
+</header>
+<!-- Main Content Canvas (Blurred Background) -->
+<main class="pt-20 px-6 pb-32 filter blur-sm select-none">
+<section class="mb-8">
+<h1 class="font-display text-4xl font-extrabold text-primary mb-2">Chào buổi sáng</h1>
+<p class="text-secondary font-medium">Bắt đầu ngày mới cùng con yêu.</p>
+</section>
+<!-- Bento Grid Mockup -->
+<div class="grid grid-cols-2 gap-4">
+<div class="col-span-2 bg-surface-container-low rounded-xl p-6 h-48 flex flex-col justify-end relative overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img class="w-full h-full object-cover opacity-20" data-alt="soft focus of a small child and parent hands reaching toward each other in warm morning sunlight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZvw5xutlCONIWEffqlVJiCqZpe7-hI_rjZQYNi18OFMNJb061JCNp5kWqpZr_abgkGykBAOdYm3ooUKBtYXifdc4ERf8frE9ML1YgXWY4Kemn1usIZ113Oaw5xK148adC8KslQRfu9iuSwz9SWth5Hrn6DMrpqom5T8gmtQo2UFpac2chYI8XaWLuWSRCnUQwLE2InTM7O8jSchwujv2VNOP_u80UHum9RjdgMUDWkA2nduKkBVjkeWuXC6nc0PnfGuFJGiiQyeo3"/>
+</div>
+<div class="relative z-10">
+<span class="text-xs font-bold text-primary tracking-widest uppercase mb-2 block">Dinh dưỡng hôm nay</span>
+<h3 class="text-xl font-bold text-on-background">Thực đơn cho Bé</h3>
+</div>
+</div>
+<div class="bg-secondary-container rounded-xl p-6 h-40 flex flex-col justify-between">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="health_and_safety">health_and_safety</span>
+<span class="font-bold text-on-secondary-container">Sức khỏe</span>
+</div>
+<div class="bg-surface-container-high rounded-xl p-6 h-40 flex flex-col justify-between">
+<span class="material-symbols-outlined text-tertiary text-3xl" data-icon="auto_stories">auto_stories</span>
+<span class="font-bold text-on-surface">Kể chuyện</span>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Visible behind blur) -->
+<nav class="fixed bottom-0 left-0 w-full z-10 flex justify-around items-center px-4 pb-6 pt-3 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-t-[3rem] shadow-[0_-4px_24px_rgba(0,62,116,0.05)]">
+<div class="flex flex-col items-center justify-center bg-[#d3e2ed] dark:bg-[#1A5694] text-[#003e74] dark:text-white rounded-full px-5 py-2">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-['Inter'] font-medium text-[11px]">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="child_care">child_care</span>
+<span class="font-['Inter'] font-medium text-[11px]">Quản lý con</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Inter'] font-medium text-[11px]">Thư viện</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 px-5 py-2">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] font-medium text-[11px]">Thông báo</span>
+</div>
+</nav>
+<!-- Modal Overlay -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-primary/20 backdrop-blur-md">
+<!-- Confirmation Popup -->
+<div class="w-full max-w-sm bg-surface-container-lowest rounded-xl p-8 editorial-shadow relative overflow-hidden flex flex-col items-center text-center">
+<!-- Decorative Element -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary-container/30 rounded-full -mr-16 -mt-16"></div>
+<!-- Illustration / Icon Area -->
+<div class="w-24 h-24 bg-primary-fixed rounded-full flex items-center justify-center mb-8 relative">
+<div class="absolute inset-0 bg-primary/5 rounded-full animate-pulse"></div>
+<span class="material-symbols-outlined text-primary text-5xl" data-icon="verified_user" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<!-- Content -->
+<h2 class="font-display font-extrabold text-primary leading-tight mb-4 text-xl">
+                Hồ sơ của con đã sẵn sàng!
+            </h2>
+<p class="font-body text-on-surface-variant text-base leading-relaxed mb-8 px-2">
+                Theo quy định bảo mật, con hãy xác nhận lại sự đồng ý của mình để phụ huynh và <span class="font-bold text-primary">SSCare</span> có thể bắt đầu đồng hành, hỗ trợ con!
+            </p>
+<!-- Action Button -->
+<button class="w-full py-4 px-6 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-headline font-bold text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all duration-200">
+                Xác nhận đồng ý
+            </button>
+<!-- Secondary Action -->
+<button class="mt-6 text-secondary font-semibold text-sm hover:opacity-80 transition-opacity">
+                Xem chi tiết điều khoản
+            </button>
+</div>
+</div>
+</body></html>
