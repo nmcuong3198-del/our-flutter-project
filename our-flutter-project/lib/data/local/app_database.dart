@@ -1,5 +1,8 @@
+import 'dart:io' show Platform;
+
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class AppDatabase {
   AppDatabase({DatabaseFactory? databaseFactory, String? path})
@@ -17,7 +20,7 @@ class AppDatabase {
     final existing = _database;
     if (existing != null) return existing;
 
-    final factory = _databaseFactory ?? databaseFactory;
+    final factory = _databaseFactory ?? _defaultFactory();
     final dbPath = _path ?? p.join(await getDatabasesPath(), 'sscare.db');
     _database = await factory.openDatabase(
       dbPath,
@@ -34,6 +37,14 @@ class AppDatabase {
     final existing = _database;
     _database = null;
     await existing?.close();
+  }
+
+  DatabaseFactory _defaultFactory() {
+    if (Platform.isWindows || Platform.isLinux) {
+      sqfliteFfiInit();
+      return databaseFactoryFfi;
+    }
+    return databaseFactory;
   }
 
   Future<void> _createSchema(Database db, int version) async {

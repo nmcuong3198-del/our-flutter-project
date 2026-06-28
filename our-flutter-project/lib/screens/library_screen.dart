@@ -9,7 +9,13 @@ import 'library_search_screen.dart';
 
 class LibraryScreen extends StatefulWidget {
   final int initialTab;
-  const LibraryScreen({super.key, this.initialTab = 0});
+  final bool allowAuthoring;
+
+  const LibraryScreen({
+    super.key,
+    this.initialTab = 0,
+    this.allowAuthoring = true,
+  });
 
   @override
   State<LibraryScreen> createState() => _LibraryScreenState();
@@ -17,9 +23,9 @@ class LibraryScreen extends StatefulWidget {
 
 class _LibraryScreenState extends State<LibraryScreen> {
   Future<void> _openSearch() async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const LibrarySearchScreen()),
-    );
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const LibrarySearchScreen()));
     if (mounted) setState(() {});
   }
 
@@ -40,7 +46,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
         appBar: AppBar(
           title: const Text(S.library),
           actions: [
-            if (MockData.userCanWriteArticles)
+            if (widget.allowAuthoring && MockData.userCanWriteArticles)
               IconButton(
                 icon: const Icon(Icons.edit_note_rounded),
                 tooltip: 'Tạo bài viết',
@@ -149,7 +155,9 @@ class _ArticleCard extends StatelessWidget {
                   if (article.isFeatured)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 3),
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       margin: const EdgeInsets.only(right: 8),
                       decoration: BoxDecoration(
                         color: AppColors.secondary.withValues(alpha: 0.15),
@@ -165,8 +173,10 @@ class _ArticleCard extends StatelessWidget {
                       ),
                     ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 3,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6),
@@ -181,8 +191,11 @@ class _ArticleCard extends StatelessWidget {
                   ),
                   const Spacer(),
                   if (article.isRead)
-                    const Icon(Icons.check_circle,
-                        size: 18, color: AppColors.checkedIn),
+                    const Icon(
+                      Icons.check_circle,
+                      size: 18,
+                      color: AppColors.checkedIn,
+                    ),
                 ],
               ),
               const SizedBox(height: 10),
@@ -217,8 +230,11 @@ class _ArticleCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 4),
-                  const Icon(Icons.arrow_forward,
-                      size: 14, color: AppColors.primary),
+                  const Icon(
+                    Icons.arrow_forward,
+                    size: 14,
+                    color: AppColors.primary,
+                  ),
                 ],
               ),
             ],

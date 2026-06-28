@@ -14,6 +14,7 @@ import 'package:sscare/screens/children_screen.dart';
 import 'package:sscare/screens/cycle_tab.dart';
 import 'package:sscare/screens/daily_journal_screen.dart';
 import 'package:sscare/screens/height_prediction_screen.dart';
+import 'package:sscare/screens/landing_screen.dart';
 import 'package:sscare/screens/library_screen.dart';
 import 'package:sscare/screens/library_search_screen.dart';
 import 'package:sscare/screens/notifications_screen.dart';
@@ -132,6 +133,18 @@ void main() {
     await _expectRenders(t, _wrap(const LibraryScreen()));
     expect(find.byIcon(Icons.search_rounded), findsOneWidget);
     expect(find.byIcon(Icons.edit_note_rounded), findsOneWidget);
+  });
+
+  testWidgets('Landing library is readable without login', (t) async {
+    await t.pumpWidget(_wrap(LandingScreen(onLogin: () {}, onRegister: () {})));
+    await t.pump(const Duration(milliseconds: 350));
+    await t.tap(find.text(S.navLibrary.toUpperCase()));
+    await t.pumpAndSettle();
+
+    expect(find.text('Đăng nhập cần thiết'), findsNothing);
+    expect(find.text(S.library), findsOneWidget);
+    expect(find.byIcon(Icons.search_rounded), findsOneWidget);
+    expect(find.byIcon(Icons.edit_note_rounded), findsNothing);
   });
 
   testWidgets('ProfileScreen renders', (t) async {

@@ -5,6 +5,7 @@ import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 import 'article_detail_screen.dart';
+import 'library_screen.dart';
 
 class LandingScreen extends StatelessWidget {
   final VoidCallback onLogin;
@@ -356,10 +357,10 @@ class LandingScreen extends StatelessWidget {
   // ── Library 2×2 Grid ──────────────────────────────────────────────────────
   Widget _buildLibraryGrid(BuildContext context) {
     final categories = [
-      (S.catMental, Icons.face, false),
-      (S.catPhysical, Icons.fitness_center, false),
-      (S.catSkills, Icons.menu_book, false),
-      (S.catAlerts, Icons.notifications_active, true),
+      (S.catMental, Icons.face, false, 0),
+      (S.catPhysical, Icons.fitness_center, false, 1),
+      (S.catSkills, Icons.menu_book, false, 2),
+      (S.catAlerts, Icons.notifications_active, true, 3),
     ];
 
     return GridView.count(
@@ -370,9 +371,9 @@ class LandingScreen extends StatelessWidget {
       crossAxisSpacing: 16,
       childAspectRatio: 1.0,
       children: categories.map((cat) {
-        final (label, icon, isAlert) = cat;
+        final (label, icon, isAlert, tabIndex) = cat;
         return GestureDetector(
-          onTap: () => _showLoginPrompt(context),
+          onTap: () => _openGuestLibrary(context, initialTab: tabIndex),
           child: Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -646,12 +647,7 @@ class LandingScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildNavItem(
-                    Icons.home,
-                    S.navHome,
-                    true,
-                    () {},
-                  ),
+                  _buildNavItem(Icons.home, S.navHome, true, () {}),
                   _buildNavItem(
                     Icons.child_care_outlined,
                     S.navChildren,
@@ -662,7 +658,7 @@ class LandingScreen extends StatelessWidget {
                     Icons.local_library_outlined,
                     S.navLibrary,
                     false,
-                    () => _showLoginPrompt(context),
+                    () => _openGuestLibrary(context),
                   ),
                   _buildNavItem(
                     Icons.notifications_outlined,
@@ -722,14 +718,21 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
+  void _openGuestLibrary(BuildContext context, {int initialTab = 0}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            LibraryScreen(initialTab: initialTab, allowAuthoring: false),
+      ),
+    );
+  }
+
   // ── Login Prompt Dialog ───────────────────────────────────────────────────
   void _showLoginPrompt(BuildContext context) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         title: const Text(
           'Đăng nhập cần thiết',
           style: TextStyle(
@@ -741,10 +744,7 @@ class LandingScreen extends StatelessWidget {
         ),
         content: const Text(
           'Bạn cần đăng nhập hoặc đăng ký để sử dụng tính năng này.',
-          style: TextStyle(
-            fontSize: 14,
-            color: AppColors.onSurfaceVariant,
-          ),
+          style: TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant),
         ),
         actions: [
           TextButton(
