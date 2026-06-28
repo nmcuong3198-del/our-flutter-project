@@ -2,6 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
+import '../domain/reports/body_status_report_service.dart';
+import '../domain/reports/growth_report_service.dart';
+import '../domain/reports/report_models.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 import 'all_states_report_screen.dart';
@@ -17,30 +20,44 @@ class ReportsTab extends StatefulWidget {
 }
 
 class _ReportsTabState extends State<ReportsTab> {
-  String _filter = '6 tháng';
-  static const _filters = ['6 tháng', '12 tháng', '24 tháng', '5 năm'];
+  ReportFrequency _frequency = ReportFrequency.month;
+  late DateTime _fromDate;
+  late DateTime _toDate;
 
-  int get _monthCount {
-    switch (_filter) {
-      case '12 tháng': return 12;
-      case '24 tháng': return 24;
-      case '5 năm': return 60;
-      default: return 6;
-    }
+  final _growthReportService = const GrowthReportService();
+  final _bodyStatusReportService = const BodyStatusReportService();
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _toDate = DateTime(now.year, now.month, now.day);
+    _fromDate = DateTime(now.year, now.month - 5, now.day);
   }
 
   @override
   Widget build(BuildContext context) {
     final allMeasurements = MockData.measurementsFor(widget.child.id);
-    final measurements = allMeasurements.take(_monthCount).toList();
     final checkins = MockData.checkinsFor(widget.child.id);
+    final growthReport = _growthReportService.build(
+      child: widget.child,
+      measurements: allMeasurements,
+      frequency: _frequency,
+      fromDate: _fromDate,
+      toDate: _toDate,
+    );
+    final bodyReport = _bodyStatusReportService.build(
+      checkins: checkins,
+      fromDate: _fromDate,
+      toDate: _toDate,
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Growth chart header + filter
+          // Growth chart header + filters
           Row(
             children: [
               const Expanded(
@@ -53,28 +70,28 @@ class _ReportsTabState extends State<ReportsTab> {
                   ),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.surfaceContainerLow,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    value: _filter,
-                    items: _filters.map((f) => DropdownMenuItem(
-                      value: f,
-                      child: Text(f, style: const TextStyle(fontSize: 13)),
-                    )).toList(),
-                    onChanged: (v) => setState(() => _filter = v!),
-                    style: const TextStyle(fontSize: 13, color: AppColors.primary),
-                    icon: const Icon(Icons.arrow_drop_down, size: 20),
-                    isDense: true,
-                  ),
-                ),
+              _FrequencyMenu(
+                value: _frequency,
+                onChanged: (value) => setState(() {
+                  _frequency = value;
+                  _toDate = _growthReportService.clampToRangeLimit(
+                    frequency: _frequency,
+                    fromDate: _fromDate,
+                    toDate: _toDate,
+                  );
+                }),
               ),
             ],
           ),
+          const SizedBox(height: 10),
+          _DateRangePicker(
+            fromDate: _fromDate,
+            toDate: _toDate,
+            onPickFrom: () => _pickDate(isFrom: true),
+            onPickTo: () => _pickDate(isFrom: false),
+          ),
+          const SizedBox(height: 12),
+          _GrowthSummaryTable(summaries: growthReport.summaries),
           const SizedBox(height: 12),
           Card(
             child: Padding(
@@ -87,12 +104,16 @@ class _ReportsTabState extends State<ReportsTab> {
                       _LegendDot(AppColors.primary, 'Chiều cao (cm)'),
                       const SizedBox(width: 16),
                       _LegendDot(AppColors.secondary, 'Cân nặng (kg)'),
+                      const SizedBox(width: 16),
+                      _LegendDot(AppColors.tertiary, 'BMI'),
+                      const SizedBox(width: 16),
+                      _LegendDot(AppColors.outline, 'WHO'),
                     ],
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
                     height: 220,
-                    child: _GrowthChart(measurements: measurements),
+                    child: _GrowthChart(points: growthReport.points),
                   ),
                 ],
               ),
@@ -120,7 +141,7 @@ class _ReportsTabState extends State<ReportsTab> {
           // Expert assessment
           _ExpertAssessment(
             child: widget.child,
-            measurements: measurements,
+            summaries: growthReport.summaries,
           ),
 
           const SizedBox(height: 24),
@@ -128,10 +149,10 @@ class _ReportsTabState extends State<ReportsTab> {
           // Body condition report (30 days)
           Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: Text(
-                  '${S.bodyReport} — ${S.last30Days}',
-                  style: TextStyle(
+                  '${S.bodyReport} — ${bodyReport.totalDays} ngày',
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
                     color: AppColors.textPrimary,
@@ -149,30 +170,66 @@ class _ReportsTabState extends State<ReportsTab> {
             ],
           ),
           const SizedBox(height: 12),
-          _BodyConditionReport(checkins: checkins),
+          _BodyConditionReport(report: bodyReport),
         ],
       ),
     );
   }
+
+  Future<void> _pickDate({required bool isFrom}) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: isFrom ? _fromDate : _toDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 3650)),
+      lastDate: DateTime.now(),
+    );
+    if (picked == null) return;
+
+    setState(() {
+      if (isFrom) {
+        _fromDate = picked;
+        if (_toDate.isBefore(_fromDate)) _toDate = _fromDate;
+      } else {
+        _toDate = picked.isBefore(_fromDate) ? _fromDate : picked;
+      }
+      _toDate = _growthReportService.clampToRangeLimit(
+        frequency: _frequency,
+        fromDate: _fromDate,
+        toDate: _toDate,
+      );
+    });
+  }
 }
 
 class _GrowthChart extends StatelessWidget {
-  final List<BodyMeasurement> measurements;
+  final List<GrowthReportPoint> points;
 
-  const _GrowthChart({required this.measurements});
+  const _GrowthChart({required this.points});
 
   @override
   Widget build(BuildContext context) {
-    final reversed = measurements.reversed.toList();
-    final heightSpots = reversed
+    if (points.isEmpty) return const Center(child: Text(S.noCheckinYet));
+
+    final heightSpots = points
         .asMap()
         .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.height))
+        .map((e) => FlSpot(e.key.toDouble(), e.value.measurement.height))
         .toList();
-    final weightSpots = reversed
+    final weightSpots = points
         .asMap()
         .entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value.weight))
+        .map((e) => FlSpot(e.key.toDouble(), e.value.measurement.weight))
+        .toList();
+    final bmiSpots = points
+        .asMap()
+        .entries
+        .map((e) => FlSpot(e.key.toDouble(), e.value.measurement.bmi))
+        .toList();
+    final whoHeightSpots = points
+        .asMap()
+        .entries
+        .where((e) => e.value.who != null)
+        .map((e) => FlSpot(e.key.toDouble(), e.value.who!.height))
         .toList();
 
     return LineChart(
@@ -192,13 +249,13 @@ class _GrowthChart extends StatelessWidget {
               showTitles: true,
               getTitlesWidget: (value, meta) {
                 final idx = value.toInt();
-                if (idx < 0 || idx >= reversed.length) {
+                if (idx < 0 || idx >= points.length) {
                   return const SizedBox();
                 }
                 return Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: Text(
-                    'T${reversed[idx].month.split('-')[1]}',
+                    points[idx].label,
                     style: const TextStyle(
                       fontSize: 10,
                       color: AppColors.textSecondary,
@@ -222,10 +279,12 @@ class _GrowthChart extends StatelessWidget {
               ),
             ),
           ),
-          topTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles:
-              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          topTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: const AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
         ),
         borderData: FlBorderData(show: false),
         lineBarsData: [
@@ -238,11 +297,11 @@ class _GrowthChart extends StatelessWidget {
               show: true,
               getDotPainter: (spot, percent, barData, index) =>
                   FlDotCirclePainter(
-                radius: 4,
-                color: AppColors.primary,
-                strokeWidth: 2,
-                strokeColor: Colors.white,
-              ),
+                    radius: 4,
+                    color: AppColors.primary,
+                    strokeWidth: 2,
+                    strokeColor: Colors.white,
+                  ),
             ),
             belowBarData: BarAreaData(
               show: true,
@@ -258,17 +317,33 @@ class _GrowthChart extends StatelessWidget {
               show: true,
               getDotPainter: (spot, percent, barData, index) =>
                   FlDotCirclePainter(
-                radius: 4,
-                color: AppColors.secondary,
-                strokeWidth: 2,
-                strokeColor: Colors.white,
-              ),
+                    radius: 4,
+                    color: AppColors.secondary,
+                    strokeWidth: 2,
+                    strokeColor: Colors.white,
+                  ),
             ),
             belowBarData: BarAreaData(
               show: true,
               color: AppColors.secondary.withValues(alpha: 0.08),
             ),
           ),
+          LineChartBarData(
+            spots: bmiSpots,
+            isCurved: true,
+            color: AppColors.tertiary,
+            barWidth: 2,
+            dotData: const FlDotData(show: false),
+          ),
+          if (whoHeightSpots.isNotEmpty)
+            LineChartBarData(
+              spots: whoHeightSpots,
+              isCurved: false,
+              color: AppColors.outline,
+              barWidth: 2,
+              dashArray: [6, 4],
+              dotData: const FlDotData(show: false),
+            ),
         ],
         minY: 20,
       ),
@@ -277,80 +352,106 @@ class _GrowthChart extends StatelessWidget {
 }
 
 class _BodyConditionReport extends StatelessWidget {
-  final List<DailyCheckin> checkins;
+  final BodyStatusReport report;
 
-  const _BodyConditionReport({required this.checkins});
+  const _BodyConditionReport({required this.report});
 
   @override
   Widget build(BuildContext context) {
-    // Count symptoms across all check-ins
-    final Map<String, int> symptomCounts = {};
-    for (final c in checkins) {
-      for (final s in c.symptoms) {
-        symptomCounts[s] = (symptomCounts[s] ?? 0) + 1;
-      }
-    }
-
-    if (symptomCounts.isEmpty) {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Center(
-            child: Text(
-              S.noCheckinYet,
-              style: const TextStyle(color: AppColors.textSecondary),
-            ),
-          ),
-        ),
-      );
-    }
-
-    final sorted = symptomCounts.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          children: sorted.map((entry) {
-            final pct = entry.value / checkins.length;
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 80,
-                    child: Text(
-                      entry.key,
-                      style: const TextStyle(fontSize: 13),
-                    ),
-                  ),
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: LinearProgressIndicator(
-                        value: pct,
-                        minHeight: 10,
-                        backgroundColor: AppColors.background,
-                        valueColor:
-                            AlwaysStoppedAnimation(AppColors.primary.withValues(alpha: 0.7)),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${entry.value} ${S.days}',
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
-                    ),
-                  ),
-                ],
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (report.latestCheckinDate != null)
+              Text(
+                'Ngày gần nhất cập nhật: ${report.latestCheckinDate!.day}/${report.latestCheckinDate!.month}/${report.latestCheckinDate!.year}',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.textSecondary,
+                ),
               ),
-            );
-          }).toList(),
+            const SizedBox(height: 12),
+            _statusGroup('Bình thường', report.normal, AppColors.checkedIn),
+            const SizedBox(height: 14),
+            _statusGroup('Cần theo dõi', report.watchTop, AppColors.overdue),
+            if (report.missing.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              _statusGroup('Thiếu dữ liệu', report.missing, AppColors.pending),
+            ],
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget _statusGroup(
+    String title,
+    List<BodyStatusEntry> entries,
+    Color color,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w800,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 8),
+        if (entries.isEmpty)
+          const Text(
+            'Không có trạng thái',
+            style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+          )
+        else
+          ...entries.map((entry) => _statusRow(entry, color)),
+      ],
+    );
+  }
+
+  Widget _statusRow(BodyStatusEntry entry, Color color) {
+    final pct = report.totalDays <= 0 ? 0.0 : entry.days / report.totalDays;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 112,
+            child: Text(
+              entry.label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 13),
+            ),
+          ),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: pct.clamp(0, 1),
+                minHeight: 10,
+                backgroundColor: AppColors.background,
+                valueColor: AlwaysStoppedAnimation(
+                  color.withValues(alpha: 0.75),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${entry.days}/${report.totalDays}',
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -358,37 +459,17 @@ class _BodyConditionReport extends StatelessWidget {
 
 class _ExpertAssessment extends StatelessWidget {
   final ChildProfile child;
-  final List<BodyMeasurement> measurements;
+  final List<GrowthMetricSummary> summaries;
 
-  const _ExpertAssessment({required this.child, required this.measurements});
+  const _ExpertAssessment({required this.child, required this.summaries});
 
   @override
   Widget build(BuildContext context) {
-    final who = MockData.whoFor(child);
-    String assessment;
-    if (measurements.length >= 2) {
-      final latest = measurements.first;
-      final prev = measurements[1];
-      final heightDelta = latest.height - prev.height;
-      final buffer = StringBuffer(
-        'Trong kỳ gần nhất, ${child.nickname} tăng ${heightDelta.toStringAsFixed(1)} cm chiều cao. ',
-      );
-      if (who != null) {
-        final diff = latest.height - who['height']!;
-        if (diff >= 0) {
-          buffer.write('Chiều cao đang ở mức tốt so với chuẩn WHO cùng độ tuổi. ');
-        } else if (diff > -5) {
-          buffer.write('Chiều cao gần đạt chuẩn WHO, hãy duy trì dinh dưỡng và vận động. ');
-        } else {
-          buffer.write('Chiều cao thấp hơn chuẩn WHO, nên tham khảo ý kiến chuyên gia dinh dưỡng. ');
-        }
-      }
-      buffer.write('Hãy đảm bảo con ngủ đủ giấc và vận động đều đặn mỗi ngày.');
-      assessment = buffer.toString();
-    } else {
-      assessment = 'Hãy cập nhật số đo của ${child.nickname} thường xuyên để nhận được nhận xét '
-          'chi tiết về sự phát triển.';
-    }
+    final assessment = summaries.isEmpty
+        ? 'Hãy cập nhật số đo của ${child.nickname} thường xuyên để nhận được nhận xét chi tiết về sự phát triển.'
+        : summaries
+              .map((summary) => '${summary.label}: ${summary.assessment}.')
+              .join(' ');
 
     return Container(
       width: double.infinity,
@@ -408,7 +489,11 @@ class _ExpertAssessment extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+                child: const Icon(
+                  Icons.psychology_rounded,
+                  size: 20,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 10),
               const Text(
@@ -426,10 +511,189 @@ class _ExpertAssessment extends StatelessWidget {
           const SizedBox(height: 14),
           Text(
             assessment,
-            style: const TextStyle(fontSize: 14, height: 1.6, color: Colors.white),
+            style: const TextStyle(
+              fontSize: 14,
+              height: 1.6,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _GrowthSummaryTable extends StatelessWidget {
+  final List<GrowthMetricSummary> summaries;
+
+  const _GrowthSummaryTable({required this.summaries});
+
+  @override
+  Widget build(BuildContext context) {
+    if (summaries.isEmpty) return const SizedBox.shrink();
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            const Row(
+              children: [
+                Expanded(flex: 2, child: _HeaderText('Chỉ số')),
+                Expanded(child: _HeaderText('Thông số')),
+                Expanded(child: _HeaderText('Tăng trưởng')),
+                Expanded(flex: 2, child: _HeaderText('Đánh giá')),
+              ],
+            ),
+            const SizedBox(height: 8),
+            ...summaries.map((summary) => _GrowthSummaryRow(summary: summary)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GrowthSummaryRow extends StatelessWidget {
+  final GrowthMetricSummary summary;
+
+  const _GrowthSummaryRow({required this.summary});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = switch (summary.direction) {
+      ReportGrowthDirection.up => AppColors.primary,
+      ReportGrowthDirection.flat => AppColors.warning,
+      ReportGrowthDirection.down => AppColors.error,
+      ReportGrowthDirection.unknown => AppColors.textSecondary,
+    };
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Text(
+              summary.label,
+              style: const TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(summary.value, style: const TextStyle(fontSize: 12.5)),
+          ),
+          Expanded(
+            child: Text(
+              summary.growthLabel,
+              style: TextStyle(
+                fontSize: 12.5,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Text(
+              summary.assessment,
+              style: const TextStyle(fontSize: 12.5),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeaderText extends StatelessWidget {
+  final String text;
+
+  const _HeaderText(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 11,
+        fontWeight: FontWeight.w800,
+        color: AppColors.primary,
+      ),
+    );
+  }
+}
+
+class _FrequencyMenu extends StatelessWidget {
+  final ReportFrequency value;
+  final ValueChanged<ReportFrequency> onChanged;
+
+  const _FrequencyMenu({required this.value, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLow,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<ReportFrequency>(
+          value: value,
+          items: ReportFrequency.values
+              .map(
+                (frequency) => DropdownMenuItem(
+                  value: frequency,
+                  child: Text(
+                    frequency.label,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (frequency) {
+            if (frequency != null) onChanged(frequency);
+          },
+          style: const TextStyle(fontSize: 13, color: AppColors.primary),
+          icon: const Icon(Icons.arrow_drop_down, size: 20),
+          isDense: true,
+        ),
+      ),
+    );
+  }
+}
+
+class _DateRangePicker extends StatelessWidget {
+  final DateTime fromDate;
+  final DateTime toDate;
+  final VoidCallback onPickFrom;
+  final VoidCallback onPickTo;
+
+  const _DateRangePicker({
+    required this.fromDate,
+    required this.toDate,
+    required this.onPickFrom,
+    required this.onPickTo,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(child: _dateButton('Từ ngày', fromDate, onPickFrom)),
+        const SizedBox(width: 8),
+        Expanded(child: _dateButton('Đến ngày', toDate, onPickTo)),
+      ],
+    );
+  }
+
+  Widget _dateButton(String label, DateTime date, VoidCallback onTap) {
+    return OutlinedButton.icon(
+      onPressed: onTap,
+      icon: const Icon(Icons.calendar_today_outlined, size: 16),
+      label: Text('$label ${date.day}/${date.month}/${date.year}'),
     );
   }
 }
@@ -451,8 +715,10 @@ class _LegendDot extends StatelessWidget {
           decoration: BoxDecoration(color: color, shape: BoxShape.circle),
         ),
         const SizedBox(width: 4),
-        Text(label,
-            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+        ),
       ],
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
+import '../domain/reports/cycle_report_service.dart';
+import '../domain/reports/report_models.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 
@@ -20,6 +22,8 @@ class CycleTab extends StatefulWidget {
 
 class _CycleTabState extends State<CycleTab> {
   late DateTime _focusedMonth; // always the 1st of the focused month
+  int? _cycleLength;
+  final _cycleReportService = const CycleReportService();
 
   @override
   void initState() {
@@ -60,19 +64,65 @@ class _CycleTabState extends State<CycleTab> {
     }
 
     final stats = _CycleStats.from(periods);
+    final report = _cycleReportService.build(
+      periods: periods,
+      endDate: DateTime.now(),
+      userCycleLength: _cycleLength,
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _SummaryStats(stats: stats),
+          _SummaryStats(stats: stats, report: report),
+          const SizedBox(height: 16),
+          _cycleLengthPicker(),
           const SizedBox(height: 16),
           _buildCalendarCard(stats),
           const SizedBox(height: 16),
-          _buildAssessment(stats),
+          _buildAssessment(report),
           const SizedBox(height: 20),
-          _buildHistory(),
+          _buildHistory(report),
+        ],
+      ),
+    );
+  }
+
+  Widget _cycleLengthPicker() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          const Expanded(
+            child: Text(
+              'Số ngày chu kỳ',
+              style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+            ),
+          ),
+          DropdownButtonHideUnderline(
+            child: DropdownButton<int?>(
+              value: _cycleLength,
+              hint: const Text('Chưa xác định'),
+              items: [
+                const DropdownMenuItem<int?>(
+                  value: null,
+                  child: Text('Chưa xác định'),
+                ),
+                ...List.generate(25, (index) => index + 21).map(
+                  (days) => DropdownMenuItem<int?>(
+                    value: days,
+                    child: Text('$days ngày'),
+                  ),
+                ),
+              ],
+              onChanged: (value) => setState(() => _cycleLength = value),
+            ),
+          ),
         ],
       ),
     );
@@ -100,7 +150,11 @@ class _CycleTabState extends State<CycleTab> {
             children: [
               _navButton(
                 Icons.chevron_left_rounded,
-                canPrev ? () => setState(() => _focusedMonth = _addMonths(_focusedMonth, -1)) : null,
+                canPrev
+                    ? () => setState(
+                        () => _focusedMonth = _addMonths(_focusedMonth, -1),
+                      )
+                    : null,
               ),
               Expanded(
                 child: Center(
@@ -117,7 +171,11 @@ class _CycleTabState extends State<CycleTab> {
               ),
               _navButton(
                 Icons.chevron_right_rounded,
-                canNext ? () => setState(() => _focusedMonth = _addMonths(_focusedMonth, 1)) : null,
+                canNext
+                    ? () => setState(
+                        () => _focusedMonth = _addMonths(_focusedMonth, 1),
+                      )
+                    : null,
               ),
             ],
           ),
@@ -135,20 +193,22 @@ class _CycleTabState extends State<CycleTab> {
           // Weekday header
           Row(
             children: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN']
-                .map((d) => Expanded(
-                      child: Center(
-                        child: Text(
-                          d,
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            color: d == 'CN'
-                                ? _cycleColor
-                                : AppColors.onSurfaceVariant,
-                          ),
+                .map(
+                  (d) => Expanded(
+                    child: Center(
+                      child: Text(
+                        d,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: d == 'CN'
+                              ? _cycleColor
+                              : AppColors.onSurfaceVariant,
                         ),
                       ),
-                    ))
+                    ),
+                  ),
+                )
                 .toList(),
           ),
           const SizedBox(height: 6),
@@ -161,10 +221,15 @@ class _CycleTabState extends State<CycleTab> {
   }
 
   List<Widget> _buildWeeks(_CycleStats stats, DateTime today) {
-    final daysInMonth =
-        DateUtils.getDaysInMonth(_focusedMonth.year, _focusedMonth.month);
-    final firstWeekday =
-        DateTime(_focusedMonth.year, _focusedMonth.month, 1).weekday; // 1..7
+    final daysInMonth = DateUtils.getDaysInMonth(
+      _focusedMonth.year,
+      _focusedMonth.month,
+    );
+    final firstWeekday = DateTime(
+      _focusedMonth.year,
+      _focusedMonth.month,
+      1,
+    ).weekday; // 1..7
     final leading = firstWeekday - 1;
     final totalCells = leading + daysInMonth;
     final rowCount = (totalCells / 7).ceil();
@@ -177,8 +242,11 @@ class _CycleTabState extends State<CycleTab> {
         if (dayNum < 1 || dayNum > daysInMonth) {
           cells.add(const Expanded(child: SizedBox(height: 44)));
         } else {
-          final date =
-              DateTime(_focusedMonth.year, _focusedMonth.month, dayNum);
+          final date = DateTime(
+            _focusedMonth.year,
+            _focusedMonth.month,
+            dayNum,
+          );
           cells.add(Expanded(child: _dayCell(date, stats, today)));
         }
         dayNum++;
@@ -218,7 +286,9 @@ class _CycleTabState extends State<CycleTab> {
         '${date.day}',
         style: TextStyle(
           fontSize: 13.5,
-          fontWeight: isPeriod || isPredicted ? FontWeight.w700 : FontWeight.w500,
+          fontWeight: isPeriod || isPredicted
+              ? FontWeight.w700
+              : FontWeight.w500,
           color: textColor,
         ),
       ),
@@ -258,7 +328,10 @@ class _CycleTabState extends State<CycleTab> {
           dot: Container(
             width: 12,
             height: 12,
-            decoration: const BoxDecoration(color: _cycleColor, shape: BoxShape.circle),
+            decoration: const BoxDecoration(
+              color: _cycleColor,
+              shape: BoxShape.circle,
+            ),
           ),
           label: 'Hành kinh',
         ),
@@ -296,7 +369,10 @@ class _CycleTabState extends State<CycleTab> {
         const SizedBox(width: 6),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant),
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
       ],
     );
@@ -304,20 +380,7 @@ class _CycleTabState extends State<CycleTab> {
 
   // ---- Assessment ----------------------------------------------------------
 
-  Widget _buildAssessment(_CycleStats stats) {
-    final String assessment;
-    final Color color;
-    if (stats.cycleGaps.isEmpty) {
-      assessment = S.cycleNoDataAssess;
-      color = AppColors.textSecondary;
-    } else if (stats.isIrregular) {
-      assessment = S.cycleUnstable;
-      color = AppColors.overdue;
-    } else {
-      assessment = S.cycleNormal;
-      color = AppColors.checkedIn;
-    }
-
+  Widget _buildAssessment(CycleReport report) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
@@ -336,7 +399,11 @@ class _CycleTabState extends State<CycleTab> {
                   color: Colors.white.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Icon(Icons.favorite_rounded, size: 18, color: Colors.white),
+                child: const Icon(
+                  Icons.favorite_rounded,
+                  size: 18,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: 10),
               const Text(
@@ -353,7 +420,7 @@ class _CycleTabState extends State<CycleTab> {
           ),
           const SizedBox(height: 12),
           Text(
-            '"$assessment"',
+            '"${report.assessment}"',
             style: const TextStyle(
               fontSize: 14.5,
               height: 1.55,
@@ -363,9 +430,7 @@ class _CycleTabState extends State<CycleTab> {
           ),
           const SizedBox(height: 6),
           Text(
-            color == AppColors.overdue
-                ? 'Chu kỳ dao động ${stats.minGap}–${stats.maxGap} ngày. Điều này thường gặp ở tuổi dậy thì.'
-                : 'Chu kỳ trung bình ${stats.avgCycle} ngày, khá đều đặn.',
+            report.prediction,
             style: TextStyle(
               fontSize: 12.5,
               height: 1.5,
@@ -379,8 +444,7 @@ class _CycleTabState extends State<CycleTab> {
 
   // ---- 12-month history (collapsible) -------------------------------------
 
-  Widget _buildHistory() {
-    final cycleData = MockData.cycleDataFor(widget.child.id);
+  Widget _buildHistory(CycleReport report) {
     return Container(
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLowest,
@@ -413,51 +477,67 @@ class _CycleTabState extends State<CycleTab> {
                   children: [
                     _TableHeader('Tháng'),
                     _TableHeader('Tần suất'),
-                    _TableHeader('Tình trạng'),
+                    _TableHeader('Số ngày có kinh'),
                   ],
                 ),
-                ...cycleData.map((c) {
-                  final statusText = c.status == 'yes'
-                      ? 'Đều đặn'
-                      : (c.status == 'no' ? 'Không ghi nhận' : S.cycleNoData);
-                  final statusColor = c.status == 'yes'
+                ...report.months.map((month) {
+                  final statusText = month.status == 'yes'
+                      ? 'Có'
+                      : (month.status == 'no' ? 'Không' : S.cycleNoData);
+                  final statusColor = month.status == 'yes'
                       ? _cycleColor
-                      : (c.status == 'no'
-                          ? AppColors.textPrimary
-                          : AppColors.textSecondary);
-                  final parts = c.month.split('-');
-                  final label = '${int.parse(parts[1])}/${parts[0]}';
+                      : (month.status == 'no'
+                            ? AppColors.textPrimary
+                            : AppColors.textSecondary);
+                  final label = '${month.month.month}/${month.month.year}';
                   return TableRow(
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Text(label, style: const TextStyle(fontSize: 13)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Icon(
-                          c.status == 'yes'
-                              ? Icons.check_circle
-                              : (c.status == 'no'
-                                  ? Icons.cancel_outlined
-                                  : Icons.help_outline),
-                          size: 18,
-                          color: c.status == 'yes'
-                              ? AppColors.checkedIn
-                              : (c.status == 'no'
-                                  ? AppColors.outline
-                                  : AppColors.primary),
+                        child: Text(
+                          label,
+                          style: const TextStyle(fontSize: 13),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(10),
-                        child: Text(
-                          statusText,
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: statusColor,
-                          ),
+                        child: Icon(
+                          month.status == 'yes'
+                              ? Icons.check_circle
+                              : (month.status == 'no'
+                                    ? Icons.cancel_outlined
+                                    : Icons.help_outline),
+                          size: 18,
+                          color: month.status == 'yes'
+                              ? AppColors.checkedIn
+                              : (month.status == 'no'
+                                    ? AppColors.outline
+                                    : AppColors.primary),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              statusText,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: statusColor,
+                              ),
+                            ),
+                            Text(
+                              month.periodDays == null
+                                  ? ''
+                                  : '${month.periodDays} ngày',
+                              style: const TextStyle(
+                                fontSize: 11,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -494,8 +574,10 @@ class _CycleStats {
     required this.latestMonth,
   });
 
-  int get minGap => cycleGaps.isEmpty ? 0 : cycleGaps.reduce((a, b) => a < b ? a : b);
-  int get maxGap => cycleGaps.isEmpty ? 0 : cycleGaps.reduce((a, b) => a > b ? a : b);
+  int get minGap =>
+      cycleGaps.isEmpty ? 0 : cycleGaps.reduce((a, b) => a < b ? a : b);
+  int get maxGap =>
+      cycleGaps.isEmpty ? 0 : cycleGaps.reduce((a, b) => a > b ? a : b);
   bool get isIrregular => cycleGaps.isNotEmpty && (maxGap - minGap) > 7;
 
   int get daysUntilNext =>
@@ -513,9 +595,11 @@ class _CycleStats {
   static _CycleStats from(List<DateTimeRange> periods) {
     final periodDays = <DateTime>{};
     for (final r in periods) {
-      for (var d = r.start;
-          !d.isAfter(r.end);
-          d = d.add(const Duration(days: 1))) {
+      for (
+        var d = r.start;
+        !d.isAfter(r.end);
+        d = d.add(const Duration(days: 1))
+      ) {
         periodDays.add(DateUtils.dateOnly(d));
       }
     }
@@ -531,11 +615,9 @@ class _CycleStats {
         : (gaps.reduce((a, b) => a + b) / gaps.length).round();
     final avgPeriod = periods.isEmpty
         ? 5
-        : (periods
-                    .map((r) => r.duration.inDays + 1)
-                    .reduce((a, b) => a + b) /
-                periods.length)
-            .round();
+        : (periods.map((r) => r.duration.inDays + 1).reduce((a, b) => a + b) /
+                  periods.length)
+              .round();
 
     // Predict the next 3 cycles forward so navigation reveals upcoming periods.
     final predictedDays = <DateTime>{};
@@ -570,7 +652,8 @@ class _CycleStats {
 /// Three-stat summary row at the top of the cycle tab.
 class _SummaryStats extends StatelessWidget {
   final _CycleStats stats;
-  const _SummaryStats({required this.stats});
+  final CycleReport report;
+  const _SummaryStats({required this.stats, required this.report});
 
   @override
   Widget build(BuildContext context) {
@@ -586,8 +669,14 @@ class _SummaryStats extends StatelessWidget {
             child: _stat(
               icon: Icons.event_rounded,
               iconColor: _cycleColor,
-              value: stats.nextLabel,
-              label: 'Kỳ tới · ${stats.nextDate}',
+              value: report.daysUntilPeriod == null
+                  ? 'Chưa rõ'
+                  : (report.daysUntilPeriod == 0
+                        ? 'Hôm nay'
+                        : '${report.daysUntilPeriod} ngày'),
+              label: report.nextPeriodDate == null
+                  ? 'Cần thêm dữ liệu'
+                  : 'Kỳ tới · ${report.nextPeriodDate!.day}/${report.nextPeriodDate!.month}',
             ),
           ),
           _divider(),
@@ -595,7 +684,9 @@ class _SummaryStats extends StatelessWidget {
             child: _stat(
               icon: Icons.autorenew_rounded,
               iconColor: AppColors.primary,
-              value: '${stats.avgCycle} ngày',
+              value: report.estimatedCycleLength == null
+                  ? '${stats.avgCycle} ngày'
+                  : '${report.estimatedCycleLength} ngày',
               label: 'Chu kỳ TB',
             ),
           ),
@@ -613,11 +704,8 @@ class _SummaryStats extends StatelessWidget {
     );
   }
 
-  Widget _divider() => Container(
-        width: 1,
-        height: 44,
-        color: AppColors.surfaceVariant,
-      );
+  Widget _divider() =>
+      Container(width: 1, height: 44, color: AppColors.surfaceVariant);
 
   Widget _stat({
     required IconData icon,
@@ -643,7 +731,10 @@ class _SummaryStats extends StatelessWidget {
         Text(
           label,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 10.5, color: AppColors.onSurfaceVariant),
+          style: const TextStyle(
+            fontSize: 10.5,
+            color: AppColors.onSurfaceVariant,
+          ),
         ),
       ],
     );

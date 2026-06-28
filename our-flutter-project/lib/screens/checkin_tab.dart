@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
+import '../data/repositories/action_repository.dart';
+import '../data/repositories/checkin_repository.dart';
+import '../domain/checkin/checkin_code_mapper.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 import 'daily_journal_screen.dart';
@@ -18,8 +21,10 @@ class _CheckinTabState extends State<CheckinTab> {
   final Set<String> _selectedEmotions = {};
   String? _selectedBodyStatus;
   final Set<String> _selectedSymptoms = {};
+  final Set<String> _selectedInfluences = {};
   final _notesController = TextEditingController();
   bool _saved = false;
+  bool _saving = false;
   late DateTime _selectedDate;
   bool _isEditing = false;
 
@@ -32,11 +37,15 @@ class _CheckinTabState extends State<CheckinTab> {
 
   void _checkExistingData() {
     final checkins = MockData.checkinsFor(widget.child.id);
-    final existing = checkins.where((c) =>
-        c.date.year == _selectedDate.year &&
-        c.date.month == _selectedDate.month &&
-        c.date.day == _selectedDate.day &&
-        c.emotions.isNotEmpty).toList();
+    final existing = checkins
+        .where(
+          (c) =>
+              c.date.year == _selectedDate.year &&
+              c.date.month == _selectedDate.month &&
+              c.date.day == _selectedDate.day &&
+              c.emotions.isNotEmpty,
+        )
+        .toList();
     if (existing.isNotEmpty) {
       _isEditing = true;
       final c = existing.first;
@@ -62,6 +71,7 @@ class _CheckinTabState extends State<CheckinTab> {
         _selectedEmotions.clear();
         _selectedBodyStatus = null;
         _selectedSymptoms.clear();
+        _selectedInfluences.clear();
         _notesController.clear();
         _saved = false;
         _checkExistingData();
@@ -102,15 +112,18 @@ class _CheckinTabState extends State<CheckinTab> {
   }
 
   List<_EmoItem> get _emotions => [
-        _EmoItem('😄', S.emotionHappy),
-        _EmoItem('🙂', S.emotionNormal),
-        _EmoItem('😕', S.emotionTired),
-        _EmoItem('😢', S.emotionSad),
-        _EmoItem('😡', S.emotionAngry),
-        _EmoItem('😰', S.emotionWorried),
-        _EmoItem('😴', S.emotionSluggish),
-        _EmoItem('❓', S.emotionOther),
-      ];
+    _EmoItem('😄', 'Vui vẻ'),
+    _EmoItem('🤩', 'Phấn khích'),
+    _EmoItem('🙂', S.emotionNormal),
+    _EmoItem('😕', 'Mệt'),
+    _EmoItem('😢', S.emotionSad),
+    _EmoItem('😡', S.emotionAngry),
+    _EmoItem('😰', S.emotionWorried),
+    _EmoItem('😣', 'Áp lực'),
+    _EmoItem('😔', 'Cô đơn'),
+    _EmoItem('😴', 'Kiệt sức'),
+    _EmoItem('❓', S.emotionOther),
+  ];
 
   List<_BodyItem> get _bodyOptions => widget.child.isFemale
       ? [
@@ -127,17 +140,28 @@ class _CheckinTabState extends State<CheckinTab> {
         ];
 
   List<_SymItem> get _symptoms => [
-        _SymItem(Icons.fitness_center, S.symptomHealthy),
-        _SymItem(Icons.battery_alert, S.symptomTired),
-        _SymItem(Icons.psychology, S.symptomHeadache),
-        _SymItem(Icons.sick, S.symptomStomach),
-        _SymItem(Icons.accessibility_new, S.symptomBack),
-        _SymItem(Icons.emoji_nature, S.symptomNausea),
-        _SymItem(Icons.rotate_left, S.symptomDizzy),
-        _SymItem(Icons.face, S.symptomAcne),
-        _SymItem(Icons.sentiment_dissatisfied, S.symptomIrritable),
-        _SymItem(Icons.more_horiz, S.symptomOther),
-      ];
+    _SymItem(Icons.fitness_center, S.symptomHealthy),
+    _SymItem(Icons.battery_alert, S.symptomTired),
+    _SymItem(Icons.psychology, S.symptomHeadache),
+    _SymItem(Icons.sick, S.symptomStomach),
+    _SymItem(Icons.accessibility_new, S.symptomBack),
+    _SymItem(Icons.emoji_nature, S.symptomNausea),
+    _SymItem(Icons.rotate_left, S.symptomDizzy),
+    _SymItem(Icons.face, S.symptomAcne),
+    _SymItem(Icons.sentiment_dissatisfied, S.symptomIrritable),
+    _SymItem(Icons.more_horiz, S.symptomOther),
+  ];
+
+  List<_InfluenceItem> get _influences => [
+    _InfluenceItem(Icons.school, 'Học tập'),
+    _InfluenceItem(Icons.groups, 'Bạn bè'),
+    _InfluenceItem(Icons.home, 'Gia đình'),
+    _InfluenceItem(Icons.smartphone, 'Mạng xã hội'),
+    _InfluenceItem(Icons.person_pin, 'Thầy cô'),
+    _InfluenceItem(Icons.sports_esports, 'Giải trí/Game'),
+    _InfluenceItem(Icons.health_and_safety, 'Sức khoẻ'),
+    _InfluenceItem(Icons.more_horiz, 'Khác'),
+  ];
 
   @override
   void dispose() {
@@ -145,16 +169,57 @@ class _CheckinTabState extends State<CheckinTab> {
     super.dispose();
   }
 
-  void _save() {
-    setState(() => _saved = true);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text(S.saved),
-        backgroundColor: AppColors.checkedIn,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      ),
+  Future<void> _save() async {
+    setState(() => _saving = true);
+    final selections = CheckinCodeMapper.selectionsFor(
+      emotions: _selectedEmotions,
+      bodyStatus: _selectedBodyStatus,
+      symptoms: _selectedSymptoms,
+      influences: _selectedInfluences,
     );
+
+    try {
+      final codes = await CheckinRepository.instance.saveCheckin(
+        childId: widget.child.id,
+        date: _selectedDate,
+        selections: selections,
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
+      );
+      await ActionRepository.instance.getOrCreateMonthlyActions(
+        child: widget.child,
+        selectedTriggers: codes,
+      );
+      if (!mounted) return;
+      setState(() {
+        _saved = true;
+        _saving = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(S.saved),
+          backgroundColor: AppColors.checkedIn,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Chưa lưu được check-in'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+    }
   }
 
   @override
@@ -189,7 +254,11 @@ class _CheckinTabState extends State<CheckinTab> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 18, color: AppColors.primary),
+                  const Icon(
+                    Icons.calendar_today,
+                    size: 18,
+                    color: AppColors.primary,
+                  ),
                   const SizedBox(width: 10),
                   Text(
                     '${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}',
@@ -202,30 +271,47 @@ class _CheckinTabState extends State<CheckinTab> {
                   const Spacer(),
                   if (_isEditing)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.warning.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
                         'Đang sửa',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.warning),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.warning,
+                        ),
                       ),
                     )
                   else
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.success.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
                         'Thêm mới',
-                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.success),
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.success,
+                        ),
                       ),
                     ),
                   const SizedBox(width: 8),
-                  const Icon(Icons.arrow_drop_down, color: AppColors.onSurfaceVariant),
+                  const Icon(
+                    Icons.arrow_drop_down,
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ],
               ),
             ),
@@ -248,8 +334,10 @@ class _CheckinTabState extends State<CheckinTab> {
                 }),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14,
+                    vertical: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: selected
                         ? AppColors.primary.withValues(alpha: 0.15)
@@ -268,8 +356,9 @@ class _CheckinTabState extends State<CheckinTab> {
                         e.label,
                         style: TextStyle(
                           fontSize: 12,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: selected
                               ? AppColors.primary
                               : AppColors.textSecondary,
@@ -296,34 +385,38 @@ class _CheckinTabState extends State<CheckinTab> {
                 onTap: () => setState(() => _selectedBodyStatus = b.label),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: selected
                         ? AppColors.secondary.withValues(alpha: 0.15)
                         : AppColors.surface,
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color:
-                          selected ? AppColors.secondary : AppColors.pending,
+                      color: selected ? AppColors.secondary : AppColors.pending,
                       width: selected ? 2 : 1,
                     ),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(b.icon,
-                          size: 20,
-                          color: selected
-                              ? AppColors.secondary
-                              : AppColors.textSecondary),
+                      Icon(
+                        b.icon,
+                        size: 20,
+                        color: selected
+                            ? AppColors.secondary
+                            : AppColors.textSecondary,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         b.label,
                         style: TextStyle(
                           fontSize: 13,
-                          fontWeight:
-                              selected ? FontWeight.w700 : FontWeight.w500,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
                           color: selected
                               ? AppColors.secondary
                               : AppColors.textSecondary,
@@ -353,19 +446,20 @@ class _CheckinTabState extends State<CheckinTab> {
                       : _selectedSymptoms.add(s.label);
                 }),
                 child: Chip(
-                  avatar: Icon(s.icon,
-                      size: 18,
-                      color: selected
-                          ? AppColors.accent
-                          : AppColors.textSecondary),
+                  avatar: Icon(
+                    s.icon,
+                    size: 18,
+                    color: selected
+                        ? AppColors.accent
+                        : AppColors.textSecondary,
+                  ),
                   label: Text(s.label),
                   labelStyle: TextStyle(
                     fontSize: 12,
                     color: selected
                         ? AppColors.accent
                         : AppColors.textSecondary,
-                    fontWeight:
-                        selected ? FontWeight.w700 : FontWeight.w500,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   ),
                   backgroundColor: selected
                       ? AppColors.accent.withValues(alpha: 0.15)
@@ -373,8 +467,53 @@ class _CheckinTabState extends State<CheckinTab> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                     side: BorderSide(
-                      color:
-                          selected ? AppColors.accent : AppColors.pending,
+                      color: selected ? AppColors.accent : AppColors.pending,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 28),
+
+          // Influences
+          const _SectionTitle('Điều gì đang ảnh hưởng đến con?'),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _influences.map((influence) {
+              final selected = _selectedInfluences.contains(influence.label);
+              return GestureDetector(
+                onTap: () => setState(() {
+                  selected
+                      ? _selectedInfluences.remove(influence.label)
+                      : _selectedInfluences.add(influence.label);
+                }),
+                child: Chip(
+                  avatar: Icon(
+                    influence.icon,
+                    size: 18,
+                    color: selected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                  ),
+                  label: Text(influence.label),
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    color: selected
+                        ? AppColors.primary
+                        : AppColors.textSecondary,
+                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                  backgroundColor: selected
+                      ? AppColors.primary.withValues(alpha: 0.12)
+                      : AppColors.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color: selected ? AppColors.primary : AppColors.pending,
                     ),
                   ),
                 ),
@@ -405,8 +544,10 @@ class _CheckinTabState extends State<CheckinTab> {
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide:
-                    const BorderSide(color: AppColors.primary, width: 2),
+                borderSide: const BorderSide(
+                  color: AppColors.primary,
+                  width: 2,
+                ),
               ),
             ),
           ),
@@ -417,9 +558,15 @@ class _CheckinTabState extends State<CheckinTab> {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: _saved ? null : _save,
-              icon: Icon(_saved ? Icons.check : Icons.save),
-              label: Text(_saved ? S.saved : S.save),
+              onPressed: _saved || _saving ? null : _save,
+              icon: Icon(
+                _saving
+                    ? Icons.hourglass_empty
+                    : (_saved ? Icons.check : Icons.save),
+              ),
+              label: Text(
+                _saving ? 'Đang lưu...' : (_saved ? S.saved : S.save),
+              ),
             ),
           ),
           const SizedBox(height: 40),
@@ -462,4 +609,10 @@ class _SymItem {
   final IconData icon;
   final String label;
   _SymItem(this.icon, this.label);
+}
+
+class _InfluenceItem {
+  final IconData icon;
+  final String label;
+  _InfluenceItem(this.icon, this.label);
 }

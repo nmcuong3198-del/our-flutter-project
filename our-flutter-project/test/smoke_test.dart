@@ -144,10 +144,12 @@ void main() {
     expect(find.text(child.nickname), findsWidgets);
   });
 
-  testWidgets('CycleTab shows calendar + summary for a female child', (t) async {
+  testWidgets('CycleTab shows calendar + summary for a female child', (
+    t,
+  ) async {
     final female = MockData.children.firstWhere((c) => c.isFemale);
     await _expectRenders(t, _wrap(Scaffold(body: CycleTab(child: female))));
-    expect(find.textContaining('Chưa ổn định'), findsOneWidget);
+    expect(find.textContaining('Kinh nguyệt bình thường'), findsOneWidget);
     expect(find.text('Hành kinh'), findsOneWidget);
     expect(find.text('Dự kiến'), findsOneWidget);
     // Month navigation forward reveals the 'back to today' affordance.
@@ -157,7 +159,9 @@ void main() {
     expect(find.text('Về hôm nay'), findsOneWidget);
   });
 
-  testWidgets('ChildDetailScreen hides Chu kỳ tab for boys, shows for girls', (t) async {
+  testWidgets('ChildDetailScreen hides Chu kỳ tab for boys, shows for girls', (
+    t,
+  ) async {
     final female = MockData.children.firstWhere((c) => c.isFemale);
     final male = MockData.children.firstWhere((c) => !c.isFemale);
 
@@ -193,7 +197,11 @@ void main() {
     for (final entry in screens.entries) {
       await t.pumpWidget(_wrap(entry.value));
       await t.pump(const Duration(milliseconds: 300));
-      expect(t.takeException(), isNull, reason: '${entry.key} overflowed at 390px');
+      expect(
+        t.takeException(),
+        isNull,
+        reason: '${entry.key} overflowed at 390px',
+      );
     }
   });
 }
