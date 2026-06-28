@@ -66,22 +66,49 @@ class MockData {
     });
   }
 
+  /// Menstrual period ranges (most recent first) for a female child with
+  /// tracked data. Empty for males / children without data. Teen cycles are
+  /// intentionally irregular to reflect realistic puberty patterns.
+  static List<DateTimeRange> periodsFor(String childId) {
+    if (childId != '1') return const [];
+    final today = DateUtils.dateOnly(DateTime.now());
+    // Gaps between consecutive period starts (recent -> older) and the length
+    // of each period, in days.
+    const gaps = [27, 33, 26, 31, 24, 30, 28, 35, 29];
+    const lengths = [5, 4, 6, 5, 4, 5, 6, 4, 5];
+    final ranges = <DateTimeRange>[];
+    // The current period started 4 days ago.
+    var start = today.subtract(const Duration(days: 4));
+    for (var i = 0; i < gaps.length; i++) {
+      final len = lengths[i % lengths.length];
+      ranges.add(
+        DateTimeRange(start: start, end: start.add(Duration(days: len - 1))),
+      );
+      start = start.subtract(Duration(days: gaps[i]));
+    }
+    return ranges;
+  }
+
   static List<CycleMonth> cycleDataFor(String childId) {
-    if (childId != '1') return [];
+    final periods = periodsFor(childId);
+    if (periods.isEmpty) return const [];
     final now = DateTime.now();
+    final earliest = periods.last.start;
+    final earliestMonth = DateTime(earliest.year, earliest.month);
     return List.generate(12, (i) {
       final month = DateTime(now.year, now.month - i, 1);
       final monthStr =
           '${month.year}-${month.month.toString().padLeft(2, '0')}';
+      final hasPeriod = periods.any((r) =>
+          (r.start.year == month.year && r.start.month == month.month) ||
+          (r.end.year == month.year && r.end.month == month.month));
       String status;
-      if (i < 2) {
+      if (hasPeriod) {
         status = 'yes';
-      } else if (i < 5) {
-        status = i % 2 == 0 ? 'yes' : 'no';
-      } else if (i < 8) {
-        status = 'yes';
-      } else {
+      } else if (month.isBefore(earliestMonth)) {
         status = 'nodata';
+      } else {
+        status = 'no';
       }
       return CycleMonth(month: monthStr, status: status);
     });
@@ -232,6 +259,9 @@ class MockData {
   static const userPhone = '0912 345 678';
   static const userEmail = 'huong.nguyen@email.com';
 
+  // Whether the current user is allowed to author library articles (design 5.1b).
+  static const userCanWriteArticles = true;
+
   // Mock articles
   static final articles = [
     Article(
@@ -314,6 +344,20 @@ class MockData {
   static List<Article> get featuredArticles =>
       articles.where((a) => a.isFeatured).toList();
 
+  static List<Article> get savedArticles =>
+      articles.where((a) => a.isSaved).toList();
+
+  /// Full-text search across title, excerpt and body (design 5.3).
+  static List<Article> searchArticles(String query) {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return [];
+    return articles.where((a) {
+      return a.title.toLowerCase().contains(q) ||
+          a.excerpt.toLowerCase().contains(q) ||
+          a.body.toLowerCase().contains(q);
+    }).toList();
+  }
+
   // Mock notifications
   static final notifications = [
     AppNotification(
@@ -329,6 +373,7 @@ class MockData {
       body: 'Đừng quên cập nhật thông tin của bé Minh Anh hôm nay nhé!',
       date: DateTime.now().subtract(const Duration(hours: 6)),
       type: 'checkin',
+      category: 'child',
     ),
     AppNotification(
       id: 'n3',
@@ -343,6 +388,7 @@ class MockData {
       body: '3 ngày rồi chưa cập nhật bé Đức Minh, thực hiện ngay nhé!',
       date: DateTime.now().subtract(const Duration(days: 2)),
       type: 'checkin',
+      category: 'child',
       isRead: true,
     ),
     AppNotification(

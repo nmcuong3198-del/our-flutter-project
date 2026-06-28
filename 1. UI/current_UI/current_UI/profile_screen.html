@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Profile Screen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Profile Screen</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/profile_screen.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
+
+  @override
+  State&lt;ProfileScreen&gt; createState() =&gt; _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State&lt;ProfileScreen&gt; {
+  bool _notifCheckin = true;
+  bool _notifCalendar = true;
+  bool _notifEducation = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: AppBar(title: const Text(&#x27;Quản lý tài khoản&#x27;)),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // --- Section 1: Thông tin tài khoản ---
+            _SectionHeader(&#x27;Thông tin tài khoản&#x27;),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    // Avatar + name
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 32,
+                          backgroundColor: AppColors.primaryFixed,
+                          child: const Text(&#x27;H&#x27;,
+                              style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: AppColors.primary)),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(MockData.userName,
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                              const SizedBox(height: 2),
+                              Text(MockData.userRole,
+                                  style: const TextStyle(fontSize: 14, color: AppColors.onSurfaceVariant)),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: AppColors.primary),
+                          onPressed: () =&gt; _showEditDialog(&#x27;Tên hiển thị&#x27;, MockData.userName),
+                        ),
+                      ],
+                    ),
+                    const Divider(height: 24),
+                    _InfoRow(&#x27;Vai trò&#x27;, MockData.userRole, Icons.badge,
+                        onEdit: () =&gt; _showEditDialog(&#x27;Vai trò&#x27;, MockData.userRole)),
+                    _InfoRow(&#x27;Ngày sinh&#x27;, &#x27;15/06/1988&#x27;, Icons.cake,
+                        onEdit: () =&gt; _showEditDialog(&#x27;Ngày sinh&#x27;, &#x27;15/06/1988&#x27;)),
+                    _InfoRow(&#x27;Email&#x27;, MockData.userEmail, Icons.email),
+                    _InfoRow(&#x27;Số điện thoại&#x27;, MockData.userPhone, Icons.phone),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 8),
+            // Change password
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.lock_outlined, color: AppColors.primary),
+                title: const Text(&#x27;Thay đổi mật khẩu&#x27;, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+                trailing: const Icon(Icons.chevron_right, color: AppColors.onSurfaceVariant),
+                onTap: () =&gt; _showPasswordDialog(),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // --- Section 2: Quản lý hồ sơ con ---
+            _SectionHeader(&#x27;Quản lý hồ sơ con&#x27;),
+            const SizedBox(height: 12),
+            ...MockData.children.map((child) =&gt; Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: child.avatarColor.withValues(alpha: 0.2),
+                          child: Text(child.initials,
+                              style: TextStyle(fontWeight: FontWeight.w700, color: child.avatarColor)),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(child.nickname,
+                                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                              Text(&#x27;${child.age} tuổi · ${child.isFemale ? &quot;Nữ&quot; : &quot;Nam&quot;}&#x27;,
+                                  style: const TextStyle(fontSize: 12, color: AppColors.onSurfaceVariant)),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 20, color: AppColors.primary),
+                          onPressed: () =&gt; _showEditChildDialog(child),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20, color: AppColors.error),
+                          onPressed: () =&gt; _showDeleteChildDialog(child),
+                        ),
+                      ],
+                    ),
+                  ),
+                )),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () =&gt; _showAddChildDialog(),
+                icon: const Icon(Icons.add),
+                label: const Text(&#x27;Thêm hồ sơ con&#x27;),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // --- Section 3: Thông báo ---
+            _SectionHeader(&#x27;Cài đặt thông báo&#x27;),
+            const SizedBox(height: 12),
+            Card(
+              child: Column(
+                children: [
+                  SwitchListTile(
+                    secondary: const Icon(Icons.edit_notifications, color: AppColors.primary),
+                    title: const Text(&#x27;Nhắc cập nhật&#x27;, style: TextStyle(fontSize: 14)),
+                    value: _notifCheckin,
+                    onChanged: (v) =&gt; setState(() =&gt; _notifCheckin = v),
+                    activeTrackColor: AppColors.primary,
+                  ),
+                  const Divider(height: 1, indent: 56),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.calendar_month, color: AppColors.success),
+                    title: const Text(&#x27;Lịch nhắc nhớ&#x27;, style: TextStyle(fontSize: 14)),
+                    value: _notifCalendar,
+                    onChanged: (v) =&gt; setState(() =&gt; _notifCalendar = v),
+                    activeTrackColor: AppColors.success,
+                  ),
+                  const Divider(height: 1, indent: 56),
+                  SwitchListTile(
+                    secondary: const Icon(Icons.school, color: AppColors.tertiaryFixedDim),
+                    title: const Text(&#x27;Kiến thức&#x27;, style: TextStyle(fontSize: 14)),
+                    value: _notifEducation,
+                    onChanged: (v) =&gt; setState(() =&gt; _notifEducation = v),
+                    activeTrackColor: AppColors.tertiaryFixedDim,
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // --- Section 4: Gói tài khoản ---
+            _SectionHeader(&#x27;Gói tài khoản&#x27;),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.tertiaryFixed,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(Icons.workspace_premium, color: AppColors.tertiary, size: 28),
+                    ),
+                    const SizedBox(width: 16),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(&#x27;Cơ bản&#x27;, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                          SizedBox(height: 2),
+                          Text(&#x27;Quản lý 1 hồ sơ con&#x27;, style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant)),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      child: const Text(&#x27;Nâng cấp&#x27;, style: TextStyle(fontSize: 13)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 40),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showEditDialog(String field, String currentValue) {
+    final controller = TextEditingController(text: currentValue);
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(&#x27;Sửa $field&#x27;, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.warning.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.warning_amber, color: AppColors.warning, size: 20),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(&#x27;$field chỉ được thay đổi 1 lần.&#x27;,
+                        style: const TextStyle(fontSize: 12, color: AppColors.warning)),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: field,
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(ctx), child: const Text(&#x27;Huỷ&#x27;)),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(&#x27;Đã lưu $field&#x27;), behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+              );
+            },
+            child: const Text(&#x27;Lưu&#x27;),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPasswordDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(&#x27;Thay đổi mật khẩu&#x27;, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(obscureText: true, decoration: InputDecoration(labelText: &#x27;Mật khẩu hiện tại&#x27;,
+                filled: true, fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
+            const SizedBox(height: 12),
+            TextField(obscureText: true, decoration: InputDecoration(labelText: &#x27;Mật khẩu mới&#x27;,
+                filled: true, fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
+            const SizedBox(height: 12),
+            TextField(obscureText: true, decoration: InputDecoration(labelText: &#x27;Nhập lại mật khẩu mới&#x27;,
+                filled: true, fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(ctx), child: const Text(&#x27;Huỷ&#x27;)),
+          ElevatedButton(onPressed: () {
+            Navigator.pop(ctx);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text(&#x27;Đã đổi mật khẩu&#x27;), behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            );
+          }, child: const Text(&#x27;Lưu&#x27;)),
+        ],
+      ),
+    );
+  }
+
+  void _showEditChildDialog(ChildProfile child) {
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(&#x27;Sửa hồ sơ ${child.nickname}&#x27;, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: TextEditingController(text: child.nickname),
+              decoration: InputDecoration(labelText: &#x27;Tên gọi&#x27;, filled: true, fillColor: AppColors.surfaceContainerLow,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: TextEditingController(text: &#x27;${child.dateOfBirth.day}/${child.dateOfBirth.month}/${child.dateOfBirth.year}&#x27;),
+              decoration: InputDecoration(labelText: &#x27;Ngày sinh&#x27;, filled: true, fillColor: AppColors.surfaceContainerLow,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(ctx), child: const Text(&#x27;Huỷ&#x27;)),
+          ElevatedButton(onPressed: () {
+            Navigator.pop(ctx);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text(&#x27;Đã lưu hồ sơ con&#x27;), behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            );
+          }, child: const Text(&#x27;Lưu&#x27;)),
+        ],
+      ),
+    );
+  }
+
+  void _showDeleteChildDialog(ChildProfile child) {
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(&#x27;Xoá hồ sơ con?&#x27;, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Text(&#x27;Bạn có chắc chắn xoá hồ sơ &quot;${child.nickname}&quot;? Thao tác này không thể hoàn tác.&#x27;),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(ctx), child: const Text(&#x27;Huỷ&#x27;)),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text(&#x27;Đã xoá ${child.nickname}&#x27;), behavior: SnackBarBehavior.floating,
+                    backgroundColor: AppColors.error,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+              );
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.error),
+            child: const Text(&#x27;Xoá&#x27;),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showAddChildDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text(&#x27;Thêm hồ sơ con&#x27;, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(decoration: InputDecoration(labelText: &#x27;Tên gọi (nickname)&#x27;, filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
+            const SizedBox(height: 12),
+            TextField(decoration: InputDecoration(labelText: &#x27;Ngày sinh (dd/mm/yyyy)&#x27;, filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
+            const SizedBox(height: 12),
+            DropdownButtonFormField&lt;String&gt;(
+              value: &#x27;Nữ&#x27;,
+              items: [&#x27;Nam&#x27;, &#x27;Nữ&#x27;].map((g) =&gt; DropdownMenuItem(value: g, child: Text(g))).toList(),
+              onChanged: (_) {},
+              decoration: InputDecoration(labelText: &#x27;Giới tính&#x27;, filled: true, fillColor: AppColors.surfaceContainerLow,
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () =&gt; Navigator.pop(ctx), child: const Text(&#x27;Huỷ&#x27;)),
+          ElevatedButton(onPressed: () {
+            Navigator.pop(ctx);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: const Text(&#x27;Đã thêm hồ sơ con&#x27;), behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+            );
+          }, child: const Text(&#x27;Tạo hồ sơ&#x27;)),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionHeader extends StatelessWidget {
+  final String text;
+  const _SectionHeader(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontFamily: &#x27;PlusJakartaSans&#x27;,
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: AppColors.primary,
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final VoidCallback? onEdit;
+
+  const _InfoRow(this.label, this.value, this.icon, {this.onEdit});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 20, color: AppColors.primary),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: const TextStyle(fontSize: 11, color: AppColors.onSurfaceVariant)),
+                Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              ],
+            ),
+          ),
+          if (onEdit != null)
+            IconButton(
+              icon: const Icon(Icons.edit, size: 18, color: AppColors.primary),
+              onPressed: onEdit,
+            ),
+        ],
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

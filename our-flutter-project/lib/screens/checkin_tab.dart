@@ -3,6 +3,7 @@ import '../core/strings.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
+import 'daily_journal_screen.dart';
 
 class CheckinTab extends StatefulWidget {
   final ChildProfile child;
@@ -163,6 +164,20 @@ class _CheckinTabState extends State<CheckinTab> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Daily journal entry (design 3.3)
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => DailyJournalScreen(child: widget.child),
+                ),
+              ),
+              icon: const Icon(Icons.menu_book_rounded, size: 18),
+              label: const Text('Nhật ký hôm nay'),
+            ),
+          ),
+          const SizedBox(height: 16),
           // Date picker
           GestureDetector(
             onTap: _pickDate,

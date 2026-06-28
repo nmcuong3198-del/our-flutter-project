@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Library Screen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Library Screen</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/library_screen.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+import &#x27;article_detail_screen.dart&#x27;;
+
+class LibraryScreen extends StatelessWidget {
+  const LibraryScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          title: const Text(S.library),
+          bottom: const TabBar(
+            isScrollable: true,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textSecondary,
+            indicatorColor: AppColors.primary,
+            tabAlignment: TabAlignment.start,
+            tabs: [
+              Tab(text: S.catMental),
+              Tab(text: S.catPhysical),
+              Tab(text: S.catSkills),
+              Tab(text: S.catAlerts),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _ArticleList(category: &#x27;mental&#x27;),
+            _ArticleList(category: &#x27;physical&#x27;),
+            _ArticleList(category: &#x27;skills&#x27;),
+            _ArticleList(category: &#x27;alerts&#x27;),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ArticleList extends StatelessWidget {
+  final String category;
+  const _ArticleList({required this.category});
+
+  @override
+  Widget build(BuildContext context) {
+    final articles = MockData.articlesByCategory(category);
+    final readCount = articles.where((a) =&gt; a.isRead).length;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+          child: Text(
+            &#x27;$readCount/${articles.length} ${S.articlesRead}&#x27;,
+            style: const TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ),
+        Expanded(
+          child: articles.isEmpty
+              ? Center(
+                  child: Text(
+                    &#x27;Chưa có bài viết&#x27;,
+                    style: TextStyle(color: AppColors.textSecondary),
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: articles.length,
+                  itemBuilder: (context, index) {
+                    return _ArticleCard(article: articles[index]);
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ArticleCard extends StatelessWidget {
+  final Article article;
+  const _ArticleCard({required this.article});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) =&gt; ArticleDetailScreen(article: article),
+            ),
+          );
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  if (article.isFeatured)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.secondary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: const Text(
+                        &#x27;Nổi bật&#x27;,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.secondary,
+                        ),
+                      ),
+                    ),
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Text(
+                      &#x27;${article.readMinutes} ${S.readMin}&#x27;,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  if (article.isRead)
+                    const Icon(Icons.check_circle,
+                        size: 18, color: AppColors.checkedIn),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                article.title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                article.excerpt,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Text(
+                    S.readMore,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.arrow_forward,
+                      size: 14, color: AppColors.primary),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

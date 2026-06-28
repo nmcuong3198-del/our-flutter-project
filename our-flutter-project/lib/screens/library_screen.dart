@@ -4,18 +4,54 @@ import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
 import 'article_detail_screen.dart';
+import 'article_editor_screen.dart';
+import 'library_search_screen.dart';
 
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
+class LibraryScreen extends StatefulWidget {
+  final int initialTab;
+  const LibraryScreen({super.key, this.initialTab = 0});
+
+  @override
+  State<LibraryScreen> createState() => _LibraryScreenState();
+}
+
+class _LibraryScreenState extends State<LibraryScreen> {
+  Future<void> _openSearch() async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const LibrarySearchScreen()),
+    );
+    if (mounted) setState(() {});
+  }
+
+  Future<void> _openEditor() async {
+    final created = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const ArticleEditorScreen()),
+    );
+    if (created == true && mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
+      initialIndex: widget.initialTab,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           title: const Text(S.library),
+          actions: [
+            if (MockData.userCanWriteArticles)
+              IconButton(
+                icon: const Icon(Icons.edit_note_rounded),
+                tooltip: 'Tạo bài viết',
+                onPressed: _openEditor,
+              ),
+            IconButton(
+              icon: const Icon(Icons.search_rounded),
+              tooltip: 'Tìm kiếm',
+              onPressed: _openSearch,
+            ),
+          ],
           bottom: const TabBar(
             isScrollable: true,
             labelColor: AppColors.primary,

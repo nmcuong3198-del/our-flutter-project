@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Notifications Screen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Notifications Screen</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/notifications_screen.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+
+class NotificationsScreen extends StatefulWidget {
+  const NotificationsScreen({super.key});
+
+  @override
+  State&lt;NotificationsScreen&gt; createState() =&gt; _NotificationsScreenState();
+}
+
+class _NotificationsScreenState extends State&lt;NotificationsScreen&gt; {
+  @override
+  Widget build(BuildContext context) {
+    final notifs = MockData.notifications;
+    final unreadCount = notifs.where((n) =&gt; !n.isRead).length;
+
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(S.notifTitle),
+            if (unreadCount &gt; 0) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: AppColors.secondary,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  &#x27;$unreadCount ${S.notifNew}&#x27;,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      body: notifs.isEmpty
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.notifications_none,
+                      size: 64, color: AppColors.pending),
+                  const SizedBox(height: 16),
+                  const Text(
+                    S.notifEmpty,
+                    style: TextStyle(
+                        fontSize: 16, color: AppColors.textSecondary),
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: notifs.length,
+              itemBuilder: (context, index) {
+                final n = notifs[index];
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  color: n.isRead
+                      ? AppColors.surface
+                      : AppColors.primary.withValues(alpha: 0.04),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: _iconColor(n.type).withValues(alpha: 0.15),
+                      child:
+                          Icon(_iconData(n.type), color: _iconColor(n.type), size: 20),
+                    ),
+                    title: Text(
+                      n.title,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight:
+                            n.isRead ? FontWeight.w500 : FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 2),
+                        Text(
+                          n.body,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(fontSize: 13, height: 1.3),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          _timeAgo(n.date),
+                          style: const TextStyle(
+                              fontSize: 11, color: AppColors.textSecondary),
+                        ),
+                      ],
+                    ),
+                    trailing: n.isRead
+                        ? null
+                        : Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                    onTap: () {
+                      setState(() =&gt; n.isRead = true);
+                    },
+                  ),
+                );
+              },
+            ),
+    );
+  }
+
+  IconData _iconData(String type) {
+    switch (type) {
+      case &#x27;article&#x27;:
+        return Icons.article;
+      case &#x27;checkin&#x27;:
+        return Icons.edit_note;
+      default:
+        return Icons.info_outline;
+    }
+  }
+
+  Color _iconColor(String type) {
+    switch (type) {
+      case &#x27;article&#x27;:
+        return AppColors.primary;
+      case &#x27;checkin&#x27;:
+        return AppColors.secondary;
+      default:
+        return AppColors.accent;
+    }
+  }
+
+  String _timeAgo(DateTime date) {
+    final diff = DateTime.now().difference(date);
+    if (diff.inMinutes &lt; 60) return &#x27;${diff.inMinutes} phút trước&#x27;;
+    if (diff.inHours &lt; 24) return &#x27;${diff.inHours} giờ trước&#x27;;
+    return &#x27;${diff.inDays} ngày trước&#x27;;
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

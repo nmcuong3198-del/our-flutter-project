@@ -1,0 +1,150 @@
+<!DOCTYPE html><html lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Cảm xúc của con - Leo's Day</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary": "#526069",
+                        "on-primary-fixed-variant": "#004884",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#28609e",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#56656e",
+                        "inverse-surface": "#2e3035",
+                        "surface-container-high": "#e7e8ee",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "background": "#f9f9ff",
+                        "surface-container-highest": "#e1e2e8",
+                        "inverse-on-surface": "#f0f0f6",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "on-tertiary-fixed": "#2c1600",
+                        "outline-variant": "#c2c6d2",
+                        "inverse-primary": "#a4c9ff",
+                        "surface-dim": "#d9dadf",
+                        "secondary-fixed": "#d6e5ef",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "tertiary-container": "#7d4800",
+                        "primary": "#003e74",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#aaccff",
+                        "on-secondary-fixed": "#0f1d25",
+                        "on-error-container": "#93000a",
+                        "on-surface": "#191c20",
+                        "on-surface-variant": "#424750",
+                        "surface-variant": "#e1e2e8",
+                        "on-primary-fixed": "#001c39",
+                        "on-background": "#191c20",
+                        "tertiary-fixed": "#ffdcbe",
+                        "tertiary": "#5c3400",
+                        "secondary-container": "#d3e2ed",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "surface": "#f9f9ff",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#727781",
+                        "on-tertiary-container": "#ffbc7a",
+                        "surface-container": "#ededf3",
+                        "primary-container": "#1a5694",
+                        "on-error": "#ffffff",
+                        "surface-container-low": "#f3f3f9",
+                        "primary-fixed": "#d4e3ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen font-body flex items-center justify-center p-4">
+<!-- Background Context (Mock Check-in Screen) -->
+<div class="fixed inset-0 z-0 opacity-40 blur-sm pointer-events-none select-none overflow-hidden">
+<header class="flex justify-between items-center w-full px-6 py-4 bg-gradient-to-b from-[#f9f9ff] to-[#d3e2ed]/20">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-secondary-container"></div>
+<span class="font-headline font-black text-primary tracking-tight">Leo's Day</span>
+</div>
+<span class="material-symbols-outlined text-primary">calendar_today</span>
+</header>
+<main class="p-6 space-y-6">
+<div class="bg-surface-container-low h-48 rounded-xl w-full"></div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low h-32 rounded-xl"></div>
+<div class="bg-surface-container-low h-32 rounded-xl"></div>
+</div>
+</main>
+</div>
+<!-- Backdrop Overlay -->
+<div class="fixed inset-0 bg-primary/20 backdrop-blur-md z-10"></div>
+<!-- Main Modal Shell -->
+<div class="relative z-20 w-full max-w-md bg-surface-container-lowest rounded-xl shadow-[0_24px_40px_rgba(0,62,116,0.08)] overflow-hidden flex flex-col max-h-[795px]">
+<!-- Header Section -->
+<div class="flex items-center px-6 py-5 shrink-0 justify-end">
+<button class="p-2 rounded-full hover:bg-surface-container-low transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">close</span>
+</button>
+</div>
+<!-- Scrollable Content Canvas -->
+<div class="px-6 pb-6 overflow-y-auto space-y-8"><div class="flex items-center gap-2 p-1 bg-surface-container-low rounded-full mb-6">
+<button class="flex-1 py-2 px-4 rounded-full font-headline text-xs transition-all bg-transparent text-on-surface-variant font-medium">
+    Cảm xúc
+  </button>
+<button class="flex-1 py-2 px-4 rounded-full font-headline text-xs hover:bg-surface-container-high transition-all bg-primary text-on-primary font-bold">
+    Cơ thể
+  </button>
+<button class="flex-1 py-2 px-4 rounded-full bg-transparent text-on-surface-variant font-headline font-medium text-xs hover:bg-surface-container-high transition-all">
+    Điều ảnh hưởng
+  </button>
+</div><div class="text-center mb-8">
+<h2 class="font-headline text-primary text-lg font-normal">Hôm nay tình trạng cơ thể của con thế nào?</h2>
+</div>
+<!-- Hero Illustration Tone -->
+<!-- Emotion Grid Selection -->
+<div class="grid grid-cols-3 gap-3"><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">water_drop</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Đang trong kỳ kinh nguyệt</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">sentiment_very_satisfied</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Khỏe, bình thường</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">psychology</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Đau đầu</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">personal_injury</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Đau bụng</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">accessibility_new</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Đau lưng</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">sick</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Buồn nôn</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">settings_backup_restore</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Chóng mặt</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">face</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Nổi mụn</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">mood_bad</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Khó chịu</span></button><button class="group flex flex-col items-center gap-2 p-4 rounded-lg bg-surface-container-low transition-all duration-300 hover:bg-secondary-container active:scale-95"><span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">add_circle</span><span class="text-[12px] font-medium text-on-surface-variant text-center">Khác</span></button></div>
+<!-- Notes Section -->
+<div class="space-y-3">
+<label class="block font-headline font-bold text-primary text-sm tracking-tight" for="notes">Ghi chú</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-lg p-4 text-sm text-on-surface placeholder:text-outline focus:ring-2 focus:ring-primary-fixed transition-shadow resize-none" id="notes" placeholder="Con gặp chuyện gì ở trường hay có điều gì muốn chia sẻ không ạ?" rows="4"></textarea>
+</div>
+</div>
+<!-- Sticky Footer Action -->
+<div class="p-6 shrink-0 bg-surface-container-lowest shadow-[0_-12px_32px_rgba(0,62,116,0.04)]">
+<button class="w-full py-4 bg-gradient-to-r from-primary to-primary-container text-on-primary font-headline font-bold rounded-full shadow-lg shadow-primary/20 active:scale-[0.98] transition-all duration-200">Lưu</button>
+</div>
+</div>
+
+
+</body></html>

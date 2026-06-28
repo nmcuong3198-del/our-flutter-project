@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Auth Screens</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Auth Screens</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/auth_screens.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+
+class LoginScreen extends StatelessWidget {
+  final VoidCallback onLogin;
+  final VoidCallback onRegister;
+
+  const LoginScreen({super.key, required this.onLogin, required this.onRegister});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Logo
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.primaryContainer,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.favorite, color: Colors.white, size: 28),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              &#x27;Đăng nhập&#x27;,
+              style: TextStyle(
+                fontFamily: &#x27;PlusJakartaSans&#x27;,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              &#x27;Chào mừng bạn quay lại SSCare&#x27;,
+              style: TextStyle(fontSize: 15, color: AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(height: 32),
+
+            // Email/Phone
+            const Text(&#x27;Email hoặc Số điện thoại&#x27;,
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: &#x27;Nhập email hoặc số điện thoại&#x27;,
+                hintStyle: const TextStyle(color: AppColors.outlineVariant),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: const Icon(Icons.email_outlined, color: AppColors.secondary),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Password
+            const Text(&#x27;Mật khẩu&#x27;,
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: &#x27;Nhập mật khẩu&#x27;,
+                hintStyle: const TextStyle(color: AppColors.outlineVariant),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+                prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.secondary),
+                suffixIcon: const Icon(Icons.visibility_off_outlined, color: AppColors.secondary),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {},
+                child: const Text(&#x27;Quên mật khẩu?&#x27;,
+                    style: TextStyle(fontSize: 13, color: AppColors.primary)),
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Login button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onLogin,
+                child: const Text(&#x27;Đăng nhập →&#x27;),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // Register link
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(&#x27;Chưa có tài khoản? &#x27;,
+                    style: TextStyle(color: AppColors.onSurfaceVariant)),
+                GestureDetector(
+                  onTap: onRegister,
+                  child: const Text(
+                    &#x27;Đăng ký ngay&#x27;,
+                    style: TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RegisterScreen extends StatelessWidget {
+  final VoidCallback onRegister;
+  final VoidCallback onLogin;
+
+  const RegisterScreen({super.key, required this.onRegister, required this.onLogin});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.surface,
+      appBar: AppBar(
+        backgroundColor: AppColors.surface,
+        elevation: 0,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 56,
+              height: 56,
+              decoration: BoxDecoration(
+                color: AppColors.primaryContainer,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.favorite, color: Colors.white, size: 28),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              &#x27;Đăng ký tài khoản&#x27;,
+              style: TextStyle(
+                fontFamily: &#x27;PlusJakartaSans&#x27;,
+                fontSize: 28,
+                fontWeight: FontWeight.w800,
+                color: AppColors.primary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              &#x27;Tạo tài khoản để bắt đầu đồng hành cùng con&#x27;,
+              style: TextStyle(fontSize: 15, color: AppColors.onSurfaceVariant),
+            ),
+            const SizedBox(height: 32),
+
+            // Role
+            const Text(&#x27;Vai trò&#x27;, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            DropdownButtonFormField&lt;String&gt;(
+              value: &#x27;Mẹ&#x27;,
+              items: [&#x27;Bố&#x27;, &#x27;Mẹ&#x27;, &#x27;Người giám hộ&#x27;]
+                  .map((r) =&gt; DropdownMenuItem(value: r, child: Text(r)))
+                  .toList(),
+              onChanged: (_) {},
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Name
+            const Text(&#x27;Tên hiển thị&#x27;, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: &#x27;Nhập tên hiển thị (tối đa 25 ký tự)&#x27;,
+                hintStyle: const TextStyle(color: AppColors.outlineVariant),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                prefixIcon: const Icon(Icons.person_outlined, color: AppColors.secondary),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Email/Phone
+            const Text(&#x27;Email hoặc SĐT&#x27;, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              decoration: InputDecoration(
+                hintText: &#x27;Nhập email hoặc số điện thoại&#x27;,
+                hintStyle: const TextStyle(color: AppColors.outlineVariant),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                prefixIcon: const Icon(Icons.email_outlined, color: AppColors.secondary),
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Password
+            const Text(&#x27;Mật khẩu&#x27;, style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            TextField(
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: &#x27;Tối thiểu 8 ký tự&#x27;,
+                hintStyle: const TextStyle(color: AppColors.outlineVariant),
+                filled: true,
+                fillColor: AppColors.surfaceContainerLow,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                prefixIcon: const Icon(Icons.lock_outlined, color: AppColors.secondary),
+              ),
+            ),
+            const SizedBox(height: 32),
+
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: onRegister,
+                child: const Text(&#x27;Đăng ký →&#x27;),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(&#x27;Đã có tài khoản? &#x27;,
+                    style: TextStyle(color: AppColors.onSurfaceVariant)),
+                GestureDetector(
+                  onTap: onLogin,
+                  child: const Text(
+                    &#x27;Đăng nhập&#x27;,
+                    style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

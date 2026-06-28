@@ -5,9 +5,18 @@ import '../mock/mock_data.dart';
 import '../models/models.dart';
 import '../shared/child_picker.dart';
 import 'article_detail_screen.dart';
+import 'library_screen.dart';
+import 'profile_screen.dart';
+import 'saved_articles_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
+
+  void _openLibrary(BuildContext context, int tab) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => LibraryScreen(initialTab: tab)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +66,18 @@ class DashboardScreen extends StatelessWidget {
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 16),
-                child: CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppColors.secondaryContainer,
-                  child: const Icon(
-                    Icons.person,
-                    color: AppColors.primary,
-                    size: 22,
+                child: GestureDetector(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  ),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppColors.secondaryContainer,
+                    child: const Icon(
+                      Icons.person,
+                      color: AppColors.primary,
+                      size: 22,
+                    ),
                   ),
                 ),
               ),
@@ -308,7 +322,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 14),
-                  const Row(
+                  Row(
                     children: [
                       Expanded(
                         child: _LibraryCard(
@@ -316,15 +330,17 @@ class DashboardScreen extends StatelessWidget {
                           label: S.catMental,
                           color: AppColors.primary,
                           bgColor: AppColors.surfaceContainerLow,
+                          onTap: () => _openLibrary(context, 0),
                         ),
                       ),
-                      SizedBox(width: 14),
+                      const SizedBox(width: 14),
                       Expanded(
                         child: _LibraryCard(
                           icon: Icons.fitness_center,
                           label: S.catPhysical,
                           color: AppColors.primary,
                           bgColor: AppColors.surfaceContainerLow,
+                          onTap: () => _openLibrary(context, 1),
                         ),
                       ),
                     ],
@@ -332,12 +348,13 @@ class DashboardScreen extends StatelessWidget {
                   const SizedBox(height: 14),
                   Row(
                     children: [
-                      const Expanded(
+                      Expanded(
                         child: _LibraryCard(
                           icon: Icons.psychology_alt,
                           label: S.catSkills,
                           color: AppColors.primary,
                           bgColor: AppColors.surfaceContainerLow,
+                          onTap: () => _openLibrary(context, 2),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -347,6 +364,7 @@ class DashboardScreen extends StatelessWidget {
                           label: S.catAlerts,
                           color: AppColors.error,
                           bgColor: AppColors.errorContainer.withValues(alpha: 0.4),
+                          onTap: () => _openLibrary(context, 3),
                         ),
                       ),
                     ],
@@ -362,37 +380,42 @@ class DashboardScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryContainer,
-                  borderRadius: BorderRadius.circular(24),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const SavedArticlesScreen()),
                 ),
-                child: const Row(
-                  children: [
-                    Icon(
-                      Icons.bookmark,
-                      color: AppColors.primary,
-                      size: 28,
-                    ),
-                    SizedBox(width: 14),
-                    Expanded(
-                      child: Text(
-                        'Bài viết đã lưu',
-                        style: TextStyle(
-                          fontFamily: 'PlusJakartaSans',
-                          fontSize: 17,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.primary,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondaryContainer,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(
+                        Icons.bookmark,
+                        color: AppColors.primary,
+                        size: 28,
+                      ),
+                      SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          'Bài viết đã lưu',
+                          style: TextStyle(
+                            fontFamily: 'PlusJakartaSans',
+                            fontSize: 17,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primary,
+                          ),
                         ),
                       ),
-                    ),
-                    Icon(
-                      Icons.chevron_right,
-                      color: AppColors.primary,
-                      size: 24,
-                    ),
-                  ],
+                      Icon(
+                        Icons.chevron_right,
+                        color: AppColors.primary,
+                        size: 24,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -620,38 +643,43 @@ class _LibraryCard extends StatelessWidget {
   final String label;
   final Color color;
   final Color bgColor;
+  final VoidCallback? onTap;
 
   const _LibraryCard({
     required this.icon,
     required this.label,
     required this.color,
     required this.bgColor,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 160,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(24),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Icon(icon, color: color, size: 36),
-          Text(
-            label,
-            style: TextStyle(
-              fontFamily: 'PlusJakartaSans',
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: color,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 160,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Icon(icon, color: color, size: 36),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'PlusJakartaSans',
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

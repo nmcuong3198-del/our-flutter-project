@@ -120,6 +120,7 @@ class Reminder {
   final String childId;
   final DateTime date;
   final String label;
+  final String? note;
   bool isActive;
 
   Reminder({
@@ -127,6 +128,7 @@ class Reminder {
     required this.childId,
     required this.date,
     required this.label,
+    this.note,
     this.isActive = true,
   });
 }
@@ -141,6 +143,7 @@ class Article {
   final bool isFeatured;
   int rating; // 0 = unrated, 1-5
   bool isRead;
+  bool isSaved;
 
   Article({
     required this.id,
@@ -152,6 +155,7 @@ class Article {
     this.isFeatured = false,
     this.rating = 0,
     this.isRead = false,
+    this.isSaved = false,
   });
 }
 
@@ -161,6 +165,7 @@ class AppNotification {
   final String body;
   final DateTime date;
   final String type; // article | checkin | system
+  final String category; // child | other
   bool isRead;
 
   AppNotification({
@@ -169,6 +174,7 @@ class AppNotification {
     required this.body,
     required this.date,
     required this.type,
+    this.category = 'other',
     this.isRead = false,
   });
 }

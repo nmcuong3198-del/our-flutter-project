@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Reports Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Reports Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/reports_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:fl_chart/fl_chart.dart&#x27;;
+import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class ReportsTab extends StatefulWidget {
+  final ChildProfile child;
+
+  const ReportsTab({super.key, required this.child});
+
+  @override
+  State&lt;ReportsTab&gt; createState() =&gt; _ReportsTabState();
+}
+
+class _ReportsTabState extends State&lt;ReportsTab&gt; {
+  String _filter = &#x27;6 tháng&#x27;;
+  static const _filters = [&#x27;6 tháng&#x27;, &#x27;12 tháng&#x27;, &#x27;24 tháng&#x27;, &#x27;5 năm&#x27;];
+
+  int get _monthCount {
+    switch (_filter) {
+      case &#x27;12 tháng&#x27;: return 12;
+      case &#x27;24 tháng&#x27;: return 24;
+      case &#x27;5 năm&#x27;: return 60;
+      default: return 6;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final allMeasurements = MockData.measurementsFor(widget.child.id);
+    final measurements = allMeasurements.take(_monthCount).toList();
+    final checkins = MockData.checkinsFor(widget.child.id);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Growth chart header + filter
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  S.growthReport,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton&lt;String&gt;(
+                    value: _filter,
+                    items: _filters.map((f) =&gt; DropdownMenuItem(
+                      value: f,
+                      child: Text(f, style: const TextStyle(fontSize: 13)),
+                    )).toList(),
+                    onChanged: (v) =&gt; setState(() =&gt; _filter = v!),
+                    style: const TextStyle(fontSize: 13, color: AppColors.primary),
+                    icon: const Icon(Icons.arrow_drop_down, size: 20),
+                    isDense: true,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      _LegendDot(AppColors.primary, &#x27;Chiều cao (cm)&#x27;),
+                      const SizedBox(width: 16),
+                      _LegendDot(AppColors.secondary, &#x27;Cân nặng (kg)&#x27;),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 220,
+                    child: _GrowthChart(measurements: measurements),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Body condition report (30 days)
+          const Text(
+            &#x27;${S.bodyReport} — ${S.last30Days}&#x27;,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          _BodyConditionReport(checkins: checkins),
+        ],
+      ),
+    );
+  }
+}
+
+class _GrowthChart extends StatelessWidget {
+  final List&lt;BodyMeasurement&gt; measurements;
+
+  const _GrowthChart({required this.measurements});
+
+  @override
+  Widget build(BuildContext context) {
+    final reversed = measurements.reversed.toList();
+    final heightSpots = reversed
+        .asMap()
+        .entries
+        .map((e) =&gt; FlSpot(e.key.toDouble(), e.value.height))
+        .toList();
+    final weightSpots = reversed
+        .asMap()
+        .entries
+        .map((e) =&gt; FlSpot(e.key.toDouble(), e.value.weight))
+        .toList();
+
+    return LineChart(
+      LineChartData(
+        gridData: FlGridData(
+          show: true,
+          drawVerticalLine: false,
+          horizontalInterval: 20,
+          getDrawingHorizontalLine: (value) =&gt; FlLine(
+            color: AppColors.pending.withValues(alpha: 0.3),
+            strokeWidth: 1,
+          ),
+        ),
+        titlesData: FlTitlesData(
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              getTitlesWidget: (value, meta) {
+                final idx = value.toInt();
+                if (idx &lt; 0 || idx &gt;= reversed.length) {
+                  return const SizedBox();
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    &#x27;T${reversed[idx].month.split(&#x27;-&#x27;)[1]}&#x27;,
+                    style: const TextStyle(
+                      fontSize: 10,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                );
+              },
+              reservedSize: 28,
+            ),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 40,
+              getTitlesWidget: (value, meta) =&gt; Text(
+                value.toInt().toString(),
+                style: const TextStyle(
+                  fontSize: 10,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+            ),
+          ),
+          topTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+          rightTitles:
+              const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        ),
+        borderData: FlBorderData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: heightSpots,
+            isCurved: true,
+            color: AppColors.primary,
+            barWidth: 3,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) =&gt;
+                  FlDotCirclePainter(
+                radius: 4,
+                color: AppColors.primary,
+                strokeWidth: 2,
+                strokeColor: Colors.white,
+              ),
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              color: AppColors.primary.withValues(alpha: 0.08),
+            ),
+          ),
+          LineChartBarData(
+            spots: weightSpots,
+            isCurved: true,
+            color: AppColors.secondary,
+            barWidth: 3,
+            dotData: FlDotData(
+              show: true,
+              getDotPainter: (spot, percent, barData, index) =&gt;
+                  FlDotCirclePainter(
+                radius: 4,
+                color: AppColors.secondary,
+                strokeWidth: 2,
+                strokeColor: Colors.white,
+              ),
+            ),
+            belowBarData: BarAreaData(
+              show: true,
+              color: AppColors.secondary.withValues(alpha: 0.08),
+            ),
+          ),
+        ],
+        minY: 20,
+      ),
+    );
+  }
+}
+
+class _BodyConditionReport extends StatelessWidget {
+  final List&lt;DailyCheckin&gt; checkins;
+
+  const _BodyConditionReport({required this.checkins});
+
+  @override
+  Widget build(BuildContext context) {
+    // Count symptoms across all check-ins
+    final Map&lt;String, int&gt; symptomCounts = {};
+    for (final c in checkins) {
+      for (final s in c.symptoms) {
+        symptomCounts[s] = (symptomCounts[s] ?? 0) + 1;
+      }
+    }
+
+    if (symptomCounts.isEmpty) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: Text(
+              S.noCheckinYet,
+              style: const TextStyle(color: AppColors.textSecondary),
+            ),
+          ),
+        ),
+      );
+    }
+
+    final sorted = symptomCounts.entries.toList()
+      ..sort((a, b) =&gt; b.value.compareTo(a.value));
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: sorted.map((entry) {
+            final pct = entry.value / checkins.length;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      entry.key,
+                      style: const TextStyle(fontSize: 13),
+                    ),
+                  ),
+                  Expanded(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: pct,
+                        minHeight: 10,
+                        backgroundColor: AppColors.background,
+                        valueColor:
+                            AlwaysStoppedAnimation(AppColors.primary.withValues(alpha: 0.7)),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    &#x27;${entry.value} ${S.days}&#x27;,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class _LegendDot extends StatelessWidget {
+  final Color color;
+  final String label;
+
+  const _LegendDot(this.color, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+        ),
+        const SizedBox(width: 4),
+        Text(label,
+            style: const TextStyle(fontSize: 11, color: AppColors.textSecondary)),
+      ],
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

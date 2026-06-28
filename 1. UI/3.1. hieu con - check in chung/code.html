@@ -1,0 +1,211 @@
+<!DOCTYPE html><html class="light" lang="vi" style=""><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#aaccff",
+                        "on-surface-variant": "#424750",
+                        "inverse-on-surface": "#f0f0f6",
+                        "surface-container-high": "#e7e8ee",
+                        "secondary-container": "#d3e2ed",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "on-error": "#ffffff",
+                        "secondary-fixed": "#d6e5ef",
+                        "on-secondary-fixed": "#0f1d25",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#ffdcbe",
+                        "surface-container": "#ededf3",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-container": "#ffbc7a",
+                        "on-background": "#191c20",
+                        "tertiary-container": "#7d4800",
+                        "surface-bright": "#f9f9ff",
+                        "error-container": "#ffdad6",
+                        "secondary": "#526069",
+                        "on-primary-fixed-variant": "#004884",
+                        "surface-tint": "#28609e",
+                        "primary": "#003e74",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#001c39",
+                        "on-secondary-container": "#56656e",
+                        "error": "#ba1a1a",
+                        "surface-container-highest": "#e1e2e8",
+                        "outline-variant": "#c2c6d2",
+                        "inverse-primary": "#a4c9ff",
+                        "surface-container-low": "#f3f3f9",
+                        "on-error-container": "#93000a",
+                        "background": "#f9f9ff",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c20",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "outline": "#727781",
+                        "tertiary": "#5c3400",
+                        "surface-dim": "#d9dadf",
+                        "surface-variant": "#e1e2e8",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "primary-container": "#1a5694",
+                        "primary-fixed": "#d4e3ff",
+                        "inverse-surface": "#2e3035"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, .font-display { font-family: 'Plus Jakarta Sans', sans-serif; }
+        ::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-background flex items-center w-full px-6 py-4 fixed top-0 z-50 gap-4">
+<button class="hover:bg-surface-container-low transition-colors active:scale-95 duration-150 ease-in-out p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed-dim">arrow_back</span>
+</button>
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Minh Huy Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHA3EdmhJIolgDQZcn21WhZDFwxJFl8Fl-116ETCYd2Vn_OThmsuHt188Sr1YCkdN6MwwFB9Ljkb6sTNWCgvmCkyAKTCjbxT8Dn7N5GLTFT9jm3QEwxW2SUv815JY44ipA57jif08AMnuljwRA5lTBkV-18GBersAqFELEpBYxq7hrooy4zXLzgeipn0E7wmT6wqmb8g2wmPlX-xNuNLH1PbXgBqBfKn9HydIhbLSx1Uhwvi8O5sba6fJScdw8gY7H9x4bfrMhvGKw">
+</div>
+<span class="font-display font-bold text-xl text-primary dark:text-primary-fixed-dim">
+Minh Huy
+</span></div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Hero Greeting -->
+<section class="mb-10">
+<h2 class="font-display font-extrabold text-on-background leading-tight text-2xl">Hiểu con mỗi ngày để đồng hành cùng con</h2>
+</section>
+<!-- Date Selection Section -->
+<section class="mb-8 bg-surface-container-low p-6 rounded-xl">
+<div class="flex items-center justify-between mb-4">
+<span class="font-display font-bold text-lg text-primary">Ngày</span>
+<span class="material-symbols-outlined text-outline">calendar_today</span>
+</div>
+<div class="flex gap-3 overflow-x-auto pb-2">
+<!-- Date Chips -->
+<div class="flex-shrink-0 flex flex-col items-center justify-center bg-surface-container-lowest w-16 h-20 rounded-full shadow-sm">
+<span class="text-xs text-outline font-medium">T2</span>
+<span class="text-lg font-bold text-on-surface">12</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center justify-center bg-primary text-on-primary w-16 h-20 rounded-full shadow-md">
+<span class="text-xs opacity-80 font-medium">T3</span>
+<span class="text-lg font-bold">13</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center justify-center bg-surface-container-lowest w-16 h-20 rounded-full shadow-sm">
+<span class="text-xs text-outline font-medium">T4</span>
+<span class="text-lg font-bold text-on-surface">14</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center justify-center bg-surface-container-lowest w-16 h-20 rounded-full shadow-sm">
+<span class="text-xs text-outline font-medium">T5</span>
+<span class="text-lg font-bold text-on-surface">15</span>
+</div>
+<div class="flex-shrink-0 flex flex-col items-center justify-center bg-surface-container-lowest w-16 h-20 rounded-full shadow-sm">
+<span class="text-xs text-outline font-medium">T6</span>
+<span class="text-lg font-bold text-on-surface">16</span>
+</div>
+</div>
+</section><div class="text-right mt-1 mb-2 px-1">
+  <p class="text-[#EAB308] text-xs font-medium italic">Lưu ý: Đã có thông tin vào ngày này!</p>
+</div><div class="mt-2">
+  <p class="text-[#EAB308] font-medium italic text-[10px]"><br></p>
+</div><section class="mb-8 bg-secondary-container/50 border border-secondary-container rounded-xl p-4 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary text-xl">info</span>
+<p class="text-sm text-on-secondary-container italic leading-relaxed font-bold">Sự mệt mệi gần đây của con có thể đang chị u ảnh hưởng từ học tập.</p>
+</section>
+<!-- Emotions Section -->
+<section class="mb-4 bg-surface-container-low rounded-xl p-6 transition-all hover:bg-surface-container active:scale-[0.98] cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">sentiment_satisfied</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-lg text-primary">Cảm xúc</h3>
+<p class="text-xs text-on-surface-variant">Ghi lại tâm trạng của con</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</section>
+<!-- Body Section -->
+<section class="mb-4 bg-surface-container-low rounded-xl p-6 transition-all hover:bg-surface-container active:scale-[0.98] cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">accessibility_new</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-lg text-primary">Cơ thể</h3>
+<p class="text-xs text-on-surface-variant">Theo dõi sức khỏe thể chất</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</section>
+<!-- Influencing Factors Section -->
+<section class="mb-10 bg-surface-container-low rounded-xl p-6 transition-all hover:bg-surface-container active:scale-[0.98] cursor-pointer flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-2xl">wb_sunny</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-lg text-primary">Điều ảnh hưởng</h3>
+<p class="text-xs text-on-surface-variant">Môi trường và thói quen</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</section>
+<!-- Save Button -->
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 backdrop-blur-xl bg-surface-container-lowest/70 dark:bg-inverse-surface/80 shadow-[0_-8px_32px_rgba(25,28,32,0.05)] rounded-t-xl">
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label text-xs font-medium mt-1">Trang chủ</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container dark:bg-primary-container dark:text-on-primary-container rounded-full px-5 py-1.5 active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="child_care">child_care</span>
+<span class="font-label text-xs font-medium mt-1">Quản lý trẻ</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+<span class="font-label text-xs font-medium mt-1">Thư viện</span>
+</div>
+<div class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-5 py-1.5 hover:bg-surface-container dark:hover:bg-surface-container-high transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="font-label text-xs font-medium mt-1">Thông báo</span>
+</div>
+</nav>
+
+
+</body></html>

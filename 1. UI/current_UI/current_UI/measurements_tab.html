@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Measurements Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Measurements Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/measurements_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class MeasurementsTab extends StatelessWidget {
+  final ChildProfile child;
+
+  const MeasurementsTab({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    final measurements = MockData.measurementsFor(child.id);
+    final who = MockData.whoFor(child);
+    final latest = measurements.isNotEmpty ? measurements.first : null;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Current stats card
+          if (latest != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      &#x27;Số đo gần nhất&#x27;,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      &#x27;Tháng ${latest.month}&#x27;,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        _MeasureChip(
+                          label: S.height,
+                          value: &#x27;${latest.height.toStringAsFixed(1)} cm&#x27;,
+                          icon: Icons.height,
+                          color: AppColors.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        _MeasureChip(
+                          label: S.weight,
+                          value: &#x27;${latest.weight.toStringAsFixed(1)} kg&#x27;,
+                          icon: Icons.monitor_weight_outlined,
+                          color: AppColors.secondary,
+                        ),
+                        const SizedBox(width: 12),
+                        _MeasureChip(
+                          label: S.bmi,
+                          value: latest.bmi.toStringAsFixed(1),
+                          icon: Icons.speed,
+                          color: AppColors.accent,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          // WHO comparison
+          if (who != null &amp;&amp; latest != null) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      S.whoComparison,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    Text(
+                      &#x27;${child.age} ${S.age} · ${child.isFemale ? &quot;Nữ&quot; : &quot;Nam&quot;}&#x27;,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _WhoRow(
+                      label: &#x27;Chiều cao&#x27;,
+                      childVal: latest.height,
+                      whoVal: who[&#x27;height&#x27;]!,
+                      unit: &#x27;cm&#x27;,
+                    ),
+                    const SizedBox(height: 10),
+                    _WhoRow(
+                      label: &#x27;Cân nặng&#x27;,
+                      childVal: latest.weight,
+                      whoVal: who[&#x27;weight&#x27;]!,
+                      unit: &#x27;kg&#x27;,
+                    ),
+                    const SizedBox(height: 10),
+                    _WhoRow(
+                      label: &#x27;BMI&#x27;,
+                      childVal: latest.bmi,
+                      whoVal: who[&#x27;bmi&#x27;]!,
+                      unit: &#x27;&#x27;,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+
+          // History list
+          const Text(
+            &#x27;Lịch sử đo&#x27;,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 12),
+          ...measurements.map((m) =&gt; Card(
+                margin: const EdgeInsets.only(bottom: 8),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                    child: const Icon(Icons.straighten,
+                        color: AppColors.primary, size: 20),
+                  ),
+                  title: Text(
+                    &#x27;Tháng ${m.month}&#x27;,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: Text(
+                    &#x27;${m.height.toStringAsFixed(1)}cm · ${m.weight.toStringAsFixed(1)}kg · BMI ${m.bmi.toStringAsFixed(1)}&#x27;,
+                    style: const TextStyle(fontSize: 13),
+                  ),
+                ),
+              )),
+        ],
+      ),
+    );
+  }
+}
+
+class _MeasureChip extends StatelessWidget {
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  const _MeasureChip({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: color,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 10,
+                color: AppColors.textSecondary,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _WhoRow extends StatelessWidget {
+  final String label;
+  final double childVal;
+  final double whoVal;
+  final String unit;
+
+  const _WhoRow({
+    required this.label,
+    required this.childVal,
+    required this.whoVal,
+    required this.unit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final diff = childVal - whoVal;
+    final status = diff.abs() &lt; whoVal * 0.05
+        ? S.withinRange
+        : (diff &gt; 0 ? S.aboveRange : S.belowRange);
+    final color = status == S.withinRange
+        ? AppColors.checkedIn
+        : (status == S.aboveRange ? AppColors.overdue : AppColors.error);
+
+    return Row(
+      children: [
+        Expanded(
+          flex: 2,
+          child: Text(label,
+              style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+        ),
+        Expanded(
+          flex: 2,
+          child: Text(
+            &#x27;${childVal.toStringAsFixed(1)}$unit / ${whoVal.toStringAsFixed(1)}$unit&#x27;,
+            style: const TextStyle(fontSize: 13, color: AppColors.textSecondary),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Text(
+            status,
+            style: TextStyle(fontSize: 12, color: color, fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

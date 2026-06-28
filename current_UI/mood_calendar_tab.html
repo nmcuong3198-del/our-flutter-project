@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Mood Calendar Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Mood Calendar Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/mood_calendar_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class MoodCalendarTab extends StatefulWidget {
+  final ChildProfile child;
+  const MoodCalendarTab({super.key, required this.child});
+
+  @override
+  State&lt;MoodCalendarTab&gt; createState() =&gt; _MoodCalendarTabState();
+}
+
+class _MoodCalendarTabState extends State&lt;MoodCalendarTab&gt; {
+  late DateTime _currentMonth;
+  late List&lt;DailyCheckin&gt; _checkins;
+  late Map&lt;String, DailyCheckin&gt; _checkinMap;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentMonth = DateTime(DateTime.now().year, DateTime.now().month, 1);
+    _loadData();
+  }
+
+  void _loadData() {
+    _checkins = MockData.checkinsFor(widget.child.id);
+    _checkinMap = {};
+    for (final c in _checkins) {
+      final key = &#x27;${c.date.year}-${c.date.month}-${c.date.day}&#x27;;
+      _checkinMap[key] = c;
+    }
+  }
+
+  void _prevMonth() {
+    setState(() {
+      _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
+    });
+  }
+
+  void _nextMonth() {
+    final now = DateTime.now();
+    final next = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
+    if (!next.isAfter(DateTime(now.year, now.month + 1, 1))) {
+      setState(() =&gt; _currentMonth = next);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final daysInMonth = DateUtils.getDaysInMonth(
+        _currentMonth.year, _currentMonth.month);
+    final firstWeekday = _currentMonth.weekday % 7; // 0=Sun
+    final monthName = _monthName(_currentMonth.month);
+
+    // Count emotions for the month
+    final emotionCounts = &lt;String, int&gt;{};
+    int checkedDays = 0;
+    for (int day = 1; day &lt;= daysInMonth; day++) {
+      final key =
+          &#x27;${_currentMonth.year}-${_currentMonth.month}-$day&#x27;;
+      final checkin = _checkinMap[key];
+      if (checkin != null &amp;&amp; checkin.emotions.isNotEmpty) {
+        checkedDays++;
+        for (final e in checkin.emotions) {
+          emotionCounts[e] = (emotionCounts[e] ?? 0) + 1;
+        }
+      }
+    }
+    final sortedEmotions = emotionCounts.entries.toList()
+      ..sort((a, b) =&gt; b.value.compareTo(a.value));
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Month navigator
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    onPressed: _prevMonth,
+                  ),
+                  Text(
+                    &#x27;$monthName ${_currentMonth.year}&#x27;,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    onPressed: _nextMonth,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Calendar grid
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  // Weekday headers
+                  Row(
+                    children: [&#x27;CN&#x27;, &#x27;T2&#x27;, &#x27;T3&#x27;, &#x27;T4&#x27;, &#x27;T5&#x27;, &#x27;T6&#x27;, &#x27;T7&#x27;]
+                        .map((d) =&gt; Expanded(
+                              child: Center(
+                                child: Text(
+                                  d,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textSecondary,
+                                  ),
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 8),
+                  // Day cells
+                  ..._buildWeeks(daysInMonth, firstWeekday, now),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Summary stats
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    &#x27;Tổng hợp tháng $monthName&#x27;,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    &#x27;$checkedDays/$daysInMonth ngày đã cập nhật&#x27;,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  if (sortedEmotions.isEmpty)
+                    const Text(
+                      S.noCheckinYet,
+                      style: TextStyle(color: AppColors.textSecondary),
+                    )
+                  else
+                    ...sortedEmotions.map((entry) {
+                      final pct = checkedDays &gt; 0
+                          ? entry.value / checkedDays
+                          : 0.0;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: [
+                            Text(
+                              _emojiFor(entry.key),
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(width: 8),
+                            SizedBox(
+                              width: 70,
+                              child: Text(
+                                entry.key,
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ),
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(4),
+                                child: LinearProgressIndicator(
+                                  value: pct,
+                                  minHeight: 10,
+                                  backgroundColor: AppColors.background,
+                                  valueColor: AlwaysStoppedAnimation(
+                                      _colorFor(entry.key)),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              &#x27;${entry.value}&#x27;,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Legend
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    &#x27;Chú thích&#x27;,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 6,
+                    children: [
+                      _LegendItem(&#x27;😄&#x27;, &#x27;Vui&#x27;, const Color(0xFF4CAF50)),
+                      _LegendItem(&#x27;🙂&#x27;, &#x27;Bình thường&#x27;, const Color(0xFF8BC34A)),
+                      _LegendItem(&#x27;😕&#x27;, &#x27;Chán, mệt&#x27;, const Color(0xFFFFC107)),
+                      _LegendItem(&#x27;😢&#x27;, &#x27;Buồn&#x27;, const Color(0xFFFF9800)),
+                      _LegendItem(&#x27;😡&#x27;, &#x27;Cáu&#x27;, const Color(0xFFF44336)),
+                      _LegendItem(&#x27;😰&#x27;, &#x27;Lo lắng&#x27;, const Color(0xFF9C27B0)),
+                      _LegendItem(&#x27;😴&#x27;, &#x27;Uể oải&#x27;, const Color(0xFF607D8B)),
+                      _LegendItem(&#x27;·&#x27;, &#x27;Chưa cập nhật&#x27;, AppColors.pending),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+
+  List&lt;Widget&gt; _buildWeeks(int daysInMonth, int firstWeekday, DateTime now) {
+    final weeks = &lt;Widget&gt;[];
+    int dayCounter = 1;
+
+    for (int week = 0; week &lt; 6; week++) {
+      if (dayCounter &gt; daysInMonth) break;
+      final cells = &lt;Widget&gt;[];
+
+      for (int dow = 0; dow &lt; 7; dow++) {
+        if ((week == 0 &amp;&amp; dow &lt; firstWeekday) || dayCounter &gt; daysInMonth) {
+          cells.add(const Expanded(child: SizedBox(height: 48)));
+        } else {
+          final day = dayCounter;
+          final date = DateTime(_currentMonth.year, _currentMonth.month, day);
+          final key = &#x27;${date.year}-${date.month}-${date.day}&#x27;;
+          final checkin = _checkinMap[key];
+          final hasEmotions =
+              checkin != null &amp;&amp; checkin.emotions.isNotEmpty;
+          final isToday = date.year == now.year &amp;&amp;
+              date.month == now.month &amp;&amp;
+              date.day == now.day;
+          final isFuture = date.isAfter(now);
+          final emoji = hasEmotions ? _emojiFor(checkin!.emotions.first) : null;
+          final bgColor =
+              hasEmotions ? _colorFor(checkin!.emotions.first).withValues(alpha: 0.15) : null;
+
+          cells.add(
+            Expanded(
+              child: GestureDetector(
+                onTap: hasEmotions
+                    ? () =&gt; _showDayDetail(context, date, checkin!)
+                    : null,
+                child: Container(
+                  height: 48,
+                  margin: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(
+                    color: isFuture
+                        ? null
+                        : (bgColor ?? AppColors.background),
+                    borderRadius: BorderRadius.circular(10),
+                    border: isToday
+                        ? Border.all(color: AppColors.primary, width: 2)
+                        : null,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (emoji != null)
+                        Text(emoji, style: const TextStyle(fontSize: 18))
+                      else if (!isFuture)
+                        Text(
+                          &#x27;·&#x27;,
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: AppColors.pending,
+                          ),
+                        ),
+                      Text(
+                        &#x27;$day&#x27;,
+                        style: TextStyle(
+                          fontSize: 9,
+                          color: isFuture
+                              ? AppColors.pending
+                              : AppColors.textSecondary,
+                          fontWeight:
+                              isToday ? FontWeight.w700 : FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+          dayCounter++;
+        }
+      }
+      weeks.add(Row(children: cells));
+    }
+    return weeks;
+  }
+
+  void _showDayDetail(
+      BuildContext context, DateTime date, DailyCheckin checkin) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) =&gt; Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              &#x27;${date.day}/${date.month}/${date.year}&#x27;,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (checkin.emotions.isNotEmpty) ...[
+              const Text(&#x27;Cảm xúc:&#x27;,
+                  style: TextStyle(
+                      fontSize: 13, color: AppColors.textSecondary)),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 8,
+                children: checkin.emotions
+                    .map((e) =&gt; Chip(
+                          avatar: Text(_emojiFor(e),
+                              style: const TextStyle(fontSize: 16)),
+                          label: Text(e, style: const TextStyle(fontSize: 12)),
+                          backgroundColor:
+                              _colorFor(e).withValues(alpha: 0.12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                            side: BorderSide(
+                                color: _colorFor(e).withValues(alpha: 0.3)),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ],
+            if (checkin.bodyStatus != null) ...[
+              const SizedBox(height: 12),
+              Text(&#x27;Cơ thể: ${checkin.bodyStatus}&#x27;,
+                  style: const TextStyle(fontSize: 13)),
+            ],
+            if (checkin.symptoms.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(&#x27;Triệu chứng: ${checkin.symptoms.join(&quot;, &quot;)}&#x27;,
+                  style: const TextStyle(fontSize: 13)),
+            ],
+            if (checkin.notes != null) ...[
+              const SizedBox(height: 12),
+              Text(&#x27;Ghi chú: ${checkin.notes}&#x27;,
+                  style: const TextStyle(fontSize: 13)),
+            ],
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _emojiFor(String emotion) {
+    switch (emotion) {
+      case &#x27;Vui&#x27;:
+        return &#x27;😄&#x27;;
+      case &#x27;Bình thường&#x27;:
+        return &#x27;🙂&#x27;;
+      case &#x27;Chán, mệt&#x27;:
+        return &#x27;😕&#x27;;
+      case &#x27;Buồn&#x27;:
+        return &#x27;😢&#x27;;
+      case &#x27;Cáu&#x27;:
+        return &#x27;😡&#x27;;
+      case &#x27;Lo lắng&#x27;:
+        return &#x27;😰&#x27;;
+      case &#x27;Uể oải&#x27;:
+        return &#x27;😴&#x27;;
+      default:
+        return &#x27;❓&#x27;;
+    }
+  }
+
+  Color _colorFor(String emotion) {
+    switch (emotion) {
+      case &#x27;Vui&#x27;:
+        return const Color(0xFF4CAF50);
+      case &#x27;Bình thường&#x27;:
+        return const Color(0xFF8BC34A);
+      case &#x27;Chán, mệt&#x27;:
+        return const Color(0xFFFFC107);
+      case &#x27;Buồn&#x27;:
+        return const Color(0xFFFF9800);
+      case &#x27;Cáu&#x27;:
+        return const Color(0xFFF44336);
+      case &#x27;Lo lắng&#x27;:
+        return const Color(0xFF9C27B0);
+      case &#x27;Uể oải&#x27;:
+        return const Color(0xFF607D8B);
+      default:
+        return AppColors.textSecondary;
+    }
+  }
+
+  String _monthName(int month) {
+    const names = [
+      &#x27;&#x27;, &#x27;Tháng 1&#x27;, &#x27;Tháng 2&#x27;, &#x27;Tháng 3&#x27;, &#x27;Tháng 4&#x27;,
+      &#x27;Tháng 5&#x27;, &#x27;Tháng 6&#x27;, &#x27;Tháng 7&#x27;, &#x27;Tháng 8&#x27;,
+      &#x27;Tháng 9&#x27;, &#x27;Tháng 10&#x27;, &#x27;Tháng 11&#x27;, &#x27;Tháng 12&#x27;,
+    ];
+    return names[month];
+  }
+}
+
+class _LegendItem extends StatelessWidget {
+  final String emoji;
+  final String label;
+  final Color color;
+  const _LegendItem(this.emoji, this.label, this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 22,
+          height: 22,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.15),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Center(
+            child: Text(emoji, style: const TextStyle(fontSize: 12)),
+          ),
+        ),
+        const SizedBox(width: 4),
+        Text(label,
+            style: const TextStyle(
+                fontSize: 10, color: AppColors.textSecondary)),
+      ],
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

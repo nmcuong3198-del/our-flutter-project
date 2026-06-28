@@ -18,9 +18,26 @@ class ChildDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // The cycle tab is only relevant for girls (menstrual tracking).
+    final showCycle = child.isFemale;
+
+    // Canonical tab order (used by callers via `initialTab`):
+    // 0 check-in · 1 emotions · 2 measurements · 3 cycle · 4 reports ·
+    // 5 practice · 6 notes. The cycle entry is omitted for boys.
+    final tabs = <({IconData icon, String label, Widget view})>[
+      (icon: Icons.edit_note, label: S.tabCheckin, view: CheckinTab(child: child)),
+      (icon: Icons.emoji_emotions, label: 'Cảm xúc', view: MoodCalendarTab(child: child)),
+      (icon: Icons.straighten, label: S.tabMeasure, view: MeasurementsTab(child: child)),
+      if (showCycle)
+        (icon: Icons.calendar_month, label: S.tabCycle, view: CycleTab(child: child)),
+      (icon: Icons.bar_chart, label: S.tabReport, view: ReportsTab(child: child)),
+      (icon: Icons.task_alt, label: 'Hành động', view: PracticeTab(child: child)),
+      (icon: Icons.event_note, label: 'Ghi chú', view: RemindersTab(child: child)),
+    ];
+
     return DefaultTabController(
-      length: 7,
-      initialIndex: initialTab,
+      length: tabs.length,
+      initialIndex: _resolveInitialIndex(showCycle),
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -31,29 +48,24 @@ class ChildDetailScreen extends StatelessWidget {
             labelColor: AppColors.primary,
             unselectedLabelColor: AppColors.textSecondary,
             indicatorColor: AppColors.primary,
-            tabs: const [
-              Tab(icon: Icon(Icons.edit_note), text: S.tabCheckin),
-              Tab(icon: Icon(Icons.emoji_emotions), text: 'Cảm xúc'),
-              Tab(icon: Icon(Icons.straighten), text: S.tabMeasure),
-              Tab(icon: Icon(Icons.calendar_month), text: S.tabCycle),
-              Tab(icon: Icon(Icons.bar_chart), text: S.tabReport),
-              Tab(icon: Icon(Icons.task_alt), text: 'Hành động'),
-              Tab(icon: Icon(Icons.event_note), text: 'Ghi chú'),
+            tabs: [
+              for (final t in tabs) Tab(icon: Icon(t.icon), text: t.label),
             ],
           ),
         ),
         body: TabBarView(
-          children: [
-            CheckinTab(child: child),
-            MoodCalendarTab(child: child),
-            MeasurementsTab(child: child),
-            CycleTab(child: child),
-            ReportsTab(child: child),
-            PracticeTab(child: child),
-            RemindersTab(child: child),
-          ],
+          children: [for (final t in tabs) t.view],
         ),
       ),
     );
+  }
+
+  /// Maps a canonical [initialTab] index to the actual index once the cycle
+  /// tab has been removed for boys (tabs after cycle shift down by one).
+  int _resolveInitialIndex(bool showCycle) {
+    if (showCycle) return initialTab.clamp(0, 6);
+    if (initialTab == 3) return 0; // cycle requested but unavailable
+    if (initialTab > 3) return initialTab - 1;
+    return initialTab;
   }
 }

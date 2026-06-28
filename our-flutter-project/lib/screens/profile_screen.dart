@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
+import 'add_child_flow.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -129,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () => _showAddChildDialog(),
+                onPressed: () => _openAddChild(),
                 icon: const Icon(Icons.add),
                 label: const Text('Thêm hồ sơ con'),
               ),
@@ -368,44 +369,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void _showAddChildDialog() {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Thêm hồ sơ con', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(decoration: InputDecoration(labelText: 'Tên gọi (nickname)', filled: true,
-                fillColor: AppColors.surfaceContainerLow,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
-            const SizedBox(height: 12),
-            TextField(decoration: InputDecoration(labelText: 'Ngày sinh (dd/mm/yyyy)', filled: true,
-                fillColor: AppColors.surfaceContainerLow,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none))),
-            const SizedBox(height: 12),
-            DropdownButtonFormField<String>(
-              value: 'Nữ',
-              items: ['Nam', 'Nữ'].map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
-              onChanged: (_) {},
-              decoration: InputDecoration(labelText: 'Giới tính', filled: true, fillColor: AppColors.surfaceContainerLow,
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none)),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Huỷ')),
-          ElevatedButton(onPressed: () {
-            Navigator.pop(ctx);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: const Text('Đã thêm hồ sơ con'), behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
-            );
-          }, child: const Text('Tạo hồ sơ')),
-        ],
-      ),
+  Future<void> _openAddChild() async {
+    final added = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const AddChildScreen()),
     );
+    if (added == true && mounted) setState(() {});
   }
 }
 

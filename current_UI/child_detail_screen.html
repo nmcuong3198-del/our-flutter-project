@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Child Detail Screen</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Child Detail Screen</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/child_detail_screen.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+import &#x27;checkin_tab.dart&#x27;;
+import &#x27;mood_calendar_tab.dart&#x27;;
+import &#x27;measurements_tab.dart&#x27;;
+import &#x27;cycle_tab.dart&#x27;;
+import &#x27;reports_tab.dart&#x27;;
+import &#x27;practice_tab.dart&#x27;;
+import &#x27;reminders_tab.dart&#x27;;
+
+class ChildDetailScreen extends StatelessWidget {
+  final ChildProfile child;
+  final int initialTab;
+
+  const ChildDetailScreen({super.key, required this.child, this.initialTab = 0});
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 7,
+      initialIndex: initialTab,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: AppBar(
+          title: Text(child.nickname),
+          bottom: TabBar(
+            isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textSecondary,
+            indicatorColor: AppColors.primary,
+            tabs: const [
+              Tab(icon: Icon(Icons.edit_note), text: S.tabCheckin),
+              Tab(icon: Icon(Icons.emoji_emotions), text: &#x27;Cảm xúc&#x27;),
+              Tab(icon: Icon(Icons.straighten), text: S.tabMeasure),
+              Tab(icon: Icon(Icons.calendar_month), text: S.tabCycle),
+              Tab(icon: Icon(Icons.bar_chart), text: S.tabReport),
+              Tab(icon: Icon(Icons.task_alt), text: &#x27;Hành động&#x27;),
+              Tab(icon: Icon(Icons.event_note), text: &#x27;Ghi chú&#x27;),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            CheckinTab(child: child),
+            MoodCalendarTab(child: child),
+            MeasurementsTab(child: child),
+            CycleTab(child: child),
+            ReportsTab(child: child),
+            PracticeTab(child: child),
+            RemindersTab(child: child),
+          ],
+        ),
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

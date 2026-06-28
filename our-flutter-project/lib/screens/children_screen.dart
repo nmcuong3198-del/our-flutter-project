@@ -2,11 +2,23 @@ import 'package:flutter/material.dart';
 import '../core/strings.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
-import '../models/models.dart';
+import 'add_child_flow.dart';
 import 'child_detail_screen.dart';
 
-class ChildrenScreen extends StatelessWidget {
+class ChildrenScreen extends StatefulWidget {
   const ChildrenScreen({super.key});
+
+  @override
+  State<ChildrenScreen> createState() => _ChildrenScreenState();
+}
+
+class _ChildrenScreenState extends State<ChildrenScreen> {
+  Future<void> _openAddChild() async {
+    final added = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const AddChildScreen()),
+    );
+    if (added == true && mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +30,7 @@ class ChildrenScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.person_add_outlined),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Tạo hồ sơ con mới (sắp ra mắt)'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                ),
-              );
-            },
+            onPressed: _openAddChild,
           ),
         ],
       ),

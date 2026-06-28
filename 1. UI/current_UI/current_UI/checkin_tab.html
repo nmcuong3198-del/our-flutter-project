@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Check-in Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Check-in Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/checkin_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class CheckinTab extends StatefulWidget {
+  final ChildProfile child;
+
+  const CheckinTab({super.key, required this.child});
+
+  @override
+  State&lt;CheckinTab&gt; createState() =&gt; _CheckinTabState();
+}
+
+class _CheckinTabState extends State&lt;CheckinTab&gt; {
+  final Set&lt;String&gt; _selectedEmotions = {};
+  String? _selectedBodyStatus;
+  final Set&lt;String&gt; _selectedSymptoms = {};
+  final _notesController = TextEditingController();
+  bool _saved = false;
+  late DateTime _selectedDate;
+  bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = DateTime.now();
+    _checkExistingData();
+  }
+
+  void _checkExistingData() {
+    final checkins = MockData.checkinsFor(widget.child.id);
+    final existing = checkins.where((c) =&gt;
+        c.date.year == _selectedDate.year &amp;&amp;
+        c.date.month == _selectedDate.month &amp;&amp;
+        c.date.day == _selectedDate.day &amp;&amp;
+        c.emotions.isNotEmpty).toList();
+    if (existing.isNotEmpty) {
+      _isEditing = true;
+      final c = existing.first;
+      _selectedEmotions.addAll(c.emotions);
+      _selectedBodyStatus = c.bodyStatus;
+      _selectedSymptoms.addAll(c.symptoms);
+      if (c.notes != null) _notesController.text = c.notes!;
+    } else {
+      _isEditing = false;
+    }
+  }
+
+  Future&lt;void&gt; _pickDate() async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate,
+      firstDate: DateTime.now().subtract(const Duration(days: 365)),
+      lastDate: DateTime.now(),
+    );
+    if (picked != null &amp;&amp; picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _selectedEmotions.clear();
+        _selectedBodyStatus = null;
+        _selectedSymptoms.clear();
+        _notesController.clear();
+        _saved = false;
+        _checkExistingData();
+      });
+      if (_isEditing) {
+        _showDateValidationPopup(isExisting: true);
+      }
+    }
+  }
+
+  void _showDateValidationPopup({required bool isExisting}) {
+    showDialog(
+      context: context,
+      builder: (ctx) =&gt; AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          isExisting ? &#x27;Ngày đã có thông tin&#x27; : &#x27;Ngày chưa có thông tin&#x27;,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        content: Text(
+          isExisting
+              ? &#x27;Ngày này đã có thông tin lưu trước đó. Bạn có muốn thay đổi không?&#x27;
+              : &#x27;Ngày này chưa có thông tin. Vui lòng chọn Thêm mới.&#x27;,
+          style: const TextStyle(fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () =&gt; Navigator.pop(ctx),
+            child: const Text(&#x27;Huỷ&#x27;),
+          ),
+          ElevatedButton(
+            onPressed: () =&gt; Navigator.pop(ctx),
+            child: Text(isExisting ? &#x27;Sửa&#x27; : &#x27;Thêm mới&#x27;),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List&lt;_EmoItem&gt; get _emotions =&gt; [
+        _EmoItem(&#x27;😄&#x27;, S.emotionHappy),
+        _EmoItem(&#x27;🙂&#x27;, S.emotionNormal),
+        _EmoItem(&#x27;😕&#x27;, S.emotionTired),
+        _EmoItem(&#x27;😢&#x27;, S.emotionSad),
+        _EmoItem(&#x27;😡&#x27;, S.emotionAngry),
+        _EmoItem(&#x27;😰&#x27;, S.emotionWorried),
+        _EmoItem(&#x27;😴&#x27;, S.emotionSluggish),
+        _EmoItem(&#x27;❓&#x27;, S.emotionOther),
+      ];
+
+  List&lt;_BodyItem&gt; get _bodyOptions =&gt; widget.child.isFemale
+      ? [
+          _BodyItem(Icons.water_drop, S.bodyInPeriod),
+          _BodyItem(Icons.opacity, S.bodyDischarge),
+          _BodyItem(Icons.check_circle_outline, S.bodyNotInPeriod),
+          _BodyItem(Icons.trending_up, S.bodyPuberty),
+        ]
+      : [
+          _BodyItem(Icons.nights_stay, S.bodyNocturnal),
+          _BodyItem(Icons.flash_on, S.bodyTension),
+          _BodyItem(Icons.check_circle_outline, S.bodyNone),
+          _BodyItem(Icons.trending_up, S.bodyPuberty),
+        ];
+
+  List&lt;_SymItem&gt; get _symptoms =&gt; [
+        _SymItem(Icons.fitness_center, S.symptomHealthy),
+        _SymItem(Icons.battery_alert, S.symptomTired),
+        _SymItem(Icons.psychology, S.symptomHeadache),
+        _SymItem(Icons.sick, S.symptomStomach),
+        _SymItem(Icons.accessibility_new, S.symptomBack),
+        _SymItem(Icons.emoji_nature, S.symptomNausea),
+        _SymItem(Icons.rotate_left, S.symptomDizzy),
+        _SymItem(Icons.face, S.symptomAcne),
+        _SymItem(Icons.sentiment_dissatisfied, S.symptomIrritable),
+        _SymItem(Icons.more_horiz, S.symptomOther),
+      ];
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  void _save() {
+    setState(() =&gt; _saved = true);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text(S.saved),
+        backgroundColor: AppColors.checkedIn,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Date picker
+          GestureDetector(
+            onTap: _pickDate,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceContainerLow,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.calendar_today, size: 18, color: AppColors.primary),
+                  const SizedBox(width: 10),
+                  Text(
+                    &#x27;${_selectedDate.day}/${_selectedDate.month}/${_selectedDate.year}&#x27;,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (_isEditing)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.warning.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        &#x27;Đang sửa&#x27;,
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.warning),
+                      ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.success.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        &#x27;Thêm mới&#x27;,
+                        style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.success),
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_drop_down, color: AppColors.onSurfaceVariant),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          // Emotions
+          _SectionTitle(S.emotionTitle),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _emotions.map((e) {
+              final selected = _selectedEmotions.contains(e.label);
+              return GestureDetector(
+                onTap: () =&gt; setState(() {
+                  selected
+                      ? _selectedEmotions.remove(e.label)
+                      : _selectedEmotions.add(e.label);
+                }),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? AppColors.primary.withValues(alpha: 0.15)
+                        : AppColors.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: selected ? AppColors.primary : AppColors.pending,
+                      width: selected ? 2 : 1,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(e.emoji, style: const TextStyle(fontSize: 28)),
+                      const SizedBox(height: 4),
+                      Text(
+                        e.label,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w500,
+                          color: selected
+                              ? AppColors.primary
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 28),
+
+          // Body status
+          _SectionTitle(S.bodyTitle),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _bodyOptions.map((b) {
+              final selected = _selectedBodyStatus == b.label;
+              return GestureDetector(
+                onTap: () =&gt; setState(() =&gt; _selectedBodyStatus = b.label),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? AppColors.secondary.withValues(alpha: 0.15)
+                        : AppColors.surface,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color:
+                          selected ? AppColors.secondary : AppColors.pending,
+                      width: selected ? 2 : 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(b.icon,
+                          size: 20,
+                          color: selected
+                              ? AppColors.secondary
+                              : AppColors.textSecondary),
+                      const SizedBox(width: 6),
+                      Text(
+                        b.label,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight:
+                              selected ? FontWeight.w700 : FontWeight.w500,
+                          color: selected
+                              ? AppColors.secondary
+                              : AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 28),
+
+          // Symptoms
+          _SectionTitle(S.symptomsTitle),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: _symptoms.map((s) {
+              final selected = _selectedSymptoms.contains(s.label);
+              return GestureDetector(
+                onTap: () =&gt; setState(() {
+                  selected
+                      ? _selectedSymptoms.remove(s.label)
+                      : _selectedSymptoms.add(s.label);
+                }),
+                child: Chip(
+                  avatar: Icon(s.icon,
+                      size: 18,
+                      color: selected
+                          ? AppColors.accent
+                          : AppColors.textSecondary),
+                  label: Text(s.label),
+                  labelStyle: TextStyle(
+                    fontSize: 12,
+                    color: selected
+                        ? AppColors.accent
+                        : AppColors.textSecondary,
+                    fontWeight:
+                        selected ? FontWeight.w700 : FontWeight.w500,
+                  ),
+                  backgroundColor: selected
+                      ? AppColors.accent.withValues(alpha: 0.15)
+                      : AppColors.surface,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    side: BorderSide(
+                      color:
+                          selected ? AppColors.accent : AppColors.pending,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+
+          const SizedBox(height: 28),
+
+          // Notes
+          _SectionTitle(S.notesTitle),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _notesController,
+            maxLines: 4,
+            decoration: InputDecoration(
+              hintText: S.notesHint,
+              hintStyle: const TextStyle(color: AppColors.textSecondary),
+              filled: true,
+              fillColor: AppColors.surface,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.pending),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: AppColors.pending),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide:
+                    const BorderSide(color: AppColors.primary, width: 2),
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 28),
+
+          // Save button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _saved ? null : _save,
+              icon: Icon(_saved ? Icons.check : Icons.save),
+              label: Text(_saved ? S.saved : S.save),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+      ),
+    );
+  }
+}
+
+class _EmoItem {
+  final String emoji;
+  final String label;
+  _EmoItem(this.emoji, this.label);
+}
+
+class _BodyItem {
+  final IconData icon;
+  final String label;
+  _BodyItem(this.icon, this.label);
+}
+
+class _SymItem {
+  final IconData icon;
+  final String label;
+  _SymItem(this.icon, this.label);
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

@@ -108,16 +108,7 @@ class _RemindersTabState extends State<RemindersTab> {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('Thêm ghi chú mới (sắp ra mắt)'),
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                );
-              },
+              onPressed: _showAddNoteSheet,
               icon: const Icon(Icons.add),
               label: const Text('Thêm ghi chú'),
               style: OutlinedButton.styleFrom(
@@ -134,6 +125,161 @@ class _RemindersTabState extends State<RemindersTab> {
       ),
     );
   }
+
+  void _showAddNoteSheet() {
+    final titleController = TextEditingController();
+    final contentController = TextEditingController();
+    DateTime selectedDate = DateTime.now().add(const Duration(days: 1));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setSheetState) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.outlineVariant,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              const Text(
+                'Thêm ghi chú',
+                style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Lưu trữ các thông tin cần chú ý để hỗ trợ con tốt hơn!',
+                style: TextStyle(fontSize: 13, color: AppColors.onSurfaceVariant),
+              ),
+              const SizedBox(height: 18),
+              _sheetLabel('Tên ghi chú'),
+              const SizedBox(height: 6),
+              TextField(
+                controller: titleController,
+                onChanged: (_) => setSheetState(() {}),
+                decoration: _sheetDecoration('Ví dụ: Đưa con đi khám răng'),
+              ),
+              const SizedBox(height: 14),
+              _sheetLabel('Thời gian thực hiện dự kiến'),
+              const SizedBox(height: 6),
+              InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () async {
+                  final picked = await showDatePicker(
+                    context: ctx,
+                    initialDate: selectedDate,
+                    firstDate: DateTime.now().subtract(const Duration(days: 1)),
+                    lastDate: DateTime.now().add(const Duration(days: 365)),
+                  );
+                  if (picked != null) setSheetState(() => selectedDate = picked);
+                },
+                child: InputDecorator(
+                  decoration: _sheetDecoration(null).copyWith(
+                    prefixIcon: const Icon(Icons.calendar_today_outlined,
+                        size: 18, color: AppColors.primary),
+                  ),
+                  child: Text(
+                    '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
+              _sheetLabel('Nội dung ghi chú'),
+              const SizedBox(height: 6),
+              TextField(
+                controller: contentController,
+                maxLines: 4,
+                decoration: _sheetDecoration('Nhập nội dung chi tiết...'),
+              ),
+              const SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(ctx),
+                      child: const Text('Huỷ'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton(
+                      onPressed: titleController.text.trim().isEmpty
+                          ? null
+                          : () {
+                              setState(() {
+                                _reminders.add(Reminder(
+                                  id: 'r${DateTime.now().millisecondsSinceEpoch}',
+                                  childId: widget.child.id,
+                                  date: selectedDate,
+                                  label: titleController.text.trim(),
+                                  note: contentController.text.trim().isEmpty
+                                      ? null
+                                      : contentController.text.trim(),
+                                ));
+                              });
+                              Navigator.pop(ctx);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: const Text('Đã thêm ghi chú'),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              );
+                            },
+                      child: const Text('Lưu'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _sheetLabel(String text) => Text(
+        text,
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.onSurface),
+      );
+
+  InputDecoration _sheetDecoration(String? hint) => InputDecoration(
+        hintText: hint,
+        filled: true,
+        fillColor: AppColors.surfaceContainerHigh,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+      );
 }
 
 class _ReminderCard extends StatelessWidget {
@@ -232,6 +378,19 @@ class _ReminderCard extends StatelessWidget {
                           : AppColors.textSecondary,
                     ),
                   ),
+                  if (reminder.note != null && reminder.note!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      reminder.note!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        height: 1.35,
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),

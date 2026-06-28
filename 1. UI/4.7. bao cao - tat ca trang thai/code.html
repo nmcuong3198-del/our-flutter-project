@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#c2c6d2",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "inverse-surface": "#2e3035",
+                    "on-secondary-container": "#56656e",
+                    "primary": "#003e74",
+                    "primary-fixed": "#d4e3ff",
+                    "primary-container": "#1a5694",
+                    "on-error-container": "#93000a",
+                    "surface-container-high": "#e7e8ee",
+                    "primary-fixed-dim": "#a4c9ff",
+                    "on-tertiary-fixed": "#2c1600",
+                    "on-error": "#ffffff",
+                    "surface-bright": "#f9f9ff",
+                    "surface-container-highest": "#e1e2e8",
+                    "on-background": "#191c20",
+                    "inverse-primary": "#a4c9ff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "secondary-fixed-dim": "#bac9d3",
+                    "surface-container-low": "#f3f3f9",
+                    "background": "#f9f9ff",
+                    "on-secondary-fixed-variant": "#3b4951",
+                    "surface": "#f9f9ff",
+                    "on-primary": "#ffffff",
+                    "secondary": "#526069",
+                    "tertiary": "#5c3400",
+                    "on-secondary-fixed": "#0f1d25",
+                    "on-primary-fixed": "#001c39",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "on-surface-variant": "#424750",
+                    "on-primary-fixed-variant": "#004884",
+                    "inverse-on-surface": "#f0f0f6",
+                    "tertiary-container": "#7d4800",
+                    "secondary-container": "#d3e2ed",
+                    "on-surface": "#191c20",
+                    "surface-tint": "#28609e",
+                    "outline": "#727781",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "surface-container": "#ededf3",
+                    "surface-dim": "#d9dadf",
+                    "on-tertiary-container": "#ffbc7a",
+                    "secondary-fixed": "#d6e5ef",
+                    "on-primary-container": "#aaccff",
+                    "surface-variant": "#e1e2e8",
+                    "tertiary-fixed": "#ffdcbe"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Plus Jakarta Sans"],
+                    "display": ["Plus Jakarta Sans"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9f9ff;
+        }
+        .headline-font {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#f9f9ff] dark:bg-[#020617] shadow-[0_24px_40px_rgba(0,62,116,0.04)]">
+<div class="flex items-center">
+<!-- Menu icon removed -->
+</div>
+<!-- Title removed -->
+<div class="w-10 h-10 rounded-full overflow-hidden">
+<!-- Avatar removed -->
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="mt-20 px-6 max-w-2xl mx-auto">
+<!-- Dashboard Summary / Intro Section Removed -->
+<!-- Status List Bento-esque Layout -->
+<div class="space-y-6">
+<!-- Status Card Container -->
+<div class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 shadow-sm">
+<div class="space-y-8">
+<!-- Individual Status Rows -->
+<div class="space-y-4">
+<!-- Status: Khoẻ -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Khoẻ</span>
+<span class="text-sm font-bold text-primary">12 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 75%;"></div>
+</div>
+</div>
+<!-- Status: Vui vẻ -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Vui vẻ</span>
+<span class="text-sm font-bold text-primary">8 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-primary-container rounded-full" style="width: 50%;"></div>
+</div>
+</div>
+<!-- Status: Bình thường -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Bình thường</span>
+<span class="text-sm font-bold text-primary">5 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 30%;"></div>
+</div>
+</div>
+<!-- Status: Mệt -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Mệt</span>
+<span class="text-sm font-bold text-primary">3 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 18%;"></div>
+</div>
+</div>
+<!-- Status: Buồn -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Buồn</span>
+<span class="text-sm font-bold text-primary">2 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-on-secondary-container rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+<!-- Status: Lo lắng -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Lo lắng</span>
+<span class="text-sm font-bold text-primary">1 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-error/60 rounded-full" style="width: 6%;"></div>
+</div>
+</div>
+<!-- Status: Đang trong kỳ -->
+<!-- Status: Khí hư -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Khí hư</span>
+<span class="text-sm font-bold text-primary">2 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-outline rounded-full" style="width: 12%;"></div>
+</div>
+</div>
+<!-- Status: Căng tức -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Căng tức</span>
+<span class="text-sm font-bold text-primary">3 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-tertiary-fixed-dim rounded-full" style="width: 18%;"></div>
+</div>
+</div>
+<!-- Status: Không có gì -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-primary headline-font">Không có gì</span>
+<span class="text-sm font-bold text-primary">15 ngày</span>
+</div>
+<div class="h-3 w-full bg-secondary-container rounded-full overflow-hidden">
+<div class="h-full bg-primary/40 rounded-full" style="width: 90%;"></div>
+</div>
+</div>
+<!-- Status: Không có dữ liệu cảm xúc -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-on-surface-variant headline-font">Không có dữ liệu cảm xúc</span>
+<span class="text-sm font-bold text-on-surface-variant">0 ngày</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-surface-dim rounded-full" style="width: 0%;"></div>
+</div>
+</div>
+<!-- Status: Không có dữ liệu cơ thể -->
+<div class="group">
+<div class="flex justify-between items-center mb-2">
+<span class="font-semibold text-on-surface-variant headline-font">Không có dữ liệu cơ thể</span>
+<span class="text-sm font-bold text-on-surface-variant">0 ngày</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-surface-dim rounded-full" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Asymmetric Accent Cards Removed -->
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pt-3 pb-8 bg-[#f9f9ff]/80 dark:bg-[#020617]/80 backdrop-blur-xl shadow-[0_-8px_24px_rgba(0,62,116,0.06)] rounded-t-[3rem]">
+<a class="flex flex-col items-center justify-center text-[#003e74]/50 dark:text-slate-500 px-6 py-2 hover:text-[#1A5694] dark:hover:text-[#d3e2ed] active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="home">home</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-widest">Trang chủ</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#d3e2ed] dark:bg-[#1A5694]/30 text-[#003e74] dark:text-white rounded-full px-6 py-2 transition-all active:scale-90 duration-300" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="child_care">child_care</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-widest">Quản lý con</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#003e74]/50 dark:text-slate-500 px-6 py-2 hover:text-[#1A5694] dark:hover:text-[#d3e2ed] active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="auto_stories">auto_stories</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-widest">Thư viện</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#003e74]/50 dark:text-slate-500 px-6 py-2 hover:text-[#1A5694] dark:hover:text-[#d3e2ed] active:scale-90 transition-all duration-300" href="#">
+<span class="material-symbols-outlined text-2xl mb-1" data-icon="notifications">notifications</span>
+<span class="font-['Inter'] text-[10px] font-semibold uppercase tracking-widest">Thông báo</span>
+</a>
+</nav>
+</body></html>

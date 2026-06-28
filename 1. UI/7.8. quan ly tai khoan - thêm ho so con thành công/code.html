@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html class="light" lang="vi"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191c20",
+                        "on-primary-fixed": "#001c39",
+                        "surface-container-highest": "#e1e2e8",
+                        "secondary-fixed-dim": "#bac9d3",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#d4e3ff",
+                        "inverse-on-surface": "#f0f0f6",
+                        "surface-tint": "#28609e",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#424750",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-container": "#d3e2ed",
+                        "on-tertiary-fixed": "#2c1600",
+                        "error-container": "#ffdad6",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f3f3f9",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d9dadf",
+                        "primary": "#003e74",
+                        "tertiary": "#5c3400",
+                        "on-tertiary-container": "#ffbc7a",
+                        "surface-container-high": "#e7e8ee",
+                        "on-secondary-fixed-variant": "#3b4951",
+                        "on-background": "#191c20",
+                        "surface": "#f9f9ff",
+                        "on-error": "#ffffff",
+                        "primary-container": "#1a5694",
+                        "tertiary-container": "#7d4800",
+                        "primary-fixed-dim": "#a4c9ff",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "tertiary-fixed": "#ffdcbe",
+                        "on-primary-fixed-variant": "#004884",
+                        "inverse-surface": "#2e3035",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "surface-variant": "#e1e2e8",
+                        "outline": "#727781",
+                        "on-primary": "#ffffff",
+                        "on-secondary-container": "#56656e",
+                        "on-primary-container": "#aaccff",
+                        "surface-bright": "#f9f9ff",
+                        "outline-variant": "#c2c6d2",
+                        "on-secondary-fixed": "#0f1d25",
+                        "inverse-primary": "#a4c9ff",
+                        "surface-container": "#ededf3",
+                        "secondary-fixed": "#d6e5ef",
+                        "background": "#f9f9ff",
+                        "secondary": "#526069"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Plus Jakarta Sans"],
+                        "display": ["Plus Jakarta Sans"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+        }
+        .scrim-overlay {
+            background: rgba(0, 62, 116, 0.2);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased overflow-hidden">
+<!-- Background Content (Simulating SCREEN_109) -->
+<div class="fixed inset-0 overflow-y-auto pointer-events-none opacity-40">
+<!-- TopAppBar -->
+<header class="flex items-center justify-between px-6 py-4 w-full docked full-width top-0 bg-[#f9f9ff] dark:bg-[#0a0a0a]">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#003e74] dark:text-[#d3e2ed]" data-icon="arrow_back">arrow_back</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-[#003e74] dark:text-[#d3e2ed] text-xl">Profile Created</h1>
+</div>
+<span class="material-symbols-outlined text-[#003e74] dark:text-[#d3e2ed]" data-icon="more_vert">more_vert</span>
+</header>
+<main class="p-6 space-y-8 max-w-lg mx-auto">
+<div class="bg-surface-container-low p-8 rounded-xl space-y-6">
+<div class="w-24 h-24 mx-auto rounded-full bg-secondary-container flex items-center justify-center overflow-hidden">
+<img alt="Child Avatar" class="w-full h-full object-cover" data-alt="Close up portrait of a happy smiling toddler with soft warm lighting and a clean minimalist blue background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDADg2-StmtdSgEFUfkxBn0P9qGU_bsMor0ZDOzWpEx7BHep8RxObQ5ycgAGsJy32MyUfHMtn9XM0do9UbVfLvTPnVJnah30bOs-9kHSH9E8URJDm_xK6tRqVOn5F4UXpgb2ugKhulOKzDGaE9EvyHUP2ybtSJj0QT82VOe1N3mUuyiNLOgCtB_fohl_-kptx9N_jxJWm0v9yiNoBjXRQYXYJDaEn9rgZLYaQupG14HYSFCfUEsT-jG0P-v2tPSBBaWkrwiMbzTBuNi"/>
+</div>
+<div class="space-y-2 text-center">
+<h2 class="text-2xl font-headline font-bold">Bé Minh Anh</h2>
+<p class="text-on-surface-variant">12 tháng tuổi • Nam</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-lg">
+<p class="text-xs font-label uppercase tracking-widest text-secondary">Cân nặng</p>
+<p class="text-lg font-headline font-bold text-primary">9.5 kg</p>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-lg">
+<p class="text-xs font-label uppercase tracking-widest text-secondary">Chiều cao</p>
+<p class="text-lg font-headline font-bold text-primary">75 cm</p>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Popup Overlay System -->
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-6 scrim-overlay">
+<!-- Modal Card -->
+<div class="w-full max-w-sm bg-surface-container-lowest rounded-[2rem] shadow-[0_24px_48px_rgba(0,62,116,0.12)] overflow-hidden">
+<!-- Simplified Header Image -->
+<div class="relative h-48 w-full bg-[#003e74]">
+<img alt="Success Illustration" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/f311c4228965f7c3275990263625340620f3a61fdf96e9cc8e37a0989f667dbf?placeholder"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#003e74]/20 to-transparent"></div>
+</div>
+<!-- Content -->
+<div class="p-8 text-center space-y-6">
+<div class="space-y-3">
+<h3 class="text-2xl font-headline font-bold text-primary tracking-tight">Tạo hồ sơ con thành công!</h3>
+<p class="text-on-surface-variant font-body leading-relaxed">
+                        Thông tin của con đã được lưu trữ an toàn. Bắt đầu hành trình chăm sóc dinh dưỡng cùng SSCare.
+                    </p>
+</div>
+<!-- Action Button -->
+<button class="w-full h-14 bg-primary text-on-primary rounded-full font-headline font-bold text-lg transition-all active:scale-95 shadow-lg shadow-primary/20">
+                    Tiếp tục
+                </button>
+</div>
+<!-- Subtle Footer Tag -->
+<div class="px-8 pb-8 text-center">
+<p class="text-[10px] font-label uppercase tracking-[0.2em] text-outline-variant">Giai đoạn: Sơ sinh • 0-24 tháng</p>
+</div>
+</div>
+</div>
+</body></html>

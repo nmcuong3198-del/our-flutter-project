@@ -4,6 +4,8 @@ import '../core/strings.dart';
 import '../core/theme.dart';
 import '../mock/mock_data.dart';
 import '../models/models.dart';
+import 'all_states_report_screen.dart';
+import 'height_prediction_screen.dart';
 
 class ReportsTab extends StatefulWidget {
   final ChildProfile child;
@@ -97,16 +99,54 @@ class _ReportsTabState extends State<ReportsTab> {
             ),
           ),
 
+          const SizedBox(height: 16),
+
+          // Height prediction entry point (design 4.8)
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => HeightPredictionScreen(child: widget.child),
+                ),
+              ),
+              icon: const Icon(Icons.trending_up_rounded),
+              label: const Text('Dự báo chiều cao'),
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // Expert assessment
+          _ExpertAssessment(
+            child: widget.child,
+            measurements: measurements,
+          ),
+
           const SizedBox(height: 24),
 
           // Body condition report (30 days)
-          const Text(
-            '${S.bodyReport} — ${S.last30Days}',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
-            ),
+          Row(
+            children: [
+              const Expanded(
+                child: Text(
+                  '${S.bodyReport} — ${S.last30Days}',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => AllStatesReportScreen(child: widget.child),
+                  ),
+                ),
+                child: const Text('Xem tất cả'),
+              ),
+            ],
           ),
           const SizedBox(height: 12),
           _BodyConditionReport(checkins: checkins),
@@ -311,6 +351,84 @@ class _BodyConditionReport extends StatelessWidget {
             );
           }).toList(),
         ),
+      ),
+    );
+  }
+}
+
+class _ExpertAssessment extends StatelessWidget {
+  final ChildProfile child;
+  final List<BodyMeasurement> measurements;
+
+  const _ExpertAssessment({required this.child, required this.measurements});
+
+  @override
+  Widget build(BuildContext context) {
+    final who = MockData.whoFor(child);
+    String assessment;
+    if (measurements.length >= 2) {
+      final latest = measurements.first;
+      final prev = measurements[1];
+      final heightDelta = latest.height - prev.height;
+      final buffer = StringBuffer(
+        'Trong kỳ gần nhất, ${child.nickname} tăng ${heightDelta.toStringAsFixed(1)} cm chiều cao. ',
+      );
+      if (who != null) {
+        final diff = latest.height - who['height']!;
+        if (diff >= 0) {
+          buffer.write('Chiều cao đang ở mức tốt so với chuẩn WHO cùng độ tuổi. ');
+        } else if (diff > -5) {
+          buffer.write('Chiều cao gần đạt chuẩn WHO, hãy duy trì dinh dưỡng và vận động. ');
+        } else {
+          buffer.write('Chiều cao thấp hơn chuẩn WHO, nên tham khảo ý kiến chuyên gia dinh dưỡng. ');
+        }
+      }
+      buffer.write('Hãy đảm bảo con ngủ đủ giấc và vận động đều đặn mỗi ngày.');
+      assessment = buffer.toString();
+    } else {
+      assessment = 'Hãy cập nhật số đo của ${child.nickname} thường xuyên để nhận được nhận xét '
+          'chi tiết về sự phát triển.';
+    }
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.primaryContainer,
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.18),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Icon(Icons.psychology_rounded, size: 20, color: Colors.white),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                'NHẬN XÉT',
+                style: TextStyle(
+                  fontFamily: 'PlusJakartaSans',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 1.5,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            assessment,
+            style: const TextStyle(fontSize: 14, height: 1.6, color: Colors.white),
+          ),
+        ],
       ),
     );
   }

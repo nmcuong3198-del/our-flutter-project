@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Core: strings.dart</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Core: strings.dart</div>
+<div class="meta">
+  <strong>File:</strong> lib/core/strings.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>class S {
+  // App
+  static const appName = &#x27;SSCare&#x27;;
+  static const appTagline = &#x27;Nhật ký đồng hành cùng con&#x27;;
+
+  // Dashboard
+  static const dashboard = &#x27;Trang chính&#x27;;
+  static const lastCheckin = &#x27;Lần cập nhật gần nhất&#x27;;
+  static const streakDays = &#x27;ngày liên tiếp&#x27;;
+  static const noCheckinYet = &#x27;Chưa có dữ liệu&#x27;;
+  static const todayChecked = &#x27;Đã cập nhật hôm nay&#x27;;
+  static const age = &#x27;tuổi&#x27;;
+
+  // Check-in
+  static const checkin = &#x27;Cập nhật hôm nay&#x27;;
+  static const emotionTitle = &#x27;Hôm nay con cảm thấy thế nào?&#x27;;
+  static const bodyTitle = &#x27;Tình trạng cơ thể hôm nay?&#x27;;
+  static const symptomsTitle = &#x27;Triệu chứng thể chất?&#x27;;
+  static const notesTitle = &#x27;Ghi chú của bố mẹ&#x27;;
+  static const notesHint = &#x27;Nhập ghi chú về con hôm nay...&#x27;;
+  static const save = &#x27;Lưu&#x27;;
+  static const saved = &#x27;Đã lưu thành công!&#x27;;
+
+  // Emotions
+  static const emotionHappy = &#x27;Vui&#x27;;
+  static const emotionNormal = &#x27;Bình thường&#x27;;
+  static const emotionTired = &#x27;Chán, mệt&#x27;;
+  static const emotionSad = &#x27;Buồn&#x27;;
+  static const emotionAngry = &#x27;Cáu&#x27;;
+  static const emotionWorried = &#x27;Lo lắng&#x27;;
+  static const emotionSluggish = &#x27;Uể oải&#x27;;
+  static const emotionOther = &#x27;Khác&#x27;;
+
+  // Body status - Female
+  static const bodyInPeriod = &#x27;Đang trong kỳ&#x27;;
+  static const bodyDischarge = &#x27;Khí hư&#x27;;
+  static const bodyNotInPeriod = &#x27;Không trong kỳ&#x27;;
+  static const bodyPuberty = &#x27;Dậy thì&#x27;;
+
+  // Body status - Male
+  static const bodyNocturnal = &#x27;Mộng tinh&#x27;;
+  static const bodyTension = &#x27;Căng tức&#x27;;
+  static const bodyNone = &#x27;Không có gì&#x27;;
+
+  // Symptoms
+  static const symptomHealthy = &#x27;Khỏe&#x27;;
+  static const symptomTired = &#x27;Mệt&#x27;;
+  static const symptomHeadache = &#x27;Đau đầu&#x27;;
+  static const symptomStomach = &#x27;Đau bụng&#x27;;
+  static const symptomBack = &#x27;Đau lưng&#x27;;
+  static const symptomNausea = &#x27;Buồn nôn&#x27;;
+  static const symptomDizzy = &#x27;Chóng mặt&#x27;;
+  static const symptomAcne = &#x27;Nổi mụn&#x27;;
+  static const symptomIrritable = &#x27;Khó chịu&#x27;;
+  static const symptomOther = &#x27;Khác&#x27;;
+
+  // Measurements
+  static const measurements = &#x27;Số đo&#x27;;
+  static const height = &#x27;Chiều cao (cm)&#x27;;
+  static const weight = &#x27;Cân nặng (kg)&#x27;;
+  static const bmi = &#x27;BMI&#x27;;
+  static const whoComparison = &#x27;So với chuẩn WHO&#x27;;
+  static const withinRange = &#x27;Trong ngưỡng&#x27;;
+  static const aboveRange = &#x27;Cao hơn&#x27;;
+  static const belowRange = &#x27;Thấp hơn&#x27;;
+  static const bmiNormal = &#x27;Bình thường&#x27;;
+  static const bmiUnder = &#x27;Gầy&#x27;;
+  static const bmiOver = &#x27;Thừa&#x27;;
+
+  // Cycle
+  static const cycleHistory = &#x27;Chu kỳ&#x27;;
+  static const cycleYes = &#x27;Có&#x27;;
+  static const cycleNo = &#x27;Không&#x27;;
+  static const cycleNoData = &#x27;Chưa có dữ liệu&#x27;;
+  static const lastPeriod = &#x27;Lần gần nhất&#x27;;
+  static const daysAgo = &#x27;ngày trước&#x27;;
+  static const cycleAssessment = &#x27;Đánh giá&#x27;;
+  static const cycleNormal = &#x27;Kinh nguyệt bình thường&#x27;;
+  static const cycleUnstable = &#x27;Chưa ổn định (bình thường ở độ tuổi này)&#x27;;
+  static const cycleNoDataAssess = &#x27;Chưa có dữ liệu để đánh giá&#x27;;
+  static const pubertyNormal = &#x27;Dấu hiệu dậy thì bình thường&#x27;;
+
+  // Reports
+  static const reports = &#x27;Báo cáo&#x27;;
+  static const growthReport = &#x27;Tăng trưởng&#x27;;
+  static const bodyReport = &#x27;Tình trạng cơ thể&#x27;;
+  static const last30Days = &#x27;30 ngày qua&#x27;;
+  static const days = &#x27;ngày&#x27;;
+
+  // Profile
+  static const profile = &#x27;Tài khoản&#x27;;
+  static const profileName = &#x27;Tên hiển thị&#x27;;
+  static const profileRole = &#x27;Vai trò&#x27;;
+  static const profilePhone = &#x27;Số điện thoại&#x27;;
+  static const profileEmail = &#x27;Email&#x27;;
+  static const notifications = &#x27;Thông báo&#x27;;
+  static const notifCheckin = &#x27;Nhắc cập nhật&#x27;;
+  static const notifCalendar = &#x27;Lịch nhắc nhớ&#x27;;
+  static const notifEducation = &#x27;Kiến thức&#x27;;
+  static const packageTier = &#x27;Gói tài khoản&#x27;;
+  static const packageBasic = &#x27;Cơ bản&#x27;;
+
+  // Tabs
+  static const tabCheckin = &#x27;Check-in&#x27;;
+  static const tabMeasure = &#x27;Số đo&#x27;;
+  static const tabCycle = &#x27;Chu kỳ&#x27;;
+  static const tabReport = &#x27;Báo cáo&#x27;;
+
+  // Bottom nav (4 tabs per flow)
+  static const navHome = &#x27;Trang chủ&#x27;;
+  static const navChildren = &#x27;Quản lý con&#x27;;
+  static const navLibrary = &#x27;Thư viện&#x27;;
+  static const navNotifications = &#x27;Thông báo&#x27;;
+
+  // Library
+  static const library = &#x27;Thư viện kiến thức&#x27;;
+  static const catMental = &#x27;Nuôi dưỡng tinh thần&#x27;;
+  static const catPhysical = &#x27;Phát triển thể chất&#x27;;
+  static const catSkills = &#x27;Bồi đắp kỹ năng&#x27;;
+  static const catAlerts = &#x27;Sự kiện cảnh báo&#x27;;
+  static const readMore = &#x27;Xem chi tiết&#x27;;
+  static const featuredArticles = &#x27;Bài viết nổi bật&#x27;;
+  static const rateArticle = &#x27;Đánh giá bài viết&#x27;;
+  static const rateThank = &#x27;Cảm ơn bạn đã đánh giá!&#x27;;
+  static const shareArticle = &#x27;Chia sẻ bài viết&#x27;;
+  static const shareSuccess = &#x27;Đã chia sẻ bài viết thành công!&#x27;;
+  static const readMin = &#x27;phút đọc&#x27;;
+  static const articlesRead = &#x27;bài đã đọc&#x27;;
+
+  // Notifications
+  static const notifTitle = &#x27;Thông báo&#x27;;
+  static const notifEmpty = &#x27;Chưa có thông báo nào&#x27;;
+  static const notifNew = &#x27;Mới&#x27;;
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

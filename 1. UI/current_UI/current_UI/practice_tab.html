@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Practice Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Practice Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/practice_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/strings.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class PracticeTab extends StatefulWidget {
+  final ChildProfile child;
+  const PracticeTab({super.key, required this.child});
+
+  @override
+  State&lt;PracticeTab&gt; createState() =&gt; _PracticeTabState();
+}
+
+class _PracticeTabState extends State&lt;PracticeTab&gt; {
+  late List&lt;PracticeItem&gt; _items;
+
+  @override
+  void initState() {
+    super.initState();
+    _items = MockData.practiceFor(widget.child.id);
+  }
+
+  List&lt;PracticeItem&gt; _byCategory(String cat) =&gt;
+      _items.where((i) =&gt; i.category == cat).toList();
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final monthLabel = &#x27;Tháng ${now.month}/${now.year}&#x27;;
+    final completed = _items.where((i) =&gt; i.isCompleted).length;
+
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          // Month header + progress
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Row(
+              children: [
+                const Icon(Icons.calendar_today,
+                    size: 18, color: AppColors.primary),
+                const SizedBox(width: 8),
+                Text(
+                  monthLabel,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.accent.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    &#x27;$completed/${_items.length} đã thực hiện&#x27;,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.accent,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Category tabs
+          const TabBar(
+            labelColor: AppColors.primary,
+            unselectedLabelColor: AppColors.textSecondary,
+            indicatorColor: AppColors.primary,
+            tabs: [
+              Tab(text: &#x27;Quan sát&#x27;),
+              Tab(text: &#x27;Giao tiếp&#x27;),
+              Tab(text: &#x27;Hỗ trợ&#x27;),
+            ],
+          ),
+
+          // Items
+          Expanded(
+            child: TabBarView(
+              children: [
+                _CategoryList(
+                  items: _byCategory(&#x27;quan_sat&#x27;),
+                  onToggle: _onToggle,
+                ),
+                _CategoryList(
+                  items: _byCategory(&#x27;giao_tiep&#x27;),
+                  onToggle: _onToggle,
+                ),
+                _CategoryList(
+                  items: _byCategory(&#x27;ho_tro&#x27;),
+                  onToggle: _onToggle,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _onToggle(PracticeItem item) {
+    setState(() =&gt; item.isCompleted = !item.isCompleted);
+  }
+}
+
+class _CategoryList extends StatelessWidget {
+  final List&lt;PracticeItem&gt; items;
+  final void Function(PracticeItem) onToggle;
+
+  const _CategoryList({required this.items, required this.onToggle});
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const Center(
+        child: Text(&#x27;Chưa có hành động&#x27;, style: TextStyle(color: AppColors.textSecondary)),
+      );
+    }
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final item = items[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Title + checkbox
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    GestureDetector(
+                      onTap: () =&gt; onToggle(item),
+                      child: Container(
+                        width: 24,
+                        height: 24,
+                        margin: const EdgeInsets.only(top: 2),
+                        decoration: BoxDecoration(
+                          color: item.isCompleted
+                              ? AppColors.accent
+                              : Colors.transparent,
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(
+                            color: item.isCompleted
+                                ? AppColors.accent
+                                : AppColors.pending,
+                            width: 2,
+                          ),
+                        ),
+                        child: item.isCompleted
+                            ? const Icon(Icons.check,
+                                size: 16, color: Colors.white)
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        item.title,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: item.isCompleted
+                              ? AppColors.textSecondary
+                              : AppColors.textPrimary,
+                          decoration: item.isCompleted
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Executor + planned week
+                Row(
+                  children: [
+                    _Tag(Icons.person, item.executor, AppColors.primary),
+                    const SizedBox(width: 8),
+                    _Tag(Icons.date_range, &#x27;Tuần ${item.plannedWeek}&#x27;,
+                        AppColors.secondary),
+                    if (item.isCompleted) ...[
+                      const SizedBox(width: 8),
+                      _Tag(Icons.check_circle, &#x27;Đã thực hiện&#x27;,
+                          AppColors.accent),
+                    ],
+                  ],
+                ),
+
+                // Notes
+                if (item.notes != null &amp;&amp; item.notes!.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.background,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      item.notes!,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _Tag extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+  const _Tag(this.icon, this.label, this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: color),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>

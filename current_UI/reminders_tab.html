@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SSCare - Reminders Tab</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: #F9F9FF;
+    color: #191C20;
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  .header {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: #003E74;
+    padding: 20px 24px 12px;
+    background: #FFFFFF;
+  }
+  .meta {
+    padding: 12px 24px;
+    font-size: 12px;
+    color: #424750;
+    background: #F3F3F9;
+    border-bottom: 1px solid #E1E2E8;
+  }
+  pre {
+    background: #F3F3F9;
+    padding: 16px;
+    margin: 0;
+    font-size: 11px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    line-height: 1.6;
+    color: #191C20;
+  }
+  .nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: #FFFFFF;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0 14px;
+    border-top: 1px solid #E1E2E8;
+    font-size: 11px;
+    color: #424750;
+  }
+  .nav div { text-align: center; }
+  .nav .active { color: #003E74; font-weight: 700; }
+  .nav .ico { font-size: 20px; display: block; }
+  .spacer { height: 60px; }
+</style>
+</head>
+<body>
+<div class="header">Reminders Tab</div>
+<div class="meta">
+  <strong>File:</strong> lib/screens/reminders_tab.dart<br>
+  <strong>Design:</strong> Navy #003E74 + Gold #FFB870
+</div>
+<pre>import &#x27;package:flutter/material.dart&#x27;;
+import &#x27;../core/theme.dart&#x27;;
+import &#x27;../mock/mock_data.dart&#x27;;
+import &#x27;../models/models.dart&#x27;;
+
+class RemindersTab extends StatefulWidget {
+  final ChildProfile child;
+  const RemindersTab({super.key, required this.child});
+
+  @override
+  State&lt;RemindersTab&gt; createState() =&gt; _RemindersTabState();
+}
+
+class _RemindersTabState extends State&lt;RemindersTab&gt; {
+  late List&lt;Reminder&gt; _reminders;
+
+  @override
+  void initState() {
+    super.initState();
+    _reminders = MockData.remindersFor(widget.child.id);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final active = _reminders.where((r) =&gt; r.isActive).toList()
+      ..sort((a, b) =&gt; a.date.compareTo(b.date));
+    final inactive = _reminders.where((r) =&gt; !r.isActive).toList();
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              const Icon(Icons.event_note, color: AppColors.primary, size: 20),
+              const SizedBox(width: 8),
+              const Expanded(
+                child: Text(
+                  &#x27;Ghi chú &amp; nhắc nhở&#x27;,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  &#x27;${_reminders.length}/10&#x27;,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // Active reminders
+          if (active.isNotEmpty) ...[
+            const Text(
+              &#x27;Sắp tới&#x27;,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ...active.map((r) =&gt; _ReminderCard(
+                  reminder: r,
+                  onToggle: () =&gt; setState(() =&gt; r.isActive = !r.isActive),
+                  onDelete: () =&gt; setState(() =&gt; _reminders.remove(r)),
+                )),
+          ],
+
+          if (inactive.isNotEmpty) ...[
+            const SizedBox(height: 20),
+            const Text(
+              &#x27;Đã hoàn thành&#x27;,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
+            ),
+            const SizedBox(height: 8),
+            ...inactive.map((r) =&gt; _ReminderCard(
+                  reminder: r,
+                  onToggle: () =&gt; setState(() =&gt; r.isActive = !r.isActive),
+                  onDelete: () =&gt; setState(() =&gt; _reminders.remove(r)),
+                )),
+          ],
+
+          const SizedBox(height: 20),
+
+          // Add button
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text(&#x27;Thêm ghi chú mới (sắp ra mắt)&#x27;),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.add),
+              label: const Text(&#x27;Thêm ghi chú&#x27;),
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.primary,
+                side: const BorderSide(color: AppColors.primary),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+              ),
+            ),
+          ),
+          const SizedBox(height: 40),
+        ],
+      ),
+    );
+  }
+}
+
+class _ReminderCard extends StatelessWidget {
+  final Reminder reminder;
+  final VoidCallback onToggle;
+  final VoidCallback onDelete;
+
+  const _ReminderCard({
+    required this.reminder,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final now = DateTime.now();
+    final diff = reminder.date.difference(now);
+    final isPast = diff.isNegative;
+    final daysText = isPast
+        ? &#x27;${-diff.inDays} ngày trước&#x27;
+        : (diff.inDays == 0
+            ? &#x27;Hôm nay&#x27;
+            : (diff.inDays == 1 ? &#x27;Ngày mai&#x27; : &#x27;${diff.inDays} ngày nữa&#x27;));
+    final dateStr =
+        &#x27;${reminder.date.day}/${reminder.date.month}/${reminder.date.year}&#x27;;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 8),
+      color: reminder.isActive ? AppColors.surface : AppColors.background,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            // Date badge
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: (reminder.isActive
+                        ? (isPast ? AppColors.overdue : AppColors.primary)
+                        : AppColors.pending)
+                    .withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    &#x27;${reminder.date.day}&#x27;,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w800,
+                      color: reminder.isActive
+                          ? (isPast ? AppColors.overdue : AppColors.primary)
+                          : AppColors.pending,
+                    ),
+                  ),
+                  Text(
+                    &#x27;T${reminder.date.month}&#x27;,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: reminder.isActive
+                          ? AppColors.textSecondary
+                          : AppColors.pending,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+
+            // Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    reminder.label,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: reminder.isActive
+                          ? AppColors.textPrimary
+                          : AppColors.textSecondary,
+                      decoration:
+                          reminder.isActive ? null : TextDecoration.lineThrough,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    &#x27;$dateStr · $daysText&#x27;,
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isPast &amp;&amp; reminder.isActive
+                          ? AppColors.overdue
+                          : AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Actions
+            IconButton(
+              icon: Icon(
+                reminder.isActive
+                    ? Icons.check_circle_outline
+                    : Icons.refresh,
+                color: reminder.isActive
+                    ? AppColors.accent
+                    : AppColors.textSecondary,
+                size: 22,
+              ),
+              onPressed: onToggle,
+              tooltip: reminder.isActive ? &#x27;Hoàn thành&#x27; : &#x27;Khôi phục&#x27;,
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_outline,
+                  color: AppColors.textSecondary, size: 22),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (ctx) =&gt; AlertDialog(
+                    title: const Text(&#x27;Xoá ghi chú?&#x27;,
+                        style: TextStyle(fontSize: 16)),
+                    content:
+                        Text(&#x27;Bạn có chắc chắn xoá &quot;${reminder.label}&quot;?&#x27;),
+                    actions: [
+                      TextButton(
+                          onPressed: () =&gt; Navigator.pop(ctx),
+                          child: const Text(&#x27;Huỷ&#x27;)),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          onDelete();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.error),
+                        child: const Text(&#x27;Xoá&#x27;),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              tooltip: &#x27;Xoá&#x27;,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+</pre>
+<div class="nav">
+  <div class="active"><span class="ico">🏠</span>Trang chủ</div>
+  <div><span class="ico">👨‍👩‍👧</span>Quản lý con</div>
+  <div><span class="ico">📚</span>Thư viện</div>
+  <div><span class="ico">🔔</span>Thông báo</div>
+</div>
+<div class="spacer"></div>
+</body>
+</html>
