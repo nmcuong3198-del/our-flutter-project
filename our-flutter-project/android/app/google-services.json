@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "750449699258",
+    "project_id": "sscare-5d5fa",
+    "storage_bucket": "sscare-5d5fa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:750449699258:android:f99f1133ec8fcf7ff89583",
+        "android_client_info": {
+          "package_name": "com.sscare.sscare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnBGFAdKbWGOt2H7DKIqu1UjI5phYlblo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

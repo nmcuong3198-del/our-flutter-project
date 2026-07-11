@@ -111,6 +111,7 @@ class S {
   static const navChildren = 'Quản lý con';
   static const navLibrary = 'Thư viện';
   static const navNotifications = 'Thông báo';
+  static const navVideoCall = 'VideoCall';
 
   // Library
   static const library = 'Thư viện kiến thức';

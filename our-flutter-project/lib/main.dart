@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'core/theme.dart';
 import 'core/strings.dart';
@@ -7,8 +8,27 @@ import 'screens/dashboard_screen.dart';
 import 'screens/children_screen.dart';
 import 'screens/library_screen.dart';
 import 'screens/notifications_screen.dart';
+import 'screens/call_screen.dart';
+import 'firebase/firebase_initializer.dart';
+import 'firebase/firebase_notification_service.dart';
+import 'firebase/firebase_local_notification_service.dart';
+import 'firebase/firebase_message_handler.dart';
 
-void main() {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await FirebaseInitializer.initialize();
+
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseBackgroundHandler,
+  );
+
+  await FirebaseLocalNotificationService.instance.initialize();
+
+  await FirebaseNotificationService.instance.initialize();
+
   runApp(const SSCareApp());
 }
 
@@ -76,7 +96,7 @@ class _SSCareAppState extends State<SSCareApp> {
     );
   }
 
-  final navigatorKey = GlobalKey<NavigatorState>();
+  // final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +129,7 @@ class _MainShellState extends State<MainShell> {
       ChildrenScreen(),
       LibraryScreen(),
       NotificationsScreen(),
+      CallScreen(),
     ];
 
     return Scaffold(
@@ -139,6 +160,11 @@ class _MainShellState extends State<MainShell> {
             icon: Icon(Icons.notifications_outlined),
             selectedIcon: Icon(Icons.notifications_rounded),
             label: S.navNotifications,
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.video_call_outlined),
+            selectedIcon: Icon(Icons.vibration_rounded),
+            label: S.navVideoCall,
           ),
         ],
       ),
