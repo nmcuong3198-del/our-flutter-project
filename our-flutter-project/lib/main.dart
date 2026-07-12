@@ -21,9 +21,9 @@ Future<void> main() async {
 
   await FirebaseInitializer.initialize();
 
-  FirebaseMessaging.onBackgroundMessage(
-    firebaseBackgroundHandler,
-  );
+  // FirebaseMessaging.onBackgroundMessage(
+  //   firebaseBackgroundHandler,
+  // );
   //
   // await FirebaseLocalNotificationService.instance.initialize();
   //
