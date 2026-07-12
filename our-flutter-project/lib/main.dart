@@ -19,7 +19,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // await FirebaseInitializer.initialize();
+  await FirebaseInitializer.initialize();
   //
   // FirebaseMessaging.onBackgroundMessage(
   //   firebaseBackgroundHandler,
