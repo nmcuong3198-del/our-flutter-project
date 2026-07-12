@@ -20,10 +20,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await FirebaseInitializer.initialize();
-  //
-  // FirebaseMessaging.onBackgroundMessage(
-  //   firebaseBackgroundHandler,
-  // );
+
+  FirebaseMessaging.onBackgroundMessage(
+    firebaseBackgroundHandler,
+  );
   //
   // await FirebaseLocalNotificationService.instance.initialize();
   //
