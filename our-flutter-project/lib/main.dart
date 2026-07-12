@@ -25,8 +25,8 @@ Future<void> main() async {
     firebaseBackgroundHandler,
   );
 
-  // await FirebaseLocalNotificationService.instance.initialize();
-  //
+  await FirebaseLocalNotificationService.instance.initialize();
+
   // await FirebaseNotificationService.instance.initialize();
 
   runApp(const SSCareApp());
